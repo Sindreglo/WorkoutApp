@@ -23,6 +23,7 @@
 
 <script>
 import apiService from "@/services/apiService";
+import storageService from "@/services/storageService";
 
 export default {
   name: "LoginPage",
@@ -36,14 +37,21 @@ export default {
   },
   methods: {
     async submit() {
-      await apiService.login(this.data.email, this.data.password).then((response) => {
-        console.log(response);
-      })
+      await apiService.login(this.data.email, this.data.password)
+          .then((response) => {
+            storageService.setToken(response.data["access_token"]);
+            storageService.setUser(this.username);
+            console.log(response.data);
+            console.log(storageService.getToken());
+            this.$router.push("/");
+          })
     }
   }
 }
 </script>
 
 <style scoped>
-
+form {
+  margin-top: 10vh;
+}
 </style>

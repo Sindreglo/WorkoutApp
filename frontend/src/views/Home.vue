@@ -1,10 +1,26 @@
 <template>
-  <h1>Home</h1>
+  <h1>Hello {{ name }}</h1>
+  <p v-for="(role, i) in roles" :key='i' >{{ role.name }}</p>
 </template>
 
 <script>
+import apiService from "@/services/apiService";
+
 export default {
-  name: "HomePage"
+  name: "HomePage",
+  data() {
+    return {
+      name: '',
+      roles: {}
+    }
+  },
+  created() {
+    apiService.test().then((response) => {
+      console.log(response.data);
+      this.name = response.data.name;
+      this.roles = response.data.roles;
+    })
+  }
 }
 </script>
 
