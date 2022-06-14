@@ -7,13 +7,17 @@
       </button>
       // class="collapse navbar-collapse"
       <div id="navbarCollapse">
-        <ul class="navbar-nav me-auto mb-2 mb-md-0">
+        <ul class="navbar-nav me-auto mb-2 mb-md-0" v-if="!auth">
           <li class="nav-item">
-            <router-link v-on:click="logout" v-if="token != null" to="/login" class="nav-link active">logout</router-link>
-            <router-link v-else to="/login" class="nav-link active">login</router-link>
+            <router-link to="/login" class="nav-link active">login</router-link>
           </li>
           <li class="nav-item">
             <router-link to="/register" class="nav-link active">Register</router-link>
+          </li>
+        </ul>
+        <ul class="navbar-nav me-auto mb-2 mb-md-0" v-else>
+          <li class="nav-item">
+            <router-link v-on:click="logout" to="/login" class="nav-link active">logout</router-link>
           </li>
         </ul>
       </div>
@@ -23,6 +27,7 @@
 
 <script>
 import storageService from "@/services/storageService";
+import store from "@/store";
 
 export default {
   name: "NavBar",
@@ -32,10 +37,16 @@ export default {
     }
   },
   methods: {
-    logout() {
+    async logout() {
       storageService.clearToken();
+      await store.dispatch('setAuth',false);
       //this.$router.push({ path: "/" });
     },
+  },
+  computed: {
+    auth() {
+      return store.state.authenticated;
+    }
   }
 }
 </script>

@@ -24,6 +24,7 @@
 <script>
 import apiService from "@/services/apiService";
 import storageService from "@/services/storageService";
+import store from "@/store";
 
 export default {
   name: "LoginPage",
@@ -43,6 +44,7 @@ export default {
             storageService.setUser(this.username);
             console.log(storageService.getToken());
             this.$router.push("/");
+            store.dispatch('setAuth',true);
           })
     }
   }
