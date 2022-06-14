@@ -22,32 +22,23 @@
 </template>
 
 <script>
-import {reactive} from "vue";
-import {useRouter} from "vue-router";
+import apiService from "@/services/apiService";
 
 export default {
   name: "LoginPage",
-  setup() {
-    const data = reactive({
-      email: '',
-      password: '',
-    });
-
-    const router = useRouter();
-
-    const submit = async () => {
-      await fetch('http://localhost:8080/api/login', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(data),
-      });
-
-      await router.push('/');
-    }
-
+  data() {
     return {
-      data,
-      submit
+      data: {
+        email: '',
+        password: '',
+      }
+    }
+  },
+  methods: {
+    async submit() {
+      await apiService.login(this.data.email, this.data.password).then((response) => {
+        console.log(response);
+      })
     }
   }
 }

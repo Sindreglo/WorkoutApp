@@ -33,6 +33,7 @@ public class securityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Override
+    @CrossOrigin
     protected void configure(HttpSecurity http) throws Exception {
         CustomAuthenticationFilter customAuthenticationFilter = new CustomAuthenticationFilter(authenticationManagerBean());
         http.csrf().disable().cors().configurationSource(request -> {

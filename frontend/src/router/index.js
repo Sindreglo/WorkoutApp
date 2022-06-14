@@ -5,12 +5,12 @@ import Register from "@/views/Register";
 
 const routes = [
   {
-    path: "",
-    component: Home
+    path: "/login",
+    component: Login,
   },
   {
-    path: "/login",
-    component: Login
+    path: "/",
+    component: Home
   },
   {
     path: "/register",
