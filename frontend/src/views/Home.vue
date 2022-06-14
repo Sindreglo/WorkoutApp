@@ -16,7 +16,6 @@ export default {
   },
   created() {
     apiService.test().then((response) => {
-      console.log(response.data);
       this.name = response.data.name;
       this.roles = response.data.roles;
     })

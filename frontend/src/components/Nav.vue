@@ -9,7 +9,8 @@
       <div id="navbarCollapse">
         <ul class="navbar-nav me-auto mb-2 mb-md-0">
           <li class="nav-item">
-            <router-link to="/login" class="nav-link active">Login</router-link>
+            <router-link v-on:click="logout" v-if="token != null" to="/login" class="nav-link active">logout</router-link>
+            <router-link v-else to="/login" class="nav-link active">login</router-link>
           </li>
           <li class="nav-item">
             <router-link to="/register" class="nav-link active">Register</router-link>
@@ -21,8 +22,21 @@
 </template>
 
 <script>
+import storageService from "@/services/storageService";
+
 export default {
-  name: "NavBar"
+  name: "NavBar",
+  data() {
+    return {
+      token: storageService.getToken(),
+    }
+  },
+  methods: {
+    logout() {
+      storageService.clearToken();
+      //this.$router.push({ path: "/" });
+    },
+  }
 }
 </script>
 

@@ -30,7 +30,7 @@ export default {
   data() {
     return {
       data: {
-        email: '',
+        username: '',
         password: '',
       }
     }
@@ -41,7 +41,6 @@ export default {
           .then((response) => {
             storageService.setToken(response.data["access_token"]);
             storageService.setUser(this.username);
-            console.log(response.data);
             console.log(storageService.getToken());
             this.$router.push("/");
           })

@@ -39,8 +39,8 @@ public class WorkoutApplication {
 
 			userService.addRoleToUser("john", "ROLE_USER");
 			userService.addRoleToUser("john", "ROLE_MANAGER");
-			userService.addRoleToUser("will", "ROLE_MANAGER");
-			userService.addRoleToUser("jim", "ROLE_ADMIN");
+			userService.addRoleToUser("will", "ROLE_USER");
+			userService.addRoleToUser("jim", "ROLE_USER");
 			userService.addRoleToUser("arnold", "ROLE_SUPER_ADMIN");
 			userService.addRoleToUser("arnold", "ROLE_ADMIN");
 			userService.addRoleToUser("arnold", "ROLE_USER");
