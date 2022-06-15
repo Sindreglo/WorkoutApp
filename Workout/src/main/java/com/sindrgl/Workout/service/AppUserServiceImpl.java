@@ -2,8 +2,10 @@ package com.sindrgl.Workout.service;
 
 import com.sindrgl.Workout.domain.AppUser;
 import com.sindrgl.Workout.domain.Role;
+import com.sindrgl.Workout.domain.Workout;
 import com.sindrgl.Workout.repo.AppUserRepo;
 import com.sindrgl.Workout.repo.RoleRepo;
+import com.sindrgl.Workout.repo.WorkoutRepo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -23,6 +25,7 @@ public class AppUserServiceImpl implements AppUserService, UserDetailsService {
     private final AppUserRepo userRepo;
     private final RoleRepo roleRepo;
     private final PasswordEncoder passwordEncoder;
+    private final WorkoutRepo workoutRepo;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -37,6 +40,20 @@ public class AppUserServiceImpl implements AppUserService, UserDetailsService {
         user.getRoles().forEach(role -> { authorities.add(new SimpleGrantedAuthority(role.getName()));
         });
         return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), authorities);
+    }
+
+    @Override
+    public void saveWorkoutToUser(Workout workout, String username) {
+        log.info("Saving new workout {} to the database", workout);
+        AppUser user = userRepo.findByUsername(username);
+        user.getWorkouts().add(workout);
+    }
+
+    @Override
+    public List<Workout> getWorkouts(String username) {
+        AppUser user = userRepo.findByUsername(username);
+        List<Workout> workouts = workoutRepo.findByWo_fk(user.getId());
+        return workouts;
     }
 
     @Override

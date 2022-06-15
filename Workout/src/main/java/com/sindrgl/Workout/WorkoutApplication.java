@@ -2,6 +2,7 @@ package com.sindrgl.Workout;
 
 import com.sindrgl.Workout.domain.AppUser;
 import com.sindrgl.Workout.domain.Role;
+import com.sindrgl.Workout.domain.Workout;
 import com.sindrgl.Workout.service.AppUserService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -32,10 +33,10 @@ public class WorkoutApplication {
 			userService.saveRole(new Role(null, "ROLE_ADMIN"));
 			userService.saveRole(new Role(null, "ROLE_SUPER_ADMIN"));
 
-			userService.saveUser(new AppUser(null, "John Travolta", "john", "1234", new ArrayList<>()));
-			userService.saveUser(new AppUser(null, "Will Smith", "will", "1234", new ArrayList<>()));
-			userService.saveUser(new AppUser(null, "Jim Carry", "jim", "1234", new ArrayList<>()));
-			userService.saveUser(new AppUser(null, "Arnold Schwarzenegger", "arnold", "1234", new ArrayList<>()));
+			userService.saveUser(new AppUser("John Travolta", "john", "1234"));
+			userService.saveUser(new AppUser("Will Smith", "will", "1234"));
+			userService.saveUser(new AppUser("Jim Carry", "jim", "1234"));
+			userService.saveUser(new AppUser("Arnold Schwarzenegger", "arnold", "1234"));
 
 			userService.addRoleToUser("john", "ROLE_USER");
 			userService.addRoleToUser("john", "ROLE_MANAGER");
@@ -44,6 +45,11 @@ public class WorkoutApplication {
 			userService.addRoleToUser("arnold", "ROLE_SUPER_ADMIN");
 			userService.addRoleToUser("arnold", "ROLE_ADMIN");
 			userService.addRoleToUser("arnold", "ROLE_USER");
+
+			userService.saveWorkoutToUser(new Workout("Benchpress", 80, 12, 5062022),"john");
+			userService.saveWorkoutToUser(new Workout("Squats", 70, 12,3062022),"john");
+			userService.saveWorkoutToUser(new Workout( "Pullups", 20, 12,1062022),"john");
+			userService.saveWorkoutToUser(new Workout("Squats", 100, 12,28052022),"jim");
 		};
 	}
 }

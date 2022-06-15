@@ -55,4 +55,6 @@ export default {
 form {
   margin-top: 10vh;
 }
+button {
+}
 </style>
