@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity @Data @NoArgsConstructor @AllArgsConstructor
 public class Workout {
@@ -14,10 +15,10 @@ public class Workout {
     private String exercise;
     private int weight;
     private int reps;
-    private int date;
+    private Date date;
     private Long wo_fk;
 
-    public Workout(String exercise, int weight, int reps, int date) {
+    public Workout(String exercise, int weight, int reps, Date date) {
         this.exercise = exercise;
         this.weight = weight;
         this.reps = reps;
