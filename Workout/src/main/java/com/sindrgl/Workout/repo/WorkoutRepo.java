@@ -8,6 +8,6 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface WorkoutRepo extends JpaRepository<Workout, Long> {
-    @Query("from Workout w where w.id = :id")
-    List<Workout> findByUser(@Param("id") int id);
+    @Query("from Workout w where w.wo_fk = :id")
+    List<Workout> findByUser(@Param("id") Long id);
 }

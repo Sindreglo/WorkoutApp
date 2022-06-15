@@ -52,7 +52,10 @@ public class AppUserServiceImpl implements AppUserService, UserDetailsService {
     @Override
     public List<Workout> getWorkouts(String username) {
         AppUser user = userRepo.findByUsername(username);
-        List<Workout> workouts = workoutRepo.findByWo_fk(user.getId());
+        log.info(username);
+        log.info(user.getId().toString());
+        List<Workout> workouts = workoutRepo.findByUser(user.getId());
+        log.info(workouts.toString());
         return workouts;
     }
 

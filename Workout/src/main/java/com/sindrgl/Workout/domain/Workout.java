@@ -15,6 +15,7 @@ public class Workout {
     private int weight;
     private int reps;
     private int date;
+    private Long wo_fk;
 
     public Workout(String exercise, int weight, int reps, int date) {
         this.exercise = exercise;
