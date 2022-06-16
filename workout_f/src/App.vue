@@ -1,7 +1,7 @@
 <template>
   <div id="app">
-    <NavBar />
-    <main class="form-signin w-100 m-auto">
+    <NavBar id="nav" />
+    <main>
       <router-view />
     </main>
   </div>
@@ -25,9 +25,8 @@ export default {
   height: 100vh;
 }
 
-.form-signin {
-  max-width: 330px;
-  padding: 15px;
+main {
+  margin-top: 40px;
 }
 
 .form-signin .form-floating:focus-within {
