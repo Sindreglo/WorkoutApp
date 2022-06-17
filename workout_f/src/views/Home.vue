@@ -1,17 +1,15 @@
 <template>
-  <div id="wrapper">
-    <div id="left">
-      <div>
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquam animi asperiores beatae dolores esse harum, nulla omnis, perspiciatis quam quasi quisquam rem sunt suscipit tempora unde veniam, voluptas! Maiores, quidem?
-      </div>
-      <div>
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Assumenda dignissimos doloremque error et ipsa nihil odio quae quia quisquam quod, totam, vitae voluptatem voluptatibus? A ad aut beatae blanditiis culpa eligendi, esse fuga in, molestiae quia quidem, quis reiciendis sapiente!
-      </div>
+  <div class="wrapper">
+    <div id="one">
+      NEW WORKOUT
     </div>
-    <div id="right">
-      <div>
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Animi cumque eos est fuga nemo nobis numquam optio placeat similique ut. Accusamus, at atque aut dolores eaque inventore ipsa nam nesciunt provident quaerat recusandae, temporibus. Ad aperiam earum facilis inventore sequi voluptatibus. Aliquam animi architecto aspernatur distinctio, dolorem dolores eos esse, et fugiat fugit id itaque maiores obcaecati porro quisquam reiciendis sed voluptate voluptatem? Nam necessitatibus nostrum veniam vitae! Ab deserunt dicta est excepturi id, minima. Debitis deleniti dolorum eius expedita inventore nostrum repellat sed tempore temporibus vero. Dicta dolorem, doloremque libero nostrum placeat voluptas. A autem corporis explicabo impedit iusto neque non obcaecati optio possimus, quam reiciendis repudiandae saepe sequi. Architecto culpa ea excepturi maiores necessitatibus obcaecati odio porro rerum sint voluptas? A facere inventore itaque magnam odio officia omnis placeat quam quasi rerum? Ad alias aliquam aliquid amet, architecto culpa dicta dignissimos dolorum eaque eligendi exercitationem hic id ipsa ipsum itaque iure iusto maxime mollitia nam natus nemo nesciunt, odit officiis placeat possimus quibusdam repellendus sapiente sequi temporibus tenetur vel veritatis voluptas voluptatem. Autem cum cumque, error, eum, exercitationem explicabo fuga fugit inventore minima modi mollitia nihil nobis optio quia saepe sed veritatis voluptate voluptatibus. Doloremque minus possimus reprehenderit!
-      </div>
+    <div id="two">
+      WORKOUT LOG
+      <p v-for="(workout, i) in workouts" :key='i' > {{ workout.exercise }} - {{ workout.weight }} - {{ workout.reps }}</p>
+    </div>
+    <div id="three">
+      GRAPHS
+      Lorem ipsum dolor sit amet, consectetur adipisicing elit. A deserunt excepturi fuga nam perspiciatis praesentium quam sed suscipit veritatis voluptates! Beatae distinctio et facere inventore minus quas vel velit veritatis! Accusantium eveniet ex facere fugiat modi non nostrum tenetur voluptate. Aperiam explicabo illo iste iusto minima ratione sint? Alias amet assumenda autem commodi consequuntur corporis cum cumque debitis error eveniet fugiat incidunt inventore ipsum magnam maiores molestias nam nihil nulla officiis possimus quam quibusdam, quod ratione tempore tenetur velit voluptatum. A accusantium architecto at beatae eligendi illum, nihil nisi perferendis.
     </div>
   </div>
 </template>
@@ -43,22 +41,44 @@ export default {
 </script>
 
 <style scoped>
-#wrapper {
-  margin: 1em;
+.wrapper {
+  padding: 20px;
   display: grid;
-  grid-template-columns: 1fr 2fr;
-  grid-column-gap: 1em;
+  gap: 1.5rem;
+  grid-template-areas:
+  'one'
+  'two'
+  'three';
 }
 
-#wrapper > div > div{
-  background: gray;
-  padding: 1em;
+#one {
+  background: darkcyan;
+  grid-area: one;
 }
 
-#left {
-  display: grid;
-  grid-row-gap: 1em;
+#two {
+  background: cornflowerblue;
+  grid-area: two;
 }
 
+#three {
+  background: yellow;
+  grid-area: three;
+  height: 80vh;
+}
+
+@media (min-width: 70em) {
+  .wrapper {
+    grid-template-areas:
+  'one three three'
+  'two three three'
+  'two three three'
+  'two three three';
+  }
+
+  #two {
+    width: 30vw;
+  }
+}
 
 </style>
