@@ -1,7 +1,26 @@
 <template>
   <div class="wrapper">
     <div id="one">
-      NEW WORKOUT
+      <p>Add Workout</p>
+      <div>
+        <b-form inline id="test">
+          <b-form-select v-model="selected" :options="options" class="form-inputs" id="inline-form-input-exercise" placeholder="Exercise">
+            <template #first>
+              <b-form-select-option :value="null" disabled>Exercise</b-form-select-option>
+            </template>
+          </b-form-select>
+          <b-form-input
+              type="number"
+              class="form-inputs"
+              id="inline-form-input-name"
+              placeholder="Weight"
+          ></b-form-input>
+
+          <b-form-input type="number" class="form-inputs"  id="inline-form-input-username" placeholder="Reps"></b-form-input>
+
+          <b-button id="inline-form-button-submit" variant="primary">Save</b-button>
+        </b-form>
+      </div>
     </div>
     <div id="two">
       WORKOUT LOG
@@ -25,6 +44,14 @@ export default {
       roles: {},
       workouts: {},
       value: '',
+      selected: null,
+      options: [
+        { text: 'Benchpress' },
+        { text: 'Squats' },
+        { text: 'Deadlift' },
+        { text: 'Pullups' },
+        { text: 'Dips' },
+      ]
     }
   },
   created() {
@@ -52,33 +79,80 @@ export default {
 }
 
 #one {
-  background: darkcyan;
+  background: white;
+  border-radius: 15px;
   grid-area: one;
 }
 
 #two {
-  background: cornflowerblue;
+  background: white;
+  border-radius: 15px;
   grid-area: two;
 }
 
 #three {
-  background: yellow;
+  background: white;
+  border-radius: 15px;
   grid-area: three;
   height: 80vh;
 }
 
 @media (min-width: 70em) {
   .wrapper {
+    grid-template-rows: 1fr 5fr;
     grid-template-areas:
   'one three three'
-  'two three three'
-  'two three three'
   'two three three';
   }
 
   #two {
     width: 30vw;
   }
+}
+
+p {
+  margin: 5px;
+  text-align: left;
+}
+
+#test {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.form-inputs {
+}
+
+#inline-form-input-exercise {
+  width: 100px;
+  height: 32px;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #495057;
+  vertical-align: middle;
+  background: #fff;
+  border: 1px solid #ced4da;
+  border-radius: 0.25rem;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+#inline-form-input-name {
+  font-size: 12px;
+  width: 80px;
+}
+
+#inline-form-input-username {
+  font-size: 12px;
+  width: 80px;
+}
+
+#inline-form-button-submit {
+  margin: 5px;
 }
 
 </style>

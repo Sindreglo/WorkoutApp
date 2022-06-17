@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <NavBar id="nav" />
+    <NavBar2/>
     <main>
       <router-view />
     </main>
@@ -8,9 +8,9 @@
 </template>
 
 <script>
-import NavBar from "@/components/Nav";
+import NavBar2 from "@/components/Nav2";
 export default {
-  components: {NavBar}
+  components: {NavBar2}
 }
 </script>
 
@@ -19,14 +19,9 @@ export default {
 #app {
   text-align: center;
   align-items: center;
-  padding-top: 40px;
   padding-bottom: 40px;
-  background-color: #f5f5f5;
-  height: 100vh;
-}
-
-main {
-  margin-top: 40px;
+  background-color: #e2e0e0;
+  min-height: 100vh;
 }
 
 .form-signin .form-floating:focus-within {
