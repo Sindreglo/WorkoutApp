@@ -7,11 +7,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping(value = "/")
+@RequestMapping(value = "/home")
 @EnableAutoConfiguration
 @CrossOrigin
 public class HomeController {
-    private static final Logger LOGGER = LogManager.getLogger(LoginController.class);
+    private static final Logger LOGGER = LogManager.getLogger(HomeController.class);
     @GetMapping(value = "")
     @ResponseStatus(value = HttpStatus.ACCEPTED)
     public String doLogin(){
