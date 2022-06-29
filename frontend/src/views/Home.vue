@@ -17,8 +17,6 @@ export default {
   created() {
     apiService.getHello().then((response) => {
       this.message = response.data;
-      console.log(response.data);
-      console.log("????")
     })
   }
 }

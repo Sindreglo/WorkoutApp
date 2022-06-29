@@ -8,7 +8,11 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+
+import java.util.List;
 
 
 @Configuration
@@ -19,35 +23,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private CustomAuthenticationProvider authProvider;
 
-
-    /**
-     *
-     * @param http
-     * @throws Exception
-     *
-     * @Override
-     *     protected void configure(HttpSecurity http) throws Exception
-     *     {
-     *         http
-     *                 .csrf().disable()
-     *                 .cors().and()
-     *                 .authorizeRequests().anyRequest().authenticated()
-     *                 .and()
-     *                 .httpBasic();
-     *     }
-     */
-
     @Override
     protected void configure(HttpSecurity http) throws Exception
     {
-        // token endpoint is not protected
-        http
-                .csrf().disable()
-                .cors().and()
-                .addFilterAfter(new JWTAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class)
-                .authorizeRequests()
-                .antMatchers(HttpMethod.POST, "/token").permitAll()
-                .anyRequest().authenticated();
+        http.csrf().disable().cors().configurationSource(request -> {
+                    var cors = new CorsConfiguration();
+                    cors.setAllowedOrigins(List.of("http://localhost:3000", "*"));
+                    cors.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
+                    cors.setAllowedHeaders(List.of("*"));
+                    return cors;})
+                .and().authorizeRequests().antMatchers("/").authenticated()
+                .anyRequest().permitAll()
+                .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+                http.addFilterAfter(new JWTAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
     }
 
     @Autowired

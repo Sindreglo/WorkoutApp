@@ -5,7 +5,7 @@
 
       <div class="form-floating">
         <input v-model="data.username" type="text" class="form-control" id="floatingInput" placeholder="name@example.com">
-        <label for="floatingInput">Email address</label>
+        <label for="floatingInput">Username</label>
       </div>
       <div class="form-floating">
         <input v-model="data.password" type="password" class="form-control" id="floatingPassword" placeholder="Password">
@@ -42,11 +42,9 @@ export default {
     async submit() {
       await apiService.login(this.data.username, this.data.password)
           .then((response) => {
-            console.log(response)
             if (response.data !== "Access denied, wrong credentials....") {
-              storageService.setToken(response.data["access_token"]);
+              storageService.setToken(response.data);
               storageService.setUser(this.username);
-              console.log(storageService.getToken());
               store.dispatch('setAuth',true);
               this.$router.push("/");
             }
