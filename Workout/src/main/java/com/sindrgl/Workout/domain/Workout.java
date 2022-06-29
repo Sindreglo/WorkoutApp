@@ -15,13 +15,11 @@ public class Workout {
     private String exercise;
     private int weight;
     private int reps;
-    private Date date;
     private Long wo_fk;
 
-    public Workout(String exercise, int weight, int reps, Date date) {
+    public Workout(String exercise, int weight, int reps) {
         this.exercise = exercise;
         this.weight = weight;
         this.reps = reps;
-        this.date = date;
     }
 }

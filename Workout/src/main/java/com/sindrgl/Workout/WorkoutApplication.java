@@ -46,10 +46,10 @@ public class WorkoutApplication {
 			userService.addRoleToUser("arnold", "ROLE_ADMIN");
 			userService.addRoleToUser("arnold", "ROLE_USER");
 
-			userService.saveWorkoutToUser(new Workout("Benchpress", 80, 12, 5062022),"john");
-			userService.saveWorkoutToUser(new Workout("Squats", 70, 12,3062022),"john");
-			userService.saveWorkoutToUser(new Workout( "Pullups", 20, 12,1062022),"john");
-			userService.saveWorkoutToUser(new Workout("Squats", 100, 12,28052022),"jim");
+			userService.saveWorkoutToUser(new Workout("Benchpress", 80, 12),"john");
+			userService.saveWorkoutToUser(new Workout("Squats", 70, 12),"john");
+			userService.saveWorkoutToUser(new Workout( "Pullups", 20, 12),"john");
+			userService.saveWorkoutToUser(new Workout("Squats", 100, 12),"jim");
 		};
 	}
 }
