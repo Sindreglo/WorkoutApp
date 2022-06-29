@@ -1,34 +1,39 @@
 <template>
   <div class="wrapper">
-    <div id="one">
-      <p>Add Workout</p>
-      <div>
-        <b-form inline id="test">
-          <b-form-select v-model="selected" :options="options" class="form-inputs" id="inline-form-input-exercise" placeholder="Exercise">
-            <template #first>
-              <b-form-select-option :value="null" disabled>Exercise</b-form-select-option>
-            </template>
-          </b-form-select>
-          <b-form-input
-              type="number"
-              class="form-inputs"
-              id="inline-form-input-name"
-              placeholder="Weight"
-          ></b-form-input>
-
-          <b-form-input type="number" class="form-inputs"  id="inline-form-input-username" placeholder="Reps"></b-form-input>
-
-          <b-button id="inline-form-button-submit" variant="primary">Save</b-button>
-        </b-form>
+    <div id="two">
+      <b-container class="bv-example-row">
+        <b-row>
+          <b-col>
+            <h3>
+              History
+            </h3>
+          </b-col>
+          <b-col>
+            <b-button id="new">
+              add workout
+              <b-icon icon="plus-circle-fill" aria-label="Help"></b-icon>
+            </b-button>
+          </b-col>
+        </b-row>
+      </b-container>
+      <div id="table">
+        <b-table striped hover :items="workouts" :fields="fields">
+        </b-table>
       </div>
     </div>
-    <div id="two">
-      WORKOUT LOG
-      <p v-for="(workout, i) in workouts" :key='i' > {{ workout.exercise }} - {{ workout.weight }} - {{ workout.reps }}</p>
-    </div>
     <div id="three">
-      GRAPHS
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit. A deserunt excepturi fuga nam perspiciatis praesentium quam sed suscipit veritatis voluptates! Beatae distinctio et facere inventore minus quas vel velit veritatis! Accusantium eveniet ex facere fugiat modi non nostrum tenetur voluptate. Aperiam explicabo illo iste iusto minima ratione sint? Alias amet assumenda autem commodi consequuntur corporis cum cumque debitis error eveniet fugiat incidunt inventore ipsum magnam maiores molestias nam nihil nulla officiis possimus quam quibusdam, quod ratione tempore tenetur velit voluptatum. A accusantium architecto at beatae eligendi illum, nihil nisi perferendis.
+      <b-container class="bv-example-row">
+        <b-row>
+          <b-col>
+            <h3>
+              Graph
+            </h3>
+          </b-col>
+        </b-row>
+      </b-container>
+      <div id="graph">
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit. A deserunt excepturi fuga nam perspiciatis praesentium quam sed suscipit veritatis voluptates! Beatae distinctio et facere inventore minus quas vel velit veritatis! Accusantium eveniet ex facere fugiat modi non nostrum tenetur voluptate. Aperiam explicabo illo iste iusto minima ratione sint? Alias amet assumenda autem commodi consequuntur corporis cum cumque debitis error eveniet fugiat incidunt inventore ipsum magnam maiores molestias nam nihil nulla officiis possimus quam quibusdam, quod ratione tempore tenetur velit voluptatum. A accusantium architecto at beatae eligendi illum, nihil nisi perferendis.
+      </div>
     </div>
   </div>
 </template>
@@ -42,16 +47,20 @@ export default {
     return {
       name: '',
       roles: {},
-      workouts: {},
-      value: '',
-      selected: null,
-      options: [
-        { text: 'Benchpress' },
-        { text: 'Squats' },
-        { text: 'Deadlift' },
-        { text: 'Pullups' },
-        { text: 'Dips' },
-      ]
+      workouts: [{
+        exercise: null
+      }],
+      fields: [
+        {
+          key: 'exercise',
+        },
+        {
+          key: 'weight',
+        },
+        {
+          key: 'reps',
+        }
+      ],
     }
   },
   created() {
@@ -61,7 +70,7 @@ export default {
     });
     apiService.getWorkouts().then((response) => {
       this.workouts = response.data;
-      console.log(this.workouts);
+      console.log(this.workouts.exercise);
     })
   }
 }
@@ -73,40 +82,44 @@ export default {
   display: grid;
   gap: 1.5rem;
   grid-template-areas:
-  'one'
   'two'
   'three';
 }
 
-#one {
-  background: white;
-  border-radius: 15px;
-  grid-area: one;
+#two {
+  grid-area: two;
+  margin-bottom: 40px;
 }
 
-#two {
+#table {
   background: white;
   border-radius: 15px;
-  grid-area: two;
+  height: 100%;
+}
+
+#graph {
+  background: white;
+  border-radius: 15px;
+  height: 100%;
 }
 
 #three {
-  background: white;
-  border-radius: 15px;
   grid-area: three;
   height: 80vh;
+  width: 100%;
 }
 
 @media (min-width: 70em) {
   .wrapper {
     grid-template-rows: 1fr 5fr;
     grid-template-areas:
-  'one three three'
+  'two three three'
   'two three three';
   }
 
   #two {
     width: 30vw;
+    margin-bottom: 0;
   }
 }
 
@@ -115,44 +128,18 @@ p {
   text-align: left;
 }
 
-#test {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 20px;
+h3 {
+  text-align: left;
+  font-size: 20px;
+  margin-bottom: 1em;
 }
 
-.form-inputs {
-}
-
-#inline-form-input-exercise {
-  width: 100px;
-  height: 32px;
-  font-size: 12px;
-  font-weight: 400;
-  line-height: 1.5;
-  color: #495057;
-  vertical-align: middle;
-  background: #fff;
-  border: 1px solid #ced4da;
-  border-radius: 0.25rem;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-}
-
-#inline-form-input-name {
-  font-size: 12px;
-  width: 80px;
-}
-
-#inline-form-input-username {
-  font-size: 12px;
-  width: 80px;
-}
-
-#inline-form-button-submit {
-  margin: 5px;
+#new {
+  color: black;
+  background-color: Transparent;
+  background-repeat:no-repeat;
+  border: none;
+  float: right;
 }
 
 </style>

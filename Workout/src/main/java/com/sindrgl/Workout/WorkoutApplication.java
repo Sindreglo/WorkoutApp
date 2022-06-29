@@ -49,6 +49,15 @@ public class WorkoutApplication {
 			userService.saveWorkoutToUser(new Workout("Benchpress", 80, 12),"john");
 			userService.saveWorkoutToUser(new Workout("Squats", 70, 12),"john");
 			userService.saveWorkoutToUser(new Workout( "Pullups", 20, 12),"john");
+			userService.saveWorkoutToUser(new Workout("Benchpress", 80, 12),"john");
+			userService.saveWorkoutToUser(new Workout("Squats", 70, 12),"john");
+			userService.saveWorkoutToUser(new Workout( "Pullups", 20, 12),"john");
+			userService.saveWorkoutToUser(new Workout("Benchpress", 80, 12),"john");
+			userService.saveWorkoutToUser(new Workout("Squats", 70, 12),"john");
+			userService.saveWorkoutToUser(new Workout( "Pullups", 20, 12),"john");
+			userService.saveWorkoutToUser(new Workout("Benchpress", 80, 12),"john");
+			userService.saveWorkoutToUser(new Workout("Squats", 70, 12),"john");
+			userService.saveWorkoutToUser(new Workout( "Pullups", 20, 12),"john");
 			userService.saveWorkoutToUser(new Workout("Squats", 100, 12),"jim");
 		};
 	}
