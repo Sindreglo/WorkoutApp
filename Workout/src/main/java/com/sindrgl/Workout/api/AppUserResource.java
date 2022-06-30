@@ -7,7 +7,6 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sindrgl.Workout.domain.AppUser;
 import com.sindrgl.Workout.domain.Role;
-import com.sindrgl.Workout.domain.Workout;
 import com.sindrgl.Workout.service.AppUserService;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -53,45 +52,6 @@ public class AppUserResource {
         }
         return ResponseEntity.ok().body(userService.getUser(username));
     }
-
-    @PostMapping("/user/workout")
-    public ResponseEntity<Workout>saveWorkout(@RequestBody Workout workout ,@RequestHeader(name="Authorization") String token) {
-        String authorizationHeader = token;
-        String username = null;
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            try {
-                String refresh_token = authorizationHeader.substring("Bearer ".length());
-                Algorithm algorithm = Algorithm.HMAC256("secret".getBytes());
-                JWTVerifier verifier = JWT.require(algorithm).build();
-                DecodedJWT decodedJWT = verifier.verify(refresh_token);
-                username = decodedJWT.getSubject();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        userService.saveWorkoutToUser(workout, username);
-        return ResponseEntity.ok().build();
-    }
-
-    @GetMapping("/user/workout")
-    public ResponseEntity<List<Workout>>getWorkouts(@RequestHeader(name="Authorization") String token) {
-        String authorizationHeader = token;
-        String username = null;
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            try {
-                String refresh_token = authorizationHeader.substring("Bearer ".length());
-                Algorithm algorithm = Algorithm.HMAC256("secret".getBytes());
-                JWTVerifier verifier = JWT.require(algorithm).build();
-                DecodedJWT decodedJWT = verifier.verify(refresh_token);
-                username = decodedJWT.getSubject();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        List<Workout> workouts = userService.getWorkouts(username);
-        return new ResponseEntity<>(workouts, HttpStatus.OK);
-    }
-
     @PostMapping("/user/save")
     public ResponseEntity<AppUser>saveUser(@RequestBody AppUser user) {
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/user/save").toUriString());

@@ -2,7 +2,6 @@ package com.sindrgl.Workout;
 
 import com.sindrgl.Workout.domain.AppUser;
 import com.sindrgl.Workout.domain.Role;
-import com.sindrgl.Workout.domain.Workout;
 import com.sindrgl.Workout.service.AppUserService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -10,8 +9,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
-import java.util.ArrayList;
 
 @SpringBootApplication
 public class WorkoutApplication {
@@ -45,20 +42,6 @@ public class WorkoutApplication {
 			userService.addRoleToUser("arnold", "ROLE_SUPER_ADMIN");
 			userService.addRoleToUser("arnold", "ROLE_ADMIN");
 			userService.addRoleToUser("arnold", "ROLE_USER");
-
-			userService.saveWorkoutToUser(new Workout("Benchpress", 80, 12),"john");
-			userService.saveWorkoutToUser(new Workout("Squats", 70, 12),"john");
-			userService.saveWorkoutToUser(new Workout( "Pullups", 20, 12),"john");
-			userService.saveWorkoutToUser(new Workout("Benchpress", 80, 12),"john");
-			userService.saveWorkoutToUser(new Workout("Squats", 70, 12),"john");
-			userService.saveWorkoutToUser(new Workout( "Pullups", 20, 12),"john");
-			userService.saveWorkoutToUser(new Workout("Benchpress", 80, 12),"john");
-			userService.saveWorkoutToUser(new Workout("Squats", 70, 12),"john");
-			userService.saveWorkoutToUser(new Workout( "Pullups", 20, 12),"john");
-			userService.saveWorkoutToUser(new Workout("Benchpress", 80, 12),"john");
-			userService.saveWorkoutToUser(new Workout("Squats", 70, 12),"john");
-			userService.saveWorkoutToUser(new Workout( "Pullups", 20, 12),"john");
-			userService.saveWorkoutToUser(new Workout("Squats", 100, 12),"jim");
 		};
 	}
 }
