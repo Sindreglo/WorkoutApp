@@ -6,6 +6,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sindrgl.Workout.domain.AppUser;
+import com.sindrgl.Workout.domain.Exercise;
 import com.sindrgl.Workout.domain.Role;
 import com.sindrgl.Workout.service.AppUserService;
 import lombok.Data;
@@ -38,19 +39,7 @@ public class AppUserResource {
     @GetMapping("/user")
     public ResponseEntity<AppUser>getUser(HttpServletRequest request) {
         String authorizationHeader = request.getHeader(AUTHORIZATION);
-        String username = null;
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            try {
-                String refresh_token = authorizationHeader.substring("Bearer ".length());
-                Algorithm algorithm = Algorithm.HMAC256("secret".getBytes());
-                JWTVerifier verifier = JWT.require(algorithm).build();
-                DecodedJWT decodedJWT = verifier.verify(refresh_token);
-                username = decodedJWT.getSubject();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        return ResponseEntity.ok().body(userService.getUser(username));
+        return ResponseEntity.ok().body(userService.getUser(getUserFromToken(getUserFromToken(authorizationHeader))));
     }
 
     @PostMapping("/addUser")
@@ -59,16 +48,22 @@ public class AppUserResource {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/role/save")
-    public ResponseEntity<Role>saveRole(@RequestBody Role role) {
-        URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/role/save").toUriString());
-        return ResponseEntity.created(uri).body(userService.saveRole(role));
-    }
-
     @PostMapping("/role/addtouser")
     public ResponseEntity<?>addRoleToUser(@RequestBody RoleToUserForm form) {
         userService.addRoleToUser(form.getUsername(), form.getRoleName());
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/user/workout")
+    public ResponseEntity<Exercise>saveExercise(@RequestBody Exercise exercise , @RequestHeader(name="Authorization") String token) {
+        userService.saveExerciseToUser(exercise, getUserFromToken(token));
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/user/workout")
+    public ResponseEntity<List<Exercise>>getWorkouts(@RequestHeader(name="Authorization") String token) {
+        List<Exercise> workouts = userService.getExercises(getUserFromToken(token));
+        return new ResponseEntity<>(workouts, HttpStatus.OK);
     }
 
     @GetMapping("/token/refresh")
@@ -105,6 +100,23 @@ public class AppUserResource {
         } else {
             throw new RuntimeException("Refresh token is missing");
         }
+    }
+
+    private String getUserFromToken(String token) {
+        String authorizationHeader = token;
+        String username = null;
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            try {
+                String refresh_token = authorizationHeader.substring("Bearer ".length());
+                Algorithm algorithm = Algorithm.HMAC256("secret".getBytes());
+                JWTVerifier verifier = JWT.require(algorithm).build();
+                DecodedJWT decodedJWT = verifier.verify(refresh_token);
+                username = decodedJWT.getSubject();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return username;
     }
 }
 

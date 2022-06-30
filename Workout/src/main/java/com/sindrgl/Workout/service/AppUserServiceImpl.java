@@ -1,8 +1,10 @@
 package com.sindrgl.Workout.service;
 
 import com.sindrgl.Workout.domain.AppUser;
+import com.sindrgl.Workout.domain.Exercise;
 import com.sindrgl.Workout.domain.Role;
 import com.sindrgl.Workout.repo.AppUserRepo;
+import com.sindrgl.Workout.repo.ExerciseRepo;
 import com.sindrgl.Workout.repo.RoleRepo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +24,7 @@ import java.util.List;
 public class AppUserServiceImpl implements AppUserService, UserDetailsService {
     private final AppUserRepo userRepo;
     private final RoleRepo roleRepo;
+    private final ExerciseRepo exerciseRepo;
     private final PasswordEncoder passwordEncoder;
 
     @Override
@@ -70,5 +73,22 @@ public class AppUserServiceImpl implements AppUserService, UserDetailsService {
     public List<AppUser> getUsers() {
         log.info("fetching users");
         return userRepo.findAll();
+    }
+
+    @Override
+    public void saveExerciseToUser(Exercise exercise, String username) {
+        log.info("Saving new exercise {} to the database", exercise);
+        AppUser user = userRepo.findByUsername(username);
+        user.getExercises().add(exercise);
+    }
+
+    @Override
+    public List<Exercise> getExercises(String username) {
+        AppUser user = userRepo.findByUsername(username);
+        log.info(username);
+        log.info(user.getId().toString());
+        List<Exercise> exercises = exerciseRepo.findByUser(user.getId());
+        log.info(exercises.toString());
+        return exercises;
     }
 }
