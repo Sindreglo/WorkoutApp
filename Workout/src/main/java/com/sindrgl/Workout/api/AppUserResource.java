@@ -52,10 +52,11 @@ public class AppUserResource {
         }
         return ResponseEntity.ok().body(userService.getUser(username));
     }
-    @PostMapping("/user/save")
-    public ResponseEntity<AppUser>saveUser(@RequestBody AppUser user) {
-        URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/user/save").toUriString());
-        return ResponseEntity.created(uri).body(userService.saveUser(user));
+
+    @PostMapping("/addUser")
+    public ResponseEntity<AppUser>addUser(@RequestBody AppUser user) {
+        userService.saveUser(user);
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/role/save")
