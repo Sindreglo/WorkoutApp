@@ -6,6 +6,7 @@
 
 <script>
 import apiService from "@/services/apiService";
+import storageService from "@/services/storageService";
 
 export default {
   name: "HomePage",
@@ -15,6 +16,9 @@ export default {
     }
   },
   created() {
+    if (storageService.getToken() === null) {
+      this.$router.push("/login")
+    }
     apiService.getHello().then((response) => {
       this.message = response.data;
     })
