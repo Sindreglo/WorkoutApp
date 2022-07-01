@@ -1,6 +1,7 @@
 package com.sindrgl.Workout;
 
 import com.sindrgl.Workout.domain.AppUser;
+import com.sindrgl.Workout.domain.Exercise;
 import com.sindrgl.Workout.domain.Role;
 import com.sindrgl.Workout.service.AppUserService;
 import org.springframework.boot.CommandLineRunner;
@@ -42,6 +43,14 @@ public class WorkoutApplication {
 			userService.addRoleToUser("arnold", "ROLE_SUPER_ADMIN");
 			userService.addRoleToUser("arnold", "ROLE_ADMIN");
 			userService.addRoleToUser("arnold", "ROLE_USER");
+
+			userService.saveExerciseToUser(new Exercise("Squats"), "john");
+			userService.saveExerciseToUser(new Exercise("Benchpress"), "john");
+			userService.saveExerciseToUser(new Exercise("Deadlift"), "john");
+			userService.saveExerciseToUser(new Exercise("Situps"), "jim");
+			userService.saveExerciseToUser(new Exercise("Dips"), "jim");
+			userService.saveExerciseToUser(new Exercise("Pullups"), "jim");
+			userService.saveExerciseToUser(new Exercise("Pushups"), "jim");
 		};
 	}
 }

@@ -13,5 +13,6 @@ public interface AppUserService {
     AppUser getUser(String username);
     List<AppUser> getUsers();
     void saveExerciseToUser(Exercise exercise, String username);
+    void removeExerciseFromUser(Exercise exercise, String username);
     List<Exercise>getExercises(String username);
 }

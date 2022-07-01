@@ -54,16 +54,22 @@ public class AppUserResource {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/user/workout")
+    @PostMapping("/user/exercise")
     public ResponseEntity<Exercise>saveExercise(@RequestBody Exercise exercise , @RequestHeader(name="Authorization") String token) {
         userService.saveExerciseToUser(exercise, getUserFromToken(token));
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/user/workout")
+    @GetMapping("/user/exercise")
     public ResponseEntity<List<Exercise>>getWorkouts(@RequestHeader(name="Authorization") String token) {
         List<Exercise> workouts = userService.getExercises(getUserFromToken(token));
         return new ResponseEntity<>(workouts, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/user/exercise")
+    public ResponseEntity<Exercise>removeExercise(@RequestBody Exercise exercise, @RequestHeader(name="Authorization") String token) {
+        userService.removeExerciseFromUser(exercise, getUserFromToken(token));
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/token/refresh")

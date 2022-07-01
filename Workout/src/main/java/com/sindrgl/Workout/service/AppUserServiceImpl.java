@@ -83,6 +83,15 @@ public class AppUserServiceImpl implements AppUserService, UserDetailsService {
     }
 
     @Override
+    public void removeExerciseFromUser(Exercise exercise, String username) {
+        log.info("Deleting exercise {} from the database", exercise);
+        AppUser user = userRepo.findByUsername(username);
+        if (exerciseRepo.findByUser(user.getId()).contains(exercise)) {
+            exerciseRepo.deleteById(exercise.getId());
+        }
+    }
+
+    @Override
     public List<Exercise> getExercises(String username) {
         AppUser user = userRepo.findByUsername(username);
         log.info(username);
