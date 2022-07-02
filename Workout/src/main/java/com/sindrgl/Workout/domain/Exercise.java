@@ -18,7 +18,7 @@ public class Exercise {
     private Long id;
     private String name;
     private Long exercise_fk;
-    @OneToMany(targetEntity = Exercise.class, cascade = CascadeType.ALL)
+    @OneToMany(targetEntity = Workout.class, cascade = CascadeType.ALL)
     @JoinColumn(name = "workout_fk", referencedColumnName = "id")
     private Collection<Workout> workouts = new ArrayList<>();
 

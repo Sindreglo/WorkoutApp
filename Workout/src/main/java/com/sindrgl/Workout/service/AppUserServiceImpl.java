@@ -104,10 +104,11 @@ public class AppUserServiceImpl implements AppUserService, UserDetailsService {
 
     @Override
     public void saveWorkoutToExercise(Workout workout, Exercise exercise, String username) {
-        log.info("Saving new Workout {} to the database", workout);
         AppUser user = userRepo.findByUsername(username);
         Exercise exercise1 = exerciseRepo.findByUserAndName(user.getId(), exercise.getName());
+        log.info(exercise1.getName());
         exercise1.getWorkouts().add(workout);
+        log.info("Saving new Workout {} to {}", workout, exercise1);
     }
 
     @Override

@@ -52,6 +52,12 @@ public class WorkoutApplication {
 			userService.saveExerciseToUser(new Exercise("Dips"), "jim");
 			userService.saveExerciseToUser(new Exercise("Pullups"), "jim");
 			userService.saveExerciseToUser(new Exercise("Pushups"), "jim");
+
+			userService.saveWorkoutToExercise(new Workout(80,12),new Exercise("Squats"), "john");
+			userService.saveWorkoutToExercise(new Workout(90,10),new Exercise("Squats"), "john");
+			userService.saveWorkoutToExercise(new Workout(80,12),new Exercise("Squats"), "john");
+			userService.saveWorkoutToExercise(new Workout(85,8),new Exercise("Benchpress"), "john");
+			userService.saveWorkoutToExercise(new Workout(0,50),new Exercise("Pushups"), "jim");
 		};
 	}
 }
