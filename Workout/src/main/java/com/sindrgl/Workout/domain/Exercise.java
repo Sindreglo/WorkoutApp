@@ -4,10 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.Collection;
 
 @Entity
 @Data
@@ -19,6 +18,9 @@ public class Exercise {
     private Long id;
     private String name;
     private Long exercise_fk;
+    @OneToMany(targetEntity = Exercise.class, cascade = CascadeType.ALL)
+    @JoinColumn(name = "workout_fk", referencedColumnName = "id")
+    private Collection<Workout> workouts = new ArrayList<>();
 
     public Exercise(String name) {
         this.name = name;

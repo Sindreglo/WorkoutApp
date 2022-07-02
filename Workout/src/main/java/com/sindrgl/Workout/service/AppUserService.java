@@ -3,6 +3,7 @@ package com.sindrgl.Workout.service;
 import com.sindrgl.Workout.domain.AppUser;
 import com.sindrgl.Workout.domain.Exercise;
 import com.sindrgl.Workout.domain.Role;
+import com.sindrgl.Workout.domain.Workout;
 
 import java.util.List;
 
@@ -15,4 +16,8 @@ public interface AppUserService {
     void saveExerciseToUser(Exercise exercise, String username);
     void removeExerciseFromUser(Exercise exercise, String username);
     List<Exercise>getExercises(String username);
+    void saveWorkoutToExercise(Workout workout, Exercise exercise, String username);
+    void removeWorkoutFromExercise(Workout workout, Exercise exercise, String username);
+    List<Workout>getWorkoutsFromExercise(Exercise exercise, String username);
+    List<Workout>getAllWorkouts(String username);
 }

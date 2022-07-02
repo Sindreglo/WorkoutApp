@@ -10,4 +10,7 @@ import java.util.List;
 public interface ExerciseRepo extends JpaRepository<Exercise, Long> {
     @Query("from Exercise e where e.exercise_fk = :id")
     List<Exercise> findByUser(@Param("id") Long id);
+
+    @Query("From Exercise e where e.exercise_fk = :id and e.name = :name")
+    Exercise findByUserAndName(@Param("id") Long id, @Param("name") String name);
 }

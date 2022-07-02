@@ -3,6 +3,7 @@ package com.sindrgl.Workout.service;
 import com.sindrgl.Workout.domain.AppUser;
 import com.sindrgl.Workout.domain.Exercise;
 import com.sindrgl.Workout.domain.Role;
+import com.sindrgl.Workout.domain.Workout;
 import com.sindrgl.Workout.repo.AppUserRepo;
 import com.sindrgl.Workout.repo.ExerciseRepo;
 import com.sindrgl.Workout.repo.RoleRepo;
@@ -99,5 +100,28 @@ public class AppUserServiceImpl implements AppUserService, UserDetailsService {
         List<Exercise> exercises = exerciseRepo.findByUser(user.getId());
         log.info(exercises.toString());
         return exercises;
+    }
+
+    @Override
+    public void saveWorkoutToExercise(Workout workout, Exercise exercise, String username) {
+        log.info("Saving new Workout {} to the database", workout);
+        AppUser user = userRepo.findByUsername(username);
+        Exercise exercise1 = exerciseRepo.findByUserAndName(user.getId(), exercise.getName());
+        exercise1.getWorkouts().add(workout);
+    }
+
+    @Override
+    public void removeWorkoutFromExercise(Workout workout, Exercise exercise, String username) {
+
+    }
+
+    @Override
+    public List<Workout> getWorkoutsFromExercise(Exercise exercise, String username) {
+        return null;
+    }
+
+    @Override
+    public List<Workout> getAllWorkouts(String username) {
+        return null;
     }
 }

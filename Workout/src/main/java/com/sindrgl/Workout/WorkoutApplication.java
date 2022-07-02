@@ -3,6 +3,7 @@ package com.sindrgl.Workout;
 import com.sindrgl.Workout.domain.AppUser;
 import com.sindrgl.Workout.domain.Exercise;
 import com.sindrgl.Workout.domain.Role;
+import com.sindrgl.Workout.domain.Workout;
 import com.sindrgl.Workout.service.AppUserService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
