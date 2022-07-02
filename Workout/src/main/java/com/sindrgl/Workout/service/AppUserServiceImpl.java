@@ -104,6 +104,8 @@ public class AppUserServiceImpl implements AppUserService, UserDetailsService {
 
     @Override
     public void saveWorkoutToExercise(Workout workout, Exercise exercise, String username) {
+        log.info(workout.toString());
+        log.info(exercise.toString());
         AppUser user = userRepo.findByUsername(username);
         Exercise exercise1 = exerciseRepo.findByUserAndName(user.getId(), exercise.getName());
         log.info(exercise1.getName());
@@ -113,16 +115,17 @@ public class AppUserServiceImpl implements AppUserService, UserDetailsService {
 
     @Override
     public void removeWorkoutFromExercise(Workout workout, Exercise exercise, String username) {
-
+        AppUser user = userRepo.findByUsername(username);
+        if (exerciseRepo.findByUser(user.getId()).contains(exercise)) {
+            Exercise exercise1 = exerciseRepo.findByUserAndName(user.getId(), exercise.getName());
+            exercise1.getWorkouts().remove(workout);
+        }
     }
 
     @Override
     public List<Workout> getWorkoutsFromExercise(Exercise exercise, String username) {
-        return null;
-    }
-
-    @Override
-    public List<Workout> getAllWorkouts(String username) {
-        return null;
+        AppUser user = userRepo.findByUsername(username);
+        Exercise exercise1 = exerciseRepo.findByUserAndName(user.getId(), exercise.getName());
+        return (List<Workout>) exercise1.getWorkouts();
     }
 }

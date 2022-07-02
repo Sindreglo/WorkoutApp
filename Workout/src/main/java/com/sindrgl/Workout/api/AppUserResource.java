@@ -8,9 +8,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sindrgl.Workout.domain.AppUser;
 import com.sindrgl.Workout.domain.Exercise;
 import com.sindrgl.Workout.domain.Role;
+import com.sindrgl.Workout.domain.Workout;
 import com.sindrgl.Workout.service.AppUserService;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,7 +29,7 @@ import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController @RequestMapping("/api")
-@RequiredArgsConstructor
+@RequiredArgsConstructor @Slf4j
 public class AppUserResource {
     private final AppUserService userService;
 
@@ -61,14 +63,32 @@ public class AppUserResource {
     }
 
     @GetMapping("/user/exercise")
-    public ResponseEntity<List<Exercise>>getWorkouts(@RequestHeader(name="Authorization") String token) {
-        List<Exercise> workouts = userService.getExercises(getUserFromToken(token));
-        return new ResponseEntity<>(workouts, HttpStatus.OK);
+    public ResponseEntity<List<Exercise>>getExercise(@RequestHeader(name="Authorization") String token) {
+        List<Exercise> exercises = userService.getExercises(getUserFromToken(token));
+        return new ResponseEntity<>(exercises, HttpStatus.OK);
     }
 
     @DeleteMapping("/user/exercise")
     public ResponseEntity<Exercise>removeExercise(@RequestBody Exercise exercise, @RequestHeader(name="Authorization") String token) {
         userService.removeExerciseFromUser(exercise, getUserFromToken(token));
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/user/exercise/workout")
+    public ResponseEntity<Exercise>saveWorkout(@RequestBody Workout workout, Exercise exercise, @RequestHeader(name="Authorization") String token) {
+        userService.saveWorkoutToExercise(workout,exercise,getUserFromToken(token));
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/user/exercise/workouts")
+    public ResponseEntity<List<Workout>>getWorkouts(@RequestBody Exercise exercise, @RequestHeader(name="Authorization") String token) {
+        List<Workout> workouts = userService.getWorkoutsFromExercise(exercise, getUserFromToken(token));
+        return new ResponseEntity<>(workouts, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/user/exercise/workout")
+    public ResponseEntity<Exercise>removeWorkout(@RequestBody Workout workout,@RequestBody Exercise exercise, @RequestHeader(name="Authorization") String token) {
+        userService.removeWorkoutFromExercise(workout,exercise,getUserFromToken(token));
         return ResponseEntity.ok().build();
     }
 

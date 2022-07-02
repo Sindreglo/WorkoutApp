@@ -19,5 +19,4 @@ public interface AppUserService {
     void saveWorkoutToExercise(Workout workout, Exercise exercise, String username);
     void removeWorkoutFromExercise(Workout workout, Exercise exercise, String username);
     List<Workout>getWorkoutsFromExercise(Exercise exercise, String username);
-    List<Workout>getAllWorkouts(String username);
 }
