@@ -1,11 +1,17 @@
 <template>
   <nav class="navbar navbar-expand-lg navbar-light bg-light" v-bind:class=" { 'navbarOpen': show }">
-    <a class="navbar-brand" href="#">Navbar</a>
+    <img src="../assets/exercise.png" alt="logo"/>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" @click.stop="toggleNavbar()">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent" v-bind:class="{ 'show': show }">
       <ul class="navbar-nav me-auto mb-2 mb-md-0" v-if="isAuthorizationPage">
+        <li>
+          <router-link to="/" class="nav-link active">Home</router-link>
+        </li>
+        <li>
+          <router-link to="/newWorkout" class="nav-link active">new workout</router-link>
+        </li>
         <li class="nav-item">
           <router-link v-on:click="logout" to="/login" class="nav-link active">logout</router-link>
         </li>
@@ -47,7 +53,8 @@ export default {
     isAuthorizationPage() {
       return (
           this.$route.path === "/" ||
-          this.$route.name === "Home"
+          this.$route.name === "Home" ||
+          this.$route.name === "newWorkout"
       );
     },
   }
@@ -55,5 +62,7 @@ export default {
 </script>
 
 <style scoped>
-
+img {
+  height: 45px;
+}
 </style>
