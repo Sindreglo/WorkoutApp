@@ -29,6 +29,13 @@
     </v-app-bar>
 
     <v-navigation-drawer app v-model="drawer" class="primary">
+      <v-layout column align-center>
+        <v-flex class="mt-5">
+          <v-avatar size="56" color="accent">
+            <span class="white--text text-h6">SG</span>
+          </v-avatar>
+        </v-flex>
+      </v-layout>
       <v-list>
         <v-list-item v-for="link in links" :key="link.text" router :to="link.route">
           <v-list-item-action>
@@ -52,7 +59,7 @@ export default {
       drawer: true,
       links: [
         { icon: 'mdi-view-dashboard', text: 'Dashboard', route: '/'},
-        { icon: 'mdi-folder', text: 'My Projects', route: '/projects'},
+        { icon: 'mdi-folder', text: 'My Workouts', route: '/projects'},
         { icon: 'mdi-account', text: 'Profile', route: '/profile'},
       ]
     }
