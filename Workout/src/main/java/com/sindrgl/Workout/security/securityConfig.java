@@ -44,9 +44,8 @@ public class securityConfig extends WebSecurityConfigurerAdapter {
             return cors;});
         customAuthenticationFilter.setFilterProcessesUrl("/api/login");
         http.sessionManagement().sessionCreationPolicy(STATELESS);
-        http.authorizeRequests().antMatchers("/api/login/**", "api/token/refresh/**").permitAll();
-        http.authorizeRequests().antMatchers(GET, "/api/user/**").hasAnyAuthority("ROLE_USER");
-        http.authorizeRequests().antMatchers(POST, "/api/user/save/**").hasAnyAuthority("ROLE_ADMIN");
+        http.authorizeRequests().antMatchers("/api/login/**", "api/token/refresh/**", "/api/addUser").permitAll();
+        http.authorizeRequests().antMatchers(GET, "/api/user/**").permitAll();
         http.authorizeRequests().anyRequest().authenticated();
         http.addFilter(customAuthenticationFilter);
         http.addFilterBefore(new CostumAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);

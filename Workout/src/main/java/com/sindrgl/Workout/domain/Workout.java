@@ -4,21 +4,24 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
-import java.util.Date;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
-@Entity @Data @NoArgsConstructor @AllArgsConstructor
+@Entity
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Workout {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private String exercise;
     private int weight;
     private int reps;
-    private Long wo_fk;
+    private Long workout_fk;
 
-    public Workout(String exercise, int weight, int reps) {
-        this.exercise = exercise;
+    public Workout(int weight, int reps) {
         this.weight = weight;
         this.reps = reps;
     }

@@ -1,6 +1,7 @@
 package com.sindrgl.Workout;
 
 import com.sindrgl.Workout.domain.AppUser;
+import com.sindrgl.Workout.domain.Exercise;
 import com.sindrgl.Workout.domain.Role;
 import com.sindrgl.Workout.domain.Workout;
 import com.sindrgl.Workout.service.AppUserService;
@@ -10,8 +11,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
-import java.util.ArrayList;
 
 @SpringBootApplication
 public class WorkoutApplication {
@@ -46,19 +45,19 @@ public class WorkoutApplication {
 			userService.addRoleToUser("arnold", "ROLE_ADMIN");
 			userService.addRoleToUser("arnold", "ROLE_USER");
 
-			userService.saveWorkoutToUser(new Workout("Benchpress", 80, 12),"john");
-			userService.saveWorkoutToUser(new Workout("Squats", 70, 12),"john");
-			userService.saveWorkoutToUser(new Workout( "Pullups", 20, 12),"john");
-			userService.saveWorkoutToUser(new Workout("Benchpress", 80, 12),"john");
-			userService.saveWorkoutToUser(new Workout("Squats", 70, 12),"john");
-			userService.saveWorkoutToUser(new Workout( "Pullups", 20, 12),"john");
-			userService.saveWorkoutToUser(new Workout("Benchpress", 80, 12),"john");
-			userService.saveWorkoutToUser(new Workout("Squats", 70, 12),"john");
-			userService.saveWorkoutToUser(new Workout( "Pullups", 20, 12),"john");
-			userService.saveWorkoutToUser(new Workout("Benchpress", 80, 12),"john");
-			userService.saveWorkoutToUser(new Workout("Squats", 70, 12),"john");
-			userService.saveWorkoutToUser(new Workout( "Pullups", 20, 12),"john");
-			userService.saveWorkoutToUser(new Workout("Squats", 100, 12),"jim");
+			userService.saveExerciseToUser(new Exercise("Squats"), "john");
+			userService.saveExerciseToUser(new Exercise("Benchpress"), "john");
+			userService.saveExerciseToUser(new Exercise("Deadlift"), "john");
+			userService.saveExerciseToUser(new Exercise("Situps"), "jim");
+			userService.saveExerciseToUser(new Exercise("Dips"), "jim");
+			userService.saveExerciseToUser(new Exercise("Pullups"), "jim");
+			userService.saveExerciseToUser(new Exercise("Pushups"), "jim");
+
+			userService.saveWorkoutToExercise(new Workout(80,12),new Exercise("Squats"), "john");
+			userService.saveWorkoutToExercise(new Workout(90,10),new Exercise("Squats"), "john");
+			userService.saveWorkoutToExercise(new Workout(80,12),new Exercise("Squats"), "john");
+			userService.saveWorkoutToExercise(new Workout(85,8),new Exercise("Benchpress"), "john");
+			userService.saveWorkoutToExercise(new Workout(0,50),new Exercise("Pushups"), "jim");
 		};
 	}
 }

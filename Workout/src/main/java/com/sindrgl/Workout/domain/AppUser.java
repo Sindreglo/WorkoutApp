@@ -18,9 +18,9 @@ public class AppUser {
     private String password;
     @ManyToMany(fetch = FetchType.EAGER)
     private Collection<Role> roles = new ArrayList<>();
-    @OneToMany(targetEntity = Workout.class, cascade = CascadeType.ALL)
-    @JoinColumn(name = "wo_fk", referencedColumnName = "id")
-    private Collection<Workout> workouts = new ArrayList<>();
+    @OneToMany(targetEntity = Exercise.class, cascade = CascadeType.ALL)
+    @JoinColumn(name = "exercise_fk", referencedColumnName = "id")
+    private Collection<Exercise> exercises = new ArrayList<>();
 
     public AppUser(String name, String username, String password) {
         this.id = null;
