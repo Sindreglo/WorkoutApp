@@ -75,8 +75,8 @@ public class AppUserResource {
     }
 
     @PostMapping("/user/exercise/workout")
-    public ResponseEntity<Exercise>saveWorkout(@RequestBody Workout workout, Exercise exercise, @RequestHeader(name="Authorization") String token) {
-        userService.saveWorkoutToExercise(workout,exercise,getUserFromToken(token));
+    public ResponseEntity<Exercise>saveWorkout(@RequestBody WorkoutToExercise workoutToExercise, @RequestHeader(name="Authorization") String token) {
+        userService.saveWorkoutToExercise(workoutToExercise.getWorkout(),workoutToExercise.getExercise(),getUserFromToken(token));
         return ResponseEntity.ok().build();
     }
 
@@ -87,8 +87,8 @@ public class AppUserResource {
     }
 
     @DeleteMapping("/user/exercise/workout")
-    public ResponseEntity<Exercise>removeWorkout(@RequestBody Workout workout,@RequestBody Exercise exercise, @RequestHeader(name="Authorization") String token) {
-        userService.removeWorkoutFromExercise(workout,exercise,getUserFromToken(token));
+    public ResponseEntity<Exercise>removeWorkout(@RequestBody WorkoutToExercise workoutToExercise, @RequestHeader(name="Authorization") String token) {
+        userService.removeWorkoutFromExercise(workoutToExercise.getWorkout(),workoutToExercise.getExercise(),getUserFromToken(token));
         return ResponseEntity.ok().build();
     }
 
@@ -150,4 +150,10 @@ public class AppUserResource {
 class RoleToUserForm {
     private String username;
     private String roleName;
+}
+
+@Data
+class WorkoutToExercise {
+    private Workout workout;
+    private Exercise exercise;
 }
