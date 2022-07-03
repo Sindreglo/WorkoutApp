@@ -5,10 +5,7 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sindrgl.Workout.domain.AppUser;
-import com.sindrgl.Workout.domain.Exercise;
-import com.sindrgl.Workout.domain.Role;
-import com.sindrgl.Workout.domain.Workout;
+import com.sindrgl.Workout.domain.*;
 import com.sindrgl.Workout.service.AppUserService;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -80,7 +77,7 @@ public class AppUserResource {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/user/exercise/workouts")
+    @GetMapping("/user/exercise/workout")
     public ResponseEntity<List<Workout>>getWorkouts(@RequestBody Exercise exercise, @RequestHeader(name="Authorization") String token) {
         List<Workout> workouts = userService.getWorkoutsFromExercise(exercise, getUserFromToken(token));
         return new ResponseEntity<>(workouts, HttpStatus.OK);
@@ -90,6 +87,12 @@ public class AppUserResource {
     public ResponseEntity<Exercise>removeWorkout(@RequestBody WorkoutToExercise workoutToExercise, @RequestHeader(name="Authorization") String token) {
         userService.removeWorkoutFromExercise(workoutToExercise.getWorkout(),workoutToExercise.getExercise(),getUserFromToken(token));
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/user/exercise/workouts")
+    public ResponseEntity<List<WorkoutExercise>>getAllWorkouts(@RequestHeader(name="Authorization") String token) {
+        List<WorkoutExercise> workouts = userService.getAllWorkouts(getUserFromToken(token));
+        return new ResponseEntity<>(workouts, HttpStatus.OK);
     }
 
     @GetMapping("/token/refresh")

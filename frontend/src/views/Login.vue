@@ -1,31 +1,27 @@
+
 <template>
-  <form @submit.prevent="submit">
-    <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
+  <div id="container">
+    <form @submit.prevent="submit">
+      <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
 
-    <div class="form-floating">
-      <input v-model="data.email" type="text" class="form-control" id="floatingInput" placeholder="name@example.com">
-      <label for="floatingInput">Email address</label>
-    </div>
-    <div class="form-floating">
-      <input v-model="data.password" type="password" class="form-control" id="floatingPassword" placeholder="Password">
-      <label for="floatingPassword">Password</label>
-    </div>
-
-    <div class="checkbox mb-3">
-      <label>
-        <input type="checkbox" value="remember-me"> Remember me
-      </label>
-    </div>
-    <button class="w-100 btn btn-lg btn-primary" type="submit">Sign in</button>
-    <p class="mt-5 mb-3 text-muted">&copy; 2017–2022</p>
-  </form>
+      <div class="form-floating">
+        <input v-model="data.username" type="text" class="form-control" id="floatingInput" placeholder="name@example.com">
+        <label for="floatingInput">Username</label>
+      </div>
+      <div class="form-floating">
+        <input v-model="data.password" type="password" class="form-control" id="floatingPassword" placeholder="Password">
+        <label for="floatingPassword">Password</label>
+      </div>
+      <button class="loginButton w-100 btn btn-lg btn-primary" type="submit">Sign in</button>
+      <p class="mt-5 mb-3 text-muted">&copy; 2017–2022</p>
+    </form>
+  </div>
 </template>
 
 <script>
 import apiService from "@/services/apiService";
 import storageService from "@/services/storageService";
 import store from "@/store";
-
 export default {
   name: "LoginPage",
   data() {
@@ -38,13 +34,15 @@ export default {
   },
   methods: {
     async submit() {
-      await apiService.login(this.data.email, this.data.password)
+      await apiService.login(this.data.username, this.data.password)
           .then((response) => {
-            storageService.setToken(response.data["access_token"]);
-            storageService.setUser(this.username);
-            console.log(storageService.getToken());
-            this.$router.push("/");
-            store.dispatch('setAuth',true);
+            console.log(response.data.access_token);
+            if (response.data !== "Access denied, wrong credentials....") {
+              storageService.setToken(response.data.access_token);
+              storageService.setUser(this.username);
+              store.dispatch('setAuth',true);
+              this.$router.push("/");
+            }
           })
     }
   }
@@ -54,5 +52,16 @@ export default {
 <style scoped>
 form {
   margin-top: 10vh;
+  width: 330px;
+  padding: 15px;
+}
+#container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.loginButton {
+  margin-top: 30px;
 }
 </style>

@@ -20,10 +20,10 @@ export default {
         let urlParameters  = "username="+email+"&password="+password;
         return apiClient.post("/login", urlParameters);
     },
-    getUser() {
-        return apiClient.get("/user");
+    getExercises() {
+        return apiClient.get("/user/exercise")
     },
     getWorkouts() {
-        return apiClient.get("/user/workout");
+        return apiClient.get("/user/exercise/workouts")
     }
 }

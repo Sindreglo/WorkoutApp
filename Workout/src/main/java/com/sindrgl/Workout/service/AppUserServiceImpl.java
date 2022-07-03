@@ -1,12 +1,10 @@
 package com.sindrgl.Workout.service;
 
-import com.sindrgl.Workout.domain.AppUser;
-import com.sindrgl.Workout.domain.Exercise;
-import com.sindrgl.Workout.domain.Role;
-import com.sindrgl.Workout.domain.Workout;
+import com.sindrgl.Workout.domain.*;
 import com.sindrgl.Workout.repo.AppUserRepo;
 import com.sindrgl.Workout.repo.ExerciseRepo;
 import com.sindrgl.Workout.repo.RoleRepo;
+import com.sindrgl.Workout.repo.WorkoutRepo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -26,6 +24,7 @@ public class AppUserServiceImpl implements AppUserService, UserDetailsService {
     private final AppUserRepo userRepo;
     private final RoleRepo roleRepo;
     private final ExerciseRepo exerciseRepo;
+    private final WorkoutRepo workoutRepo;
     private final PasswordEncoder passwordEncoder;
 
     @Override
@@ -127,5 +126,10 @@ public class AppUserServiceImpl implements AppUserService, UserDetailsService {
         AppUser user = userRepo.findByUsername(username);
         Exercise exercise1 = exerciseRepo.findByUserAndName(user.getId(), exercise.getName());
         return (List<Workout>) exercise1.getWorkouts();
+    }
+
+    @Override
+    public List<WorkoutExercise> getAllWorkouts(String username) {
+        return workoutRepo.findAllByUser(username);
     }
 }

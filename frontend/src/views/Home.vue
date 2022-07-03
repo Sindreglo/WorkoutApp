@@ -1,42 +1,39 @@
 <template>
-  <h1>Hello {{ name }}</h1>
-  <p v-for="(role, i) in roles" :key='i' >{{ role.name }}</p>
-  <p v-for="(workout, i) in workouts" :key='i' > {{ workout.exercise }} - {{ workout.weight }} - {{ workout.reps }}</p>
   <div>
-    <b-form-datepicker v-model="value" locale="en"></b-form-datepicker>
-    <p>Value: '{{ value }}'</p>
+    <p v-for="(exercise,index) in exercises" :key="index"> {{ exercise.name }} </p>
+    <div id="table">
+      <b-table striped hover :items="workouts">
+      </b-table>
+    </div>
   </div>
 </template>
 
 <script>
 import apiService from "@/services/apiService";
-
+import storageService from "@/services/storageService";
 export default {
   name: "HomePage",
   data() {
     return {
-      name: '',
-      roles: {},
-      workouts: {},
-      value: '',
+      exercises: {},
+      workouts: {}
     }
   },
   created() {
-    apiService.getUser().then((response) => {
-      this.name = response.data.name;
-      this.roles = response.data.roles;
-    });
+    if (storageService.getToken() === null) {
+      this.$router.push("/login")
+    }
+    apiService.getExercises().then((response) => {
+      console.log(response);
+      this.exercises = response.data;
+    })
     apiService.getWorkouts().then((response) => {
+      console.log(response.data);
       this.workouts = response.data;
-      console.log(this.workouts);
     })
   }
 }
 </script>
 
 <style scoped>
-b-form-datepicker {
-  width: 200px;
-  height: 200px;
-}
 </style>

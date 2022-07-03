@@ -58,6 +58,8 @@ public class WorkoutApplication {
 			userService.saveWorkoutToExercise(new Workout(80,12),new Exercise("Squats"), "john");
 			userService.saveWorkoutToExercise(new Workout(85,8),new Exercise("Benchpress"), "john");
 			userService.saveWorkoutToExercise(new Workout(0,50),new Exercise("Pushups"), "jim");
+
+			userService.getAllWorkouts("john");
 		};
 	}
 }
