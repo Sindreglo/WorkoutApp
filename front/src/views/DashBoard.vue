@@ -1,7 +1,7 @@
 <template>
   <div class="dashboard">
     <h1 class="subtitle-1 grey--text">Dashboard</h1>
-    <h3>{{loggedIn}}</h3>
+    <h1>{{ email}}</h1>
 
     <v-container fluid class="my-5">
       <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. A aspernatur consequatur consequuntur deleniti, dignissimos ea eligendi enim eos fugiat minus, molestiae neque numquam odio recusandae rerum saepe tempora. Earum, repellendus!</p>
@@ -11,17 +11,17 @@
 </template>
 
 <script>
-import {status} from "@/plugins/firebase";
+import {getUser} from "@/plugins/firebase";
 
 export default {
   name: "DashBoard",
   data() {
     return {
-      loggedIn: false,
+      email: '',
     }
   },
-  async created() {
-    this.loggedIn = await status();
+  created() {
+    this.email = getUser();
   }
 
 }

@@ -32,9 +32,10 @@
       <v-layout column align-center>
         <v-flex class="mt-5">
           <v-avatar size="56" color="accent">
-            <span class="white--text text-h6">SG</span>
+            <v-icon class="white--text">mdi-account</v-icon>
           </v-avatar>
         </v-flex>
+        <p class="white--text">{{ user }}</p>
       </v-layout>
       <v-list>
         <v-list-item v-for="link in links" :key="link.text" router :to="link.route">
@@ -57,7 +58,6 @@ export default {
   name: "NavBar",
   data() {
     return {
-      loggedIn: false,
       drawer: true,
       links: [
         { icon: 'mdi-view-dashboard', text: 'Dashboard', route: '/'},

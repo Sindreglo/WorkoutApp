@@ -1,5 +1,6 @@
 import firebase from 'firebase/compat/app';
 import "firebase/compat/auth"
+import "firebase/compat/firestore"
 import router from "@/router";
 
 const configure = {
@@ -13,6 +14,7 @@ const configure = {
 }
 
 const firebaseApp = firebase.initializeApp(configure);
+const db = firebaseApp.firestore();
 
 export const status = async () => {
     let status;
@@ -23,17 +25,19 @@ export const status = async () => {
     return status;
 }
 
-export const currentUser = async () => {
-    console.log(firebaseApp.auth().currentUser)
-    return firebaseApp.auth().currentUser;
-}
-
 export const signUp = (email, password) => {
     try {
         firebaseApp.auth().createUserWithEmailAndPassword(email, password).then(r => {
+            db.collection('users').doc(firebase.auth().currentUser.uid).set({
+                email: email,
+            }).then(e => {
+                console.log(e);
+                router.push("/");
+            })
             console.log(r);
-            router.push("/");
-        });
+        }).catch(error => {
+            console.log('Something went wrong with added user to firestore: ', error);
+        })
     } catch (err) {
         console.log(err)
     }
@@ -58,5 +62,14 @@ export const signOut = () => {
         });
     } catch (err) {
         console.log(err + "(error)")
+    }
+}
+
+export const getUser = () => {
+    try {
+        return firebaseApp.auth().currentUser.email;
+    } catch (err) {
+        console.log(err);
+        return "login"
     }
 }
