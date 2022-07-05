@@ -12,15 +12,35 @@ const configure = {
     measurementId: "G-QLMK0ZRZC1"
 }
 
-const test = firebase.initializeApp(configure);
+const firebaseApp = firebase.initializeApp(configure);
+
+export const status = async () => {
+    let status;
+
+    await firebaseApp.auth().onAuthStateChanged(user => {
+        status = !!user;
+    })
+    return status;
+}
 
 export const signUp = (email, password) => {
     try {
-        test.auth().createUserWithEmailAndPassword(email, password).then(r => {
+        firebaseApp.auth().createUserWithEmailAndPassword(email, password).then(r => {
             console.log(r);
             router.push("/");
         });
     } catch (err) {
         console.log(err)
+    }
+}
+
+export const signOut = () => {
+    try {
+        firebaseApp.auth().signOut().then(r => {
+            console.log(r);
+            router.push("/signin")
+        });
+    } catch (err) {
+        console.log(err + "(error)")
     }
 }

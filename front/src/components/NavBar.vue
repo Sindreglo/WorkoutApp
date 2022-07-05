@@ -22,7 +22,7 @@
         </v-list>
       </v-menu>
 
-      <v-btn text color="grey">
+      <v-btn text color="grey" @click="signOut">
         <span>Sign Out</span>
         <v-icon right>mdi-exit-to-app</v-icon>
       </v-btn>
@@ -32,7 +32,7 @@
       <v-layout column align-center>
         <v-flex class="mt-5">
           <v-avatar size="56" color="accent">
-            <span class="white--text text-h6">SG</span>
+            <span class="white--text text-h6">{{ loggedIn }}</span>
           </v-avatar>
         </v-flex>
       </v-layout>
@@ -52,16 +52,23 @@
 </template>
 
 <script>
+import { signOut } from "@/plugins/firebase";
 export default {
   name: "NavBar",
   data() {
     return {
+      loggedIn: false,
       drawer: true,
       links: [
         { icon: 'mdi-view-dashboard', text: 'Dashboard', route: '/'},
         { icon: 'mdi-folder', text: 'My Workouts', route: '/projects'},
         { icon: 'mdi-account', text: 'Profile', route: '/profile'},
       ]
+    }
+  },
+  methods: {
+    async signOut() {
+      await signOut();
     }
   }
 }
