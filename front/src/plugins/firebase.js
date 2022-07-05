@@ -73,3 +73,15 @@ export const getUser = () => {
         return "login"
     }
 }
+
+export const getData = async () => {
+    try {
+        await db.collection('users').doc(firebaseApp.auth().currentUser.uid).get().then(r => {
+            console.log(r.data());
+            return r.data();
+        })
+    } catch (err) {
+        console.log(err);
+    }
+    return null;
+}

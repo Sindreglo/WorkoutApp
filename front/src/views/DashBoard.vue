@@ -11,7 +11,7 @@
 </template>
 
 <script>
-import {getUser} from "@/plugins/firebase";
+import {getUser, getData} from "@/plugins/firebase";
 
 export default {
   name: "DashBoard",
@@ -20,8 +20,9 @@ export default {
       email: '',
     }
   },
-  created() {
+  async created() {
     this.email = getUser();
+    console.log(getData())
   }
 
 }

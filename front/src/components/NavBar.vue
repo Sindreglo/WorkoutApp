@@ -35,7 +35,6 @@
             <v-icon class="white--text">mdi-account</v-icon>
           </v-avatar>
         </v-flex>
-        <p class="white--text">{{ user }}</p>
       </v-layout>
       <v-list>
         <v-list-item v-for="link in links" :key="link.text" router :to="link.route">
