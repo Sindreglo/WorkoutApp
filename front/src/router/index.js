@@ -4,6 +4,7 @@ import DashBoard from "@/views/DashBoard";
 import MyProfile from "@/views/MyProfile";
 import SignUp from "@/views/SignUp";
 import SignIn from "@/views/SignIn";
+import { status} from "@/plugins/firebase";
 
 Vue.use(VueRouter)
 
@@ -11,7 +12,8 @@ const routes = [
   {
     path: '/',
     name: 'dashboard',
-    component: DashBoard
+    component: DashBoard,
+    meta: {requiresAuth: true}
   },
   {
     path: '/profile',
@@ -34,6 +36,17 @@ const router = new VueRouter({
   mode: 'history',
   base: process.env.BASE_URL,
   routes
+})
+
+router.beforeEach(async (to, from, next) => {
+  const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
+  const isAuthenticated = await status();
+  console.log(requiresAuth && !isAuthenticated);
+  if (requiresAuth && !isAuthenticated) {
+    next("/signin")
+  } else {
+    next();
+  }
 })
 
 export default router

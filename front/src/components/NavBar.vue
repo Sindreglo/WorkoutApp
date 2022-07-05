@@ -32,7 +32,7 @@
       <v-layout column align-center>
         <v-flex class="mt-5">
           <v-avatar size="56" color="accent">
-            <span class="white--text text-h6">{{ loggedIn }}</span>
+            <span class="white--text text-h6">SG</span>
           </v-avatar>
         </v-flex>
       </v-layout>

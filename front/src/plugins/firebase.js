@@ -23,6 +23,11 @@ export const status = async () => {
     return status;
 }
 
+export const currentUser = async () => {
+    console.log(firebaseApp.auth().currentUser)
+    return firebaseApp.auth().currentUser;
+}
+
 export const signUp = (email, password) => {
     try {
         firebaseApp.auth().createUserWithEmailAndPassword(email, password).then(r => {
@@ -31,6 +36,17 @@ export const signUp = (email, password) => {
         });
     } catch (err) {
         console.log(err)
+    }
+}
+
+export const signIn = (email, password) => {
+    try {
+        firebaseApp.auth().signInWithEmailAndPassword(email, password).then(r => {
+            console.log(r);
+            router.push("/");
+        });
+    } catch (err) {
+        console.log(err);
     }
 }
 
