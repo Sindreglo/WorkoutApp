@@ -2,6 +2,7 @@ import firebase from 'firebase/compat/app';
 import "firebase/compat/auth"
 import "firebase/compat/firestore"
 import router from "@/router";
+import { getDocs, addDoc, deleteDoc, collection } from "firebase/firestore";
 
 const configure = {
     apiKey: "AIzaSyBVWZp5xcS9qKqctiY-X8dbVTEimFPq4BQ",
@@ -14,7 +15,50 @@ const configure = {
 }
 
 const firebaseApp = firebase.initializeApp(configure);
-const db = firebaseApp.firestore();
+const db = firebaseApp.firestore()
+
+export const getWorkouts = async () => {
+    const db1 = firebaseApp.firestore().collection('users').doc(firebaseApp.auth().currentUser.uid);
+
+    getDocs(collection(db1, 'Workouts')).then((snapshot) => {
+        let workouts = [];
+        snapshot.docs.forEach((doc) => {
+            workouts.push({...doc.data()})
+        })
+        console.log(workouts)
+    })
+}
+
+export const addWorkout = async (exercise, reps, weight) => {
+    const db1 = firebaseApp.firestore().collection('users').doc(firebaseApp.auth().currentUser.uid);
+
+    await addDoc(collection(db1, 'Workouts'), {
+        Reps: reps,
+        Weight: weight,
+        Exercise: exercise
+    })
+}
+
+export const deleteWorkout = async (exercise, reps, weight) => {
+    const db1 = firebaseApp.firestore().collection('users').doc(firebaseApp.auth().currentUser.uid);
+
+    await addDoc(collection(db1, 'Workouts'), {
+        Reps: reps,
+        Weight: weight,
+        Exercise: exercise
+    })
+}
+
+
+
+
+
+
+
+
+
+
+
 
 export const status = async () => {
     let status;
@@ -97,12 +141,33 @@ export const newWorkout = async (exercise) => {
     }
 }
 
-export const getExercises = async () => {
+export const newWorkout2 = async (exercise) => {
     try {
-        await db.collection('users').doc(firebaseApp.auth().currentUser.uid).collection('Exercises').get().then(r => {
-            console.log(r.docs);
+        await db.collection('users').doc(firebaseApp.auth().currentUser.uid).collection("Exercises").add({
+            exercise: exercise,
         })
     } catch (err) {
-        console.log(err);
+        console.log(err)
     }
+}
+
+export const checkExercise = async (exercise) => {
+    await db.collection('users').doc(firebaseApp.auth().currentUser.uid).collection("Exercises").doc(exercise).get()
+        .then(snapshot => {
+            if (snapshot.exists) {
+                console.log(snapshot)
+            }
+            else {
+                console.log("finnes ikke")
+                console.log(snapshot)
+            }
+        })
+}
+
+export const getExercises = async () => {
+    await db.collection('users').doc(firebaseApp.auth().currentUser.uid).collection("Exercises").get().then(querySnapshot => {
+        querySnapshot.docs.forEach(doc => {
+            console.log(doc.data())
+        })
+    });
 }

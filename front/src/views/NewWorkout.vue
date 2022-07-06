@@ -39,7 +39,7 @@
 </template>
 
 <script>
-import { newWorkout, getExercises } from "@/plugins/firebase";
+import {getWorkouts, addWorkout } from "@/plugins/firebase";
 
 export default {
   name: "newWorkout",
@@ -54,8 +54,8 @@ export default {
   },
   methods: {
     async addNew() {
-      await newWorkout(this.selectedExercise);
-      await getExercises();
+      await getWorkouts();
+      await addWorkout(this.selectedExercise, this.reps, this.weight);
     }
   }
 }
