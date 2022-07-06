@@ -5,6 +5,7 @@ import MyProfile from "@/views/MyProfile";
 import SignUp from "@/views/SignUp";
 import SignIn from "@/views/SignIn";
 import { status} from "@/plugins/firebase";
+import NewWorkout from "@/views/NewWorkout";
 
 Vue.use(VueRouter)
 
@@ -29,6 +30,11 @@ const routes = [
     path: '/signin',
     name: 'signin',
     component: SignIn
+  },
+  {
+    path: '/newworkout',
+    name: 'newworkout',
+    component: NewWorkout
   }
 ]
 
@@ -41,6 +47,7 @@ const router = new VueRouter({
 router.beforeEach(async (to, from, next) => {
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
   const isAuthenticated = await status();
+  console.log(requiresAuth && !isAuthenticated + "??")
   if (requiresAuth && !isAuthenticated) {
     next("/signin")
   } else {

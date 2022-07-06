@@ -62,6 +62,7 @@ export default {
         { icon: 'mdi-view-dashboard', text: 'Dashboard', route: '/'},
         { icon: 'mdi-folder', text: 'My Workouts', route: '/projects'},
         { icon: 'mdi-account', text: 'Profile', route: '/profile'},
+        { icon: 'mdi-plus-circle', text: 'New Workout', route: '/newworkout'},
       ]
     }
   },

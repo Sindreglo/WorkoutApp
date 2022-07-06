@@ -85,3 +85,24 @@ export const getData = async () => {
     }
     return null;
 }
+
+export const newWorkout = async (exercise) => {
+    try {
+        await db.collection('users').doc(firebaseApp.auth().currentUser.uid).collection("exercises").doc(exercise).collection('workout').add({
+            weight: 60,
+            reps: 12
+        })
+    } catch (err) {
+        console.log(err)
+    }
+}
+
+export const getExercises = async () => {
+    try {
+        await db.collection('users').doc(firebaseApp.auth().currentUser.uid).collection('Exercises').get().then(r => {
+            console.log(r.docs);
+        })
+    } catch (err) {
+        console.log(err);
+    }
+}

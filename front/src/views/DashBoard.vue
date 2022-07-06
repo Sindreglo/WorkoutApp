@@ -4,20 +4,25 @@
     <h1>{{ email}}</h1>
 
     <v-container fluid class="my-5">
-      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. A aspernatur consequatur consequuntur deleniti, dignissimos ea eligendi enim eos fugiat minus, molestiae neque numquam odio recusandae rerum saepe tempora. Earum, repellendus!</p>
-      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consectetur eos ipsa ipsum omnis quas quibusdam reiciendis repudiandae unde ut! Consectetur consequuntur eum nobis officia possimus quod reiciendis suscipit! Aspernatur ex expedita ipsam iure laudantium magnam omnis praesentium quas suscipit totam.</p>
+      <v-btn v-on:click="newWorkout">Add Workout</v-btn>
     </v-container>
   </div>
 </template>
 
 <script>
 import {getUser, getData} from "@/plugins/firebase";
+import router from "@/router";
 
 export default {
   name: "DashBoard",
   data() {
     return {
       email: '',
+    }
+  },
+  methods: {
+    newWorkout() {
+      router.push("/newworkout");
     }
   },
   async created() {
