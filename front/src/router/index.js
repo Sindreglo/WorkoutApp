@@ -5,7 +5,6 @@ import MyProfile from "@/views/MyProfile";
 import SignUp from "@/views/SignUp";
 import SignIn from "@/views/SignIn";
 import { status} from "@/plugins/firebase";
-import NewWorkout from "@/views/NewWorkout";
 
 Vue.use(VueRouter)
 
@@ -30,11 +29,6 @@ const routes = [
     path: '/signin',
     name: 'signin',
     component: SignIn
-  },
-  {
-    path: '/newworkout',
-    name: 'newworkout',
-    component: NewWorkout
   }
 ]
 
