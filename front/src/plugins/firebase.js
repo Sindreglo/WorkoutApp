@@ -2,7 +2,7 @@ import firebase from 'firebase/compat/app';
 import "firebase/compat/auth"
 import "firebase/compat/firestore"
 import router from "@/router";
-import { getDocs, addDoc, deleteDoc, collection } from "firebase/firestore";
+import { getDocs, addDoc, collection } from "firebase/firestore";
 
 const configure = {
     apiKey: "AIzaSyBVWZp5xcS9qKqctiY-X8dbVTEimFPq4BQ",
@@ -19,23 +19,26 @@ const db = firebaseApp.firestore()
 
 export const getWorkouts = async () => {
     const db1 = firebaseApp.firestore().collection('users').doc(firebaseApp.auth().currentUser.uid);
+    let workouts = [];
 
-    getDocs(collection(db1, 'Workouts')).then((snapshot) => {
-        let workouts = [];
+    await getDocs(collection(db1, 'Workouts')).then((snapshot) => {
         snapshot.docs.forEach((doc) => {
             workouts.push({...doc.data()})
         })
-        console.log(workouts)
     })
+    return workouts;
 }
 
-export const addWorkout = async (exercise, reps, weight) => {
+export const addWorkout = async (id,exercise, reps, weight, date) => {
     const db1 = firebaseApp.firestore().collection('users').doc(firebaseApp.auth().currentUser.uid);
+    console.log("her")
 
     await addDoc(collection(db1, 'Workouts'), {
+        id: id,
         Reps: reps,
         Weight: weight,
-        Exercise: exercise
+        Exercise: exercise,
+        Date: date,
     })
 }
 
