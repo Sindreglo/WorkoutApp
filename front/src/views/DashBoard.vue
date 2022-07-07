@@ -81,10 +81,10 @@
             Exercise
           </th>
           <th class="text-left">
-            Reps
+            Weight
           </th>
           <th class="text-left">
-            Weight
+            Reps
           </th>
           <th class="text-left">
             Date
@@ -92,13 +92,13 @@
         </tr>
         </thead>
         <tbody>
-        <tr v-on:click="test(item)"
+        <tr v-on:click="editDialog(item)"
             v-for="(item, index) in workouts"
             :key="index"
         >
           <td>{{ item.Exercise }}</td>
-          <td>{{ item.Reps }}</td>
           <td>{{ item.Weight }}</td>
+          <td>{{ item.Reps }}</td>
           <td>{{ item.Date }}</td>
         </tr>
         </tbody>
@@ -121,7 +121,6 @@
             >
               <v-icon>mdi-close</v-icon>
             </v-btn>
-            <v-toolbar-title>Edit Workout</v-toolbar-title>
             <v-spacer></v-spacer>
             <v-toolbar-items>
               <v-btn
@@ -134,7 +133,7 @@
               <v-btn
                   dark
                   text
-                  @click="editW"
+                  @click="editThisWorkout"
               >
                 Save
               </v-btn>
@@ -174,8 +173,7 @@
 </template>
 
 <script>
-import {addWorkout, getUser, getWorkouts} from "@/plugins/firebase";
-import {v4 as uuid4} from "uuid";
+import {addWorkout, deleteWorkout, getUser, getWorkouts} from "@/plugins/firebase";
 
 export default {
   name: "DashBoard",
@@ -206,24 +204,29 @@ export default {
     }
   },
   methods: {
-    test(item) {
+    editDialog(item) {
       this.editWorkout.exercise = item.Exercise;
       this.editWorkout.reps = item.Reps;
-      this.editWorkout.weight = item.Reps;
+      this.editWorkout.weight = item.Weight;
       this.editWorkout.date = item.Date;
       this.editWorkout.id = item.id;
       this.editDialig = true;
     },
     async addNew() {
       this.dialog = false;
-      await addWorkout(uuid4(),this.newWorkout.exercise, this.newWorkout.reps, this.newWorkout.weight, this.newWorkout.date);
+      await addWorkout(this.newWorkout.exercise, this.newWorkout.reps, this.newWorkout.weight, this.newWorkout.date);
       this.workouts = await getWorkouts();
     },
-    editW() {
-
+    async editThisWorkout() {
+      await deleteWorkout(this.editWorkout.id);
+      await addWorkout(this.editWorkout.exercise, this.editWorkout.reps, this.editWorkout.weight, this.editWorkout.date);
+      this.workouts = await getWorkouts();
+      this.editDialig = false;
     },
-    deleteWorkout() {
-
+    async deleteWorkout() {
+      await deleteWorkout(this.editWorkout.id);
+      this.workouts = await getWorkouts();
+      this.editDialig = false;
     }
   },
   async created() {

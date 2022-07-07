@@ -2,7 +2,7 @@ import firebase from 'firebase/compat/app';
 import "firebase/compat/auth"
 import "firebase/compat/firestore"
 import router from "@/router";
-import { getDocs, addDoc, collection } from "firebase/firestore";
+import { getDocs, addDoc, deleteDoc, collection, doc } from "firebase/firestore";
 
 const configure = {
     apiKey: "AIzaSyBVWZp5xcS9qKqctiY-X8dbVTEimFPq4BQ",
@@ -23,18 +23,16 @@ export const getWorkouts = async () => {
 
     await getDocs(collection(db1, 'Workouts')).then((snapshot) => {
         snapshot.docs.forEach((doc) => {
-            workouts.push({...doc.data()})
+            workouts.push({...doc.data(), id: doc.id,})
         })
     })
     return workouts;
 }
 
-export const addWorkout = async (id,exercise, reps, weight, date) => {
+export const addWorkout = async (exercise, reps, weight, date) => {
     const db1 = firebaseApp.firestore().collection('users').doc(firebaseApp.auth().currentUser.uid);
-    console.log("her")
 
     await addDoc(collection(db1, 'Workouts'), {
-        id: id,
         Reps: reps,
         Weight: weight,
         Exercise: exercise,
@@ -42,14 +40,15 @@ export const addWorkout = async (id,exercise, reps, weight, date) => {
     })
 }
 
-export const deleteWorkout = async (exercise, reps, weight) => {
+export const deleteWorkout = async (id) => {
     const db1 = firebaseApp.firestore().collection('users').doc(firebaseApp.auth().currentUser.uid);
 
-    await addDoc(collection(db1, 'Workouts'), {
-        Reps: reps,
-        Weight: weight,
-        Exercise: exercise
-    })
+    try {
+        await deleteDoc(doc(db1, "Workouts", id));
+    } catch (err) {
+        console.log(err);
+    }
+
 }
 
 
