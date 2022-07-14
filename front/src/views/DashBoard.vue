@@ -18,21 +18,10 @@
               color="primary"
           >
             <v-select
-                :items="items"
+                :items="exercises"
+                v-model="selectedExercise"
+                v-on:change="workoutGraph(selectedExercise)"
                 label="Outlined style"
-                dense
-                solo
-            ></v-select>
-          </v-col>
-
-          <v-col
-              class="d-flex"
-              cols="12"
-              sm="2"
-          >
-            <v-select
-                :items="items"
-                label="Solo field"
                 dense
                 solo
             ></v-select>
@@ -40,9 +29,6 @@
         </v-row>
 
         <VueApexCharts type="area" height="350" :options="chartOptions" :series="series"></VueApexCharts>
-
-
-
 
       </v-container>
 
@@ -242,6 +228,7 @@ export default {
       editDialig: false,
 
       exercises: [],
+      selectedExercise: null,
 
       newWorkout: {
         exercise: null,
@@ -260,7 +247,7 @@ export default {
 
 
       series: [{
-        name: 'series1',
+        name: 'Weight',
         data: []
       }, /** {
         name: 'series2',
@@ -283,7 +270,7 @@ export default {
         },
         tooltip: {
           x: {
-            format: 'dd/MM/yy HH:mm'
+            format: 'dd/MM/yy'
           },
         },
       },
@@ -323,17 +310,39 @@ export default {
       this.workouts = await getWorkouts();
       this.editDialig = false;
     },
-    async exerciseByWeight() {
-      const chartWorkouts = await getWorkoutsFromExercise("Squats");
+    async workoutGraph(exercise) {
+      const chartWorkouts = await getWorkoutsFromExercise(exercise);
 
-      console.log(chartWorkouts);
+      this.chartOptions = {
+        chart: {
+          height: 350,
+          type: 'area'
+        },
+        dataLabels: {
+          enabled: false
+        },
+        stroke: {
+          curve: 'smooth'
+        },
+        xaxis: {
+          type: 'datetime',
+          categories: []
+        },
+        tooltip: {
+          x: {
+            format: 'dd/MM/yy'
+          },
+        },
+      }
+
+      this.series[0].data = [];
+      this.chartOptions.xaxis.categories = [];
 
       for (let i = 0; i < chartWorkouts.length; i++) {
         this.series[0].data[i] = chartWorkouts[i].Weight;
         this.chartOptions.xaxis.categories[i] = chartWorkouts[i].Date;
       }
-      console.log(this.series);
-    }
+    },
   },
   async created() {
     this.email = getUser();
@@ -343,7 +352,8 @@ export default {
       this.exercises[i] = exerciseList[i].exercise;
     }
 
-    await this.exerciseByWeight();
+    this.selectedExercise = this.exercises[0];
+    await this.workoutGraph(this.exercises[0]);
 
     this.loading = false;
   }
