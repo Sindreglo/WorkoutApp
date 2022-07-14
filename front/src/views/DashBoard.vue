@@ -9,19 +9,48 @@
     ></v-progress-linear>
     <div v-else>
 
-      <h1 class="subtitle-1 grey--text">Dashboard</h1>
+      <v-container>
+        <v-row align="center">
+          <v-col
+              class="d-flex"
+              cols="12"
+              sm="2"
+              color="primary"
+          >
+            <v-select
+                :items="items"
+                label="Outlined style"
+                dense
+                solo
+            ></v-select>
+          </v-col>
 
-      <Bar
-          :chart-options="chartOptions"
-          :chart-data="chartData"
-          :chart-id="chartId"
-          :dataset-id-key="datasetIdKey"
-          :plugins="plugins"
-          :css-classes="cssClasses"
-          :styles="styles"
-          :width="width"
-          :height="height"
-      />
+          <v-col
+              class="d-flex"
+              cols="12"
+              sm="2"
+          >
+            <v-select
+                :items="items"
+                label="Solo field"
+                dense
+                solo
+            ></v-select>
+          </v-col>
+        </v-row>
+
+        <LineChartGenerator
+            :chart-options="chartOptions"
+            :chart-data="chartData"
+            :chart-id="chartId"
+            :dataset-id-key="datasetIdKey"
+            :plugins="plugins"
+            :css-classes="cssClasses"
+            :styles="styles"
+            :width="width"
+            :height="height"
+        />
+      </v-container>
 
       <v-container fluid class="my-5">
         <v-dialog
@@ -194,18 +223,45 @@
 </template>
 
 <script>
-import {addWorkout, deleteWorkout, getSelectedExercise, getExercises, getUser, getWorkouts, getWorkoutsFromExercise} from "@/plugins/firebase";
-import { Bar } from 'vue-chartjs/legacy'
-import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from 'chart.js'
-ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale)
+import {
+  addWorkout,
+  deleteWorkout,
+  getSelectedExercise,
+  getExercises,
+  getUser,
+  getWorkouts,
+  getWorkoutsFromExercise
+} from "@/plugins/firebase";
+import { Line as LineChartGenerator } from 'vue-chartjs/legacy'
+
+import {
+  Chart as ChartJS,
+  Title,
+  Tooltip,
+  Legend,
+  LineElement,
+  LinearScale,
+  CategoryScale,
+  PointElement
+} from 'chart.js'
+
+ChartJS.register(
+    Title,
+    Tooltip,
+    Legend,
+    LineElement,
+    LinearScale,
+    CategoryScale,
+    PointElement
+)
 
 export default {
   name: "DashBoard",
-  components: { Bar },
+  components: { LineChartGenerator },
   props: {
     chartId: {
       type: String,
-      default: 'bar-chart'
+      default: 'line-chart'
     },
     datasetIdKey: {
       type: String,
@@ -213,11 +269,11 @@ export default {
     },
     width: {
       type: Number,
-      default: 400,
+      default: 400
     },
     height: {
       type: Number,
-      default: 100,
+      default: 400
     },
     cssClasses: {
       default: '',
@@ -228,8 +284,8 @@ export default {
       default: () => {}
     },
     plugins: {
-      type: Object,
-      default: () => {}
+      type: Array,
+      default: () => []
     }
   },
   data() {
@@ -259,13 +315,20 @@ export default {
         id: null,
       },
 
-      // Charts
       chartData: {
         labels: [],
-        datasets: [ { data: [] } ]
+        datasets: [
+          {
+            label: 'Data',
+            borderColor: "rgb(24,118,209)",
+            data: [],
+            tension: 0.3
+          }
+        ],
       },
       chartOptions: {
-        responsive: true
+        responsive: true,
+        maintainAspectRatio: false
       }
     }
   },
@@ -310,6 +373,8 @@ export default {
         this.chartData.labels[i] = chartWorkouts[i].Date;
         this.chartData.datasets[0].data[i] = chartWorkouts[i].Weight;
       }
+      console.log(this.chartData.labels[0]);
+      console.log(this.chartData.datasets[0].data[0]);
     }
   },
   async created() {
@@ -319,6 +384,7 @@ export default {
     for (let i = 0; i < exerciseList.length; i++) {
       this.exercises[i] = exerciseList[i].exercise;
     }
+
     await this.exerciseByWeight();
 
     this.loading = false;
