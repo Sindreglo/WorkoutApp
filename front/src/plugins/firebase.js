@@ -2,7 +2,7 @@ import firebase from 'firebase/compat/app';
 import "firebase/compat/auth"
 import "firebase/compat/firestore"
 import router from "@/router";
-import { getDocs, addDoc, deleteDoc, collection, query, where, onSnapshot, doc } from "firebase/firestore";
+import { getDocs, addDoc, deleteDoc, collection, query, where, orderBy, onSnapshot, doc } from "firebase/firestore";
 
 const configure = {
     apiKey: "AIzaSyBVWZp5xcS9qKqctiY-X8dbVTEimFPq4BQ",
@@ -18,12 +18,17 @@ const firebaseApp = firebase.initializeApp(configure);
 const db = firebaseApp.firestore()
 
 export const getWorkouts = async () => {
+
     const db1 = firebaseApp.firestore().collection('users').doc(firebaseApp.auth().currentUser.uid);
+
+    const colRef = collection(db1, 'Workouts');
+
+    const q = await query(colRef, orderBy("Date", "desc"));
     let workouts = [];
 
-    await getDocs(collection(db1, 'Workouts')).then((snapshot) => {
-        snapshot.docs.forEach((doc) => {
-            workouts.push({...doc.data(), id: doc.id,})
+    await onSnapshot(q, snapshot => {
+        snapshot.docs.forEach(doc => {
+            workouts.push({...doc.data()});
         })
     })
     return workouts;
@@ -87,7 +92,7 @@ export const getWorkoutsFromExercise = async (exercise) => {
     const db1 = firebaseApp.firestore().collection('users').doc(firebaseApp.auth().currentUser.uid);
     const colRef = collection(db1, 'Workouts');
 
-    const q = await query(colRef, where("Exercise", "==", exercise));
+    const q = await query(colRef, where("Exercise", "==", exercise), orderBy("Date", "asc"));
 
     let workouts = [];
 

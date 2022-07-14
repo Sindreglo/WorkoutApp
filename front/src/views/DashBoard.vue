@@ -39,17 +39,11 @@
           </v-col>
         </v-row>
 
-        <LineChartGenerator
-            :chart-options="chartOptions"
-            :chart-data="chartData"
-            :chart-id="chartId"
-            :dataset-id-key="datasetIdKey"
-            :plugins="plugins"
-            :css-classes="cssClasses"
-            :styles="styles"
-            :width="width"
-            :height="height"
-        />
+        <VueApexCharts type="area" height="350" :options="chartOptions" :series="series"></VueApexCharts>
+
+
+
+
       </v-container>
 
       <v-container fluid class="my-5">
@@ -232,62 +226,11 @@ import {
   getWorkouts,
   getWorkoutsFromExercise
 } from "@/plugins/firebase";
-import { Line as LineChartGenerator } from 'vue-chartjs/legacy'
-
-import {
-  Chart as ChartJS,
-  Title,
-  Tooltip,
-  Legend,
-  LineElement,
-  LinearScale,
-  CategoryScale,
-  PointElement
-} from 'chart.js'
-
-ChartJS.register(
-    Title,
-    Tooltip,
-    Legend,
-    LineElement,
-    LinearScale,
-    CategoryScale,
-    PointElement
-)
+import VueApexCharts from 'vue-apexcharts'
 
 export default {
   name: "DashBoard",
-  components: { LineChartGenerator },
-  props: {
-    chartId: {
-      type: String,
-      default: 'line-chart'
-    },
-    datasetIdKey: {
-      type: String,
-      default: 'label'
-    },
-    width: {
-      type: Number,
-      default: 400
-    },
-    height: {
-      type: Number,
-      default: 400
-    },
-    cssClasses: {
-      default: '',
-      type: String
-    },
-    styles: {
-      type: Object,
-      default: () => {}
-    },
-    plugins: {
-      type: Array,
-      default: () => []
-    }
-  },
+  components: { VueApexCharts },
   data() {
     return {
       loading: true,
@@ -315,21 +258,35 @@ export default {
         id: null,
       },
 
-      chartData: {
-        labels: [],
-        datasets: [
-          {
-            label: 'Data',
-            borderColor: "rgb(24,118,209)",
-            data: [],
-            tension: 0.3
-          }
-        ],
-      },
+
+      series: [{
+        name: 'series1',
+        data: []
+      }, /** {
+        name: 'series2',
+        data: [11, 32, 45, 32, 34, 52, 41]
+      }*/],
       chartOptions: {
-        responsive: true,
-        maintainAspectRatio: false
-      }
+        chart: {
+          height: 350,
+          type: 'area'
+        },
+        dataLabels: {
+          enabled: false
+        },
+        stroke: {
+          curve: 'smooth'
+        },
+        xaxis: {
+          type: 'datetime',
+          categories: []
+        },
+        tooltip: {
+          x: {
+            format: 'dd/MM/yy HH:mm'
+          },
+        },
+      },
     }
   },
   methods: {
@@ -369,12 +326,13 @@ export default {
     async exerciseByWeight() {
       const chartWorkouts = await getWorkoutsFromExercise("Squats");
 
+      console.log(chartWorkouts);
+
       for (let i = 0; i < chartWorkouts.length; i++) {
-        this.chartData.labels[i] = chartWorkouts[i].Date;
-        this.chartData.datasets[0].data[i] = chartWorkouts[i].Weight;
+        this.series[0].data[i] = chartWorkouts[i].Weight;
+        this.chartOptions.xaxis.categories[i] = chartWorkouts[i].Date;
       }
-      console.log(this.chartData.labels[0]);
-      console.log(this.chartData.datasets[0].data[0]);
+      console.log(this.series);
     }
   },
   async created() {
