@@ -21,7 +21,7 @@
                 :items="exercises"
                 v-model="selectedExercise"
                 v-on:change="workoutGraph(selectedExercise)"
-                label="Outlined style"
+                label="No exercises"
                 dense
                 solo
             ></v-select>
@@ -348,12 +348,16 @@ export default {
     this.email = getUser();
     this.workouts = await getWorkouts();
     const exerciseList = await getExercises();
-    for (let i = 0; i < exerciseList.length; i++) {
-      this.exercises[i] = exerciseList[i].exercise;
-    }
+    console.log(exerciseList);
 
-    this.selectedExercise = this.exercises[0];
-    await this.workoutGraph(this.exercises[0]);
+    if(exerciseList.length > 0) {
+      for (let i = 0; i < exerciseList.length; i++) {
+        this.exercises[i] = exerciseList[i].exercise;
+      }
+
+      this.selectedExercise = this.exercises[0];
+      await this.workoutGraph(this.exercises[0]);
+    }
 
     this.loading = false;
   }

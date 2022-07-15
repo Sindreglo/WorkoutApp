@@ -5,6 +5,7 @@ import MyProfile from "@/views/MyProfile";
 import SignUp from "@/views/SignUp";
 import SignIn from "@/views/SignIn";
 import { status} from "@/plugins/firebase";
+import Calendar from "@/views/Calendar";
 
 Vue.use(VueRouter)
 
@@ -14,6 +15,11 @@ const routes = [
     name: 'dashboard',
     component: DashBoard,
     meta: {requiresAuth: true}
+  },
+  {
+    path: '/calendar',
+    name: 'calendar',
+    component: Calendar,
   },
   {
     path: '/profile',

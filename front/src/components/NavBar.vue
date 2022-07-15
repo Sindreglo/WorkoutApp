@@ -60,7 +60,7 @@ export default {
       drawer: true,
       links: [
         { icon: 'mdi-view-dashboard', text: 'Dashboard', route: '/'},
-        { icon: 'mdi-folder', text: 'My Workouts', route: '/projects'},
+        { icon: 'mdi-folder', text: 'Calendar', route: '/calendar'},
         { icon: 'mdi-account', text: 'Profile', route: '/profile'},
       ]
     }

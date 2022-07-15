@@ -28,7 +28,7 @@ export const getWorkouts = async () => {
 
     await onSnapshot(q, snapshot => {
         snapshot.docs.forEach(doc => {
-            workouts.push({...doc.data()});
+            workouts.push({...doc.data(), id: doc.id});
         })
     })
     return workouts;
@@ -103,16 +103,6 @@ export const getWorkoutsFromExercise = async (exercise) => {
     })
     return workouts;
 }
-
-
-
-
-
-
-
-
-
-
 
 export const status = async () => {
     let status;
