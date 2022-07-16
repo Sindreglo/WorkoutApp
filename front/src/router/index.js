@@ -6,6 +6,7 @@ import SignUp from "@/views/SignUp";
 import SignIn from "@/views/SignIn";
 import { status} from "@/plugins/firebase";
 import Calendar from "@/views/Calendar";
+import ExerciseView from "@/views/ExerciseView";
 
 Vue.use(VueRouter)
 
@@ -14,6 +15,12 @@ const routes = [
     path: '/',
     name: 'dashboard',
     component: DashBoard,
+    meta: {requiresAuth: true}
+  },
+  {
+    path: '/exercises',
+    name: 'exercises',
+    component: ExerciseView,
     meta: {requiresAuth: true}
   },
   {

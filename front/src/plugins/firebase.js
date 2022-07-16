@@ -2,7 +2,7 @@ import firebase from 'firebase/compat/app';
 import "firebase/compat/auth"
 import "firebase/compat/firestore"
 import router from "@/router";
-import { getDocs, addDoc, deleteDoc, collection, query, where, orderBy, onSnapshot, doc } from "firebase/firestore";
+import { getDocs, addDoc, deleteDoc, updateDoc, collection, query, where, orderBy, onSnapshot, doc } from "firebase/firestore";
 
 const configure = {
     apiKey: "AIzaSyBVWZp5xcS9qKqctiY-X8dbVTEimFPq4BQ",
@@ -61,7 +61,7 @@ export const getExercises = async () => {
 
     await getDocs(collection(db1, 'Exercises')).then((snapshot) => {
         snapshot.docs.forEach((doc) => {
-            exercises.push({...doc.data()})
+            exercises.push({...doc.data(), id: doc.id})
         })
     })
 
@@ -83,8 +83,27 @@ export const getSelectedExercise = async (exercise) => {
         if (exercises.length === 0) {
             addDoc(collection(db1, 'Exercises'), {
                 exercise: exercise,
+                color: '#00000000',
             })
         }
+    })
+}
+
+export const deleteExercise = async (id) => {
+    const db1 = firebaseApp.firestore().collection('users').doc(firebaseApp.auth().currentUser.uid);
+    try {
+        await deleteDoc(doc(db1, "Exercises", id));
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+export const editExercise = async (exercise) => {
+    const db1 = firebaseApp.firestore().collection('users').doc(firebaseApp.auth().currentUser.uid);
+    const exRef = doc(db1, 'Exercises', exercise.editId)
+
+    await updateDoc(exRef, {
+        color: exercise.editColor,
     })
 }
 
