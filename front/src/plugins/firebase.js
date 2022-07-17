@@ -34,14 +34,27 @@ export const getWorkouts = async () => {
     return workouts;
 }
 
-export const addWorkout = async (exercise, reps, weight, date) => {
+export const addWorkout = async (exercise, reps, weight, date, color) => {
     const db1 = firebaseApp.firestore().collection('users').doc(firebaseApp.auth().currentUser.uid);
-
     await addDoc(collection(db1, 'Workouts'), {
         Reps: reps,
         Weight: weight,
         Exercise: exercise,
         Date: date,
+        color: color,
+    })
+}
+
+export const editWorkout= async (workout) => {
+    const db1 = firebaseApp.firestore().collection('users').doc(firebaseApp.auth().currentUser.uid);
+
+    const exRef = doc(db1, 'Workouts', workout.id)
+
+    await updateDoc(exRef, {
+        Exercise: workout.exercise,
+        Weight: workout.weight,
+        Reps: workout.reps,
+        Date: workout.date,
     })
 }
 
@@ -100,11 +113,24 @@ export const deleteExercise = async (id) => {
 
 export const editExercise = async (exercise) => {
     const db1 = firebaseApp.firestore().collection('users').doc(firebaseApp.auth().currentUser.uid);
-    const exRef = doc(db1, 'Exercises', exercise.editId)
+    const exRef = doc(db1, 'Exercises', exercise.editId);
 
     await updateDoc(exRef, {
         color: exercise.editColor,
     })
+
+    const workoutCol = collection(db1, "Workouts");
+
+    const q = await query(workoutCol, where("Exercise", "==", exercise.editName))
+
+    const workoutDocs = await getDocs(q);
+
+    for (let i = 0; i < workoutDocs.size; i++) {
+        let workoutRef = doc(db1, 'Workouts', workoutDocs.docs[i].id);
+        await updateDoc(workoutRef, {
+            color: exercise.editColor,
+        })
+    }
 }
 
 export const getWorkoutsFromExercise = async (exercise) => {
