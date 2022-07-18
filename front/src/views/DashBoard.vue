@@ -27,10 +27,10 @@
             ></v-select>
           </v-col>
         </v-row>
-
         <VueApexCharts type="area" height="350" :options="chartOptions" :series="series"></VueApexCharts>
-
       </v-container>
+
+
       <v-container fluid class="my-5">
         <v-dialog
             v-model="editDialig"
@@ -302,8 +302,6 @@ export default {
       if (!this.exercises.includes(this.newWorkout.exercise)) {
         this.exercises.push(this.newWorkout.exercise);
       }
-
-
 
       this.workouts = await getWorkouts();
       this.newWorkout.exercise = null;
