@@ -62,7 +62,7 @@ export default {
       links: [
         { icon: 'mdi-view-dashboard', text: 'Dashboard', route: '/'},
         { icon: 'mdi-folder', text: 'Exercises', route: '/exercises'},
-        { icon: 'mdi-account', text: 'Profile', route: '/profile'},
+        //{ icon: 'mdi-account', text: 'Profile', route: '/profile'},
       ],
       name: '',
     }
