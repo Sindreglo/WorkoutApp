@@ -18,11 +18,8 @@ const firebaseApp = firebase.initializeApp(configure);
 const db = firebaseApp.firestore()
 
 export const getWorkouts = async () => {
-
     const db1 = firebaseApp.firestore().collection('users').doc(firebaseApp.auth().currentUser.uid);
-
     const colRef = collection(db1, 'Workouts');
-
     const q = await query(colRef, orderBy("Date", "desc"));
     let workouts = [];
 
@@ -34,14 +31,13 @@ export const getWorkouts = async () => {
     return workouts;
 }
 
-export const addWorkout = async (exercise, reps, weight, date, color) => {
+export const addWorkout = async (exercise, reps, weight, date) => {
     const db1 = firebaseApp.firestore().collection('users').doc(firebaseApp.auth().currentUser.uid);
     await addDoc(collection(db1, 'Workouts'), {
         Reps: reps,
         Weight: weight,
         Exercise: exercise,
         Date: date,
-        color: color,
     })
 }
 
@@ -81,7 +77,7 @@ export const getExercises = async () => {
     return exercises;
 }
 
-export const getSelectedExercise = async (exercise) => {
+export const getAddExercise = async (exercise) => {
     const db1 = firebaseApp.firestore().collection('users').doc(firebaseApp.auth().currentUser.uid);
 
     const colRef = collection(db1, 'Exercises');
@@ -118,19 +114,6 @@ export const editExercise = async (exercise) => {
     await updateDoc(exRef, {
         color: exercise.editColor,
     })
-
-    const workoutCol = collection(db1, "Workouts");
-
-    const q = await query(workoutCol, where("Exercise", "==", exercise.editName))
-
-    const workoutDocs = await getDocs(q);
-
-    for (let i = 0; i < workoutDocs.size; i++) {
-        let workoutRef = doc(db1, 'Workouts', workoutDocs.docs[i].id);
-        await updateDoc(workoutRef, {
-            color: exercise.editColor,
-        })
-    }
 }
 
 export const getWorkoutsFromExercise = async (exercise) => {

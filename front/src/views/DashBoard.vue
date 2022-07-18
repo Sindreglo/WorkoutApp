@@ -97,111 +97,102 @@
         </v-dialog>
       </v-container>
 
-
-      
-
-
-
-
-
-
-      <v-data-table
-          :headers="headers"
-          :items="workouts"
-          sort-by="calories"
-          class="elevation-1"
-          @click:row="editDialog"
-      >
-        <template v-slot:[`item.Exercise`]="{ item }">
-          <v-chip
-              :color="item.color"
-              dark
+      <v-container class="my-5">
+        <v-container>
+          <v-dialog
+              v-model="dialog"
+              width="500"
           >
-            {{ item.Exercise }}
-          </v-chip>
-        </template>
-        <template v-slot:top>
-          <v-toolbar
-              flat
-          >
-            <v-toolbar-title>My Workouts</v-toolbar-title>
-            <v-divider
-                class="mx-4"
-                inset
-                vertical
-            ></v-divider>
-            <v-spacer></v-spacer>
-              <v-dialog
-                  v-model="dialog"
-                  width="500"
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn
+                  color="primary"
+                  dark
+                  v-bind="attrs"
+                  v-on="on"
               >
-                <template v-slot:activator="{ on, attrs }">
-                  <v-btn
-                      color="primary"
-                      dark
-                      v-bind="attrs"
-                      v-on="on"
-                  >
-                    Add Workout
-                  </v-btn>
-                </template>
+                Add Workout
+              </v-btn>
+            </template>
 
-                <v-card>
-                  <v-toolbar
+            <v-card>
+              <v-toolbar
+                  dark
+                  color="primary"
+              >
+                <v-btn
+                    icon
+                    dark
+                    @click="dialog = false"
+                >
+                  <v-icon>mdi-close</v-icon>
+                </v-btn>
+                <v-toolbar-title>New Workout</v-toolbar-title>
+                <v-spacer></v-spacer>
+                <v-toolbar-items>
+                  <v-btn
                       dark
-                      color="primary"
+                      text
+                      @click="addNew"
                   >
-                    <v-btn
-                        icon
-                        dark
-                        @click="dialog = false"
-                    >
-                      <v-icon>mdi-close</v-icon>
-                    </v-btn>
-                    <v-toolbar-title>New Workout</v-toolbar-title>
-                    <v-spacer></v-spacer>
-                    <v-toolbar-items>
-                      <v-btn
-                          dark
-                          text
-                          @click="addNew"
-                      >
-                        Save
-                      </v-btn>
-                    </v-toolbar-items>
-                  </v-toolbar>
-                  <v-card>
-                    <v-card-text>
-                      <v-combobox
-                          :items="exercises"
-                          v-model="newWorkout.exercise"
-                          label="Exercise"
-                          outlined
-                      ></v-combobox>
-                      <v-text-field
-                          label="Weight"
-                          v-model="newWorkout.weight"
-                          type="number"
-                          placeholder="Enter weight"
-                          outlined
-                      ></v-text-field>
-                      <v-text-field
-                          label="Repetitions"
-                          type="number"
-                          v-model="newWorkout.reps"
-                          placeholder="Enter repetitions"
-                          outlined
-                      ></v-text-field>
-                      <v-row justify="center">
-                        <v-date-picker v-model="newWorkout.date"></v-date-picker>
-                      </v-row>
-                    </v-card-text>
-                  </v-card>
-                </v-card>
-              </v-dialog>
-          </v-toolbar>
-        </template>
-      </v-data-table>
+                    Save
+                  </v-btn>
+                </v-toolbar-items>
+              </v-toolbar>
+              <v-card>
+                <v-card-text>
+                  <v-combobox
+                      :items="exercises"
+                      v-model="newWorkout.exercise"
+                      label="Exercise"
+                      outlined
+                  ></v-combobox>
+                  <v-text-field
+                      label="Weight"
+                      v-model="newWorkout.weight"
+                      type="number"
+                      placeholder="Enter weight"
+                      outlined
+                  ></v-text-field>
+                  <v-text-field
+                      label="Repetitions"
+                      type="number"
+                      v-model="newWorkout.reps"
+                      placeholder="Enter repetitions"
+                      outlined
+                  ></v-text-field>
+                  <v-row justify="center">
+                    <v-date-picker v-model="newWorkout.date"></v-date-picker>
+                  </v-row>
+                </v-card-text>
+              </v-card>
+            </v-card>
+          </v-dialog>
+        </v-container>
+
+        <v-card flat class="pa-3" v-for="(workout,index) in workouts" :key="index">
+          <v-row class="project" :style="getColor(workout.Exercise)" v-on:click="editDialog(workout)">
+            <v-col cols="12" md="6">
+              <div class="caption grey--text">Exercise</div>
+              <div>{{ workout.Exercise }}</div>
+            </v-col>
+            <v-col xs="2">
+              <div class="caption grey--text">Weight</div>
+              <div>{{ workout.Weight }}</div>
+            </v-col>
+            <v-col xs="2">
+              <div class="caption grey--text">Repetitions</div>
+              <div>{{ workout.Reps }}</div>
+            </v-col>
+            <v-col xs="2">
+              <div class="caption grey--text">Date</div>
+              <div>{{ workout.Date }}</div>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-divider></v-divider>
+          </v-row>
+        </v-card>
+      </v-container>
     </div>
   </div>
 </template>
@@ -211,7 +202,7 @@ import {
   addWorkout,
   deleteWorkout,
     editWorkout,
-  getSelectedExercise,
+  getAddExercise,
   getExercises,
   getUser,
   getWorkouts,
@@ -303,21 +294,14 @@ export default {
       this.editDialig = true;
     },
     async addNew() {
-      this.dialog = false;
+
+      await addWorkout(this.newWorkout.exercise, this.newWorkout.reps, this.newWorkout.weight, this.newWorkout.date);
+      await getAddExercise(this.newWorkout.exercise);
+
 
       if (!this.exercises.includes(this.newWorkout.exercise)) {
         this.exercises.push(this.newWorkout.exercise);
-        await addWorkout(this.newWorkout.exercise, this.newWorkout.reps, this.newWorkout.weight, this.newWorkout.date, "#1E88E5FF");
-      } else {
-        for (let i = 0; i < this.exerciseList.length; i++) {
-          if (this.newWorkout.exercise === this.exerciseList[i].exercise) {
-            console.log(this.exerciseList[i].color);
-            await addWorkout(this.newWorkout.exercise, this.newWorkout.reps, this.newWorkout.weight, this.newWorkout.date, this.exerciseList[i].color);
-          }
-        }
       }
-
-      await getSelectedExercise(this.newWorkout.exercise);
 
 
 
@@ -326,6 +310,7 @@ export default {
       this.newWorkout.weight = null;
       this.newWorkout.reps = null;
       this.newWorkout.date = (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10);
+      this.dialog = false;
     },
     async editThisWorkout() {
       await editWorkout(this.editWorkout);
@@ -371,12 +356,21 @@ export default {
         this.chartOptions.xaxis.categories[i] = chartWorkouts[i].Date;
       }
     },
+    getColor(exercise) {
+      let color = null;
+
+      for (let i = 0; i < this.exerciseList.length; i++) {
+        if (exercise === this.exerciseList[i].exercise) {
+          color = this.exerciseList[i].color;
+        }
+      }
+      return "border-left: 5px solid "+ color;
+    }
   },
   async created() {
     this.email = getUser();
     this.workouts = await getWorkouts();
     this.exerciseList = await getExercises();
-    console.log(this.exerciseList);
 
     if(this.exerciseList.length > 0) {
       for (let i = 0; i < this.exerciseList.length; i++) {
