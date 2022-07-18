@@ -34,6 +34,7 @@
           <v-avatar size="56" color="accent">
             <v-icon class="white--text">mdi-account</v-icon>
           </v-avatar>
+          <p>{{ name }}</p>
         </v-flex>
       </v-layout>
       <v-list>
@@ -62,14 +63,19 @@ export default {
         { icon: 'mdi-view-dashboard', text: 'Dashboard', route: '/'},
         { icon: 'mdi-folder', text: 'Exercises', route: '/exercises'},
         { icon: 'mdi-account', text: 'Profile', route: '/profile'},
-      ]
+      ],
+      name: '',
     }
   },
   methods: {
     async signOut() {
       await signOut();
+    },
+    setName(name) {
+      console.log(name + "????")
+      this.name = name
     }
-  }
+  },
 }
 </script>
 

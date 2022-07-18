@@ -3,6 +3,8 @@ import "firebase/compat/auth"
 import "firebase/compat/firestore"
 import router from "@/router";
 import { getDocs, addDoc, deleteDoc, updateDoc, collection, query, where, orderBy, onSnapshot, doc } from "firebase/firestore";
+import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import NavBar from "@/components/NavBar";
 
 const configure = {
     apiKey: "AIzaSyBVWZp5xcS9qKqctiY-X8dbVTEimFPq4BQ",
@@ -159,6 +161,29 @@ export const signUp = (email, password) => {
     }
 }
 
+export const signInGoogle = async () => {
+    const provider = new GoogleAuthProvider();
+    provider.addScope('profile');
+    provider.addScope('email');
+
+    try {
+        await signInWithPopup(firebaseApp.auth(), provider).then(r => {
+            db.collection('users').doc(firebase.auth().currentUser.uid).set({
+                email: r.user.email,
+                displayName: r.user.displayName,
+            }).then(e => {
+                console.log(e);
+                console.log(firebaseApp.auth().currentUser.displayName);
+                NavBar.methods.setName(firebaseApp.auth().currentUser.displayName);
+                router.push("/");
+            })
+            console.log(r);
+        });
+    } catch (err) {
+        console.log(err)
+    }
+}
+
 export const signIn = (email, password) => {
     try {
         firebaseApp.auth().signInWithEmailAndPassword(email, password).then(r => {
@@ -183,7 +208,7 @@ export const signOut = () => {
 
 export const getUser = () => {
     try {
-        return firebaseApp.auth().currentUser.email;
+        return firebaseApp.auth().currentUser.displayName;
     } catch (err) {
         console.log(err);
         return "login"
