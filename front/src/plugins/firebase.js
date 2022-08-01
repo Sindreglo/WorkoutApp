@@ -173,6 +173,7 @@ export const signInGoogle = async () => {
                 displayName: r.user.displayName,
             }).then(e => {
                 console.log(e);
+                console.log(firebaseApp.auth().currentUser.uid);
                 console.log(firebaseApp.auth().currentUser.displayName);
                 NavBar.methods.setName(firebaseApp.auth().currentUser.displayName);
                 router.push("/");
