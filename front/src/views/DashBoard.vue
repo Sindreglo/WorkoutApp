@@ -243,13 +243,15 @@ export default {
       chartOptions: {
         chart: {
           height: 350,
-          type: 'area'
+          type: 'area',
+          toolbar: {
+            show: false,
+          }
         },
         dataLabels: {
           enabled: false
         },
         stroke: {
-          curve: 'smooth'
         },
         xaxis: {
           type: 'datetime',
@@ -326,7 +328,10 @@ export default {
       this.chartOptions = {
         chart: {
           height: 350,
-          type: 'area'
+          type: 'area',
+          toolbar: {
+            show: false,
+          }
         },
         dataLabels: {
           enabled: false
