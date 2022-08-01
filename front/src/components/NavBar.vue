@@ -67,6 +67,7 @@ export default {
       drawer: true,
       links: [
         { icon: 'mdi-view-dashboard', text: 'Dashboard', route: '/'},
+        { icon: 'mdi-view-dashboard', text: 'Dashboard2', route: '/dashboard2'},
         { icon: 'mdi-folder', text: 'Exercises', route: '/exercises'},
         //{ icon: 'mdi-account', text: 'Profile', route: '/profile'},
 

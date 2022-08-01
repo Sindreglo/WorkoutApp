@@ -7,6 +7,7 @@ import SignIn from "@/views/SignIn";
 import Calendar from "@/views/Calendar";
 import ExerciseView from "@/views/ExerciseView";
 import storageService from "@/services/storageService";
+import DashBoard2 from "@/views/DashBoard2";
 
 Vue.use(VueRouter)
 
@@ -16,6 +17,12 @@ const routes = [
     name: 'dashboard',
     component: DashBoard,
     meta: {requiresAuth: true}
+  },
+  {
+    path: '/dashboard2',
+    name: 'dashboard2',
+    component: DashBoard2,
+    meta: {requiresAuth: true},
   },
   {
     path: '/exercises',
