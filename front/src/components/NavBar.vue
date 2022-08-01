@@ -8,24 +8,23 @@
       </v-toolbar-title>
       <v-spacer></v-spacer>
 
-      <v-menu offset-y>
+      <v-menu v-if="loggedIn === true" offset-y>
         <template v-slot:activator="{ on }">
           <v-btn text color="grey" v-on="on">
+            <v-avatar size="30" color="accent">
+              <v-icon class="white--text">mdi-account</v-icon>
+            </v-avatar>
+            <span class="ma-2">{{ profileName }}</span>
             <v-icon left>mdi-menu-down</v-icon>
-            <span>Menu</span>
           </v-btn>
         </template>
         <v-list>
           <v-list-item v-for="link in status" :key="link.text" router :to="link.route">
             <v-list-item-title>{{ link.text }}</v-list-item-title>
           </v-list-item>
+          <v-list-item v-if="loggedIn === true">Sign Out</v-list-item>
         </v-list>
       </v-menu>
-
-      <v-btn text color="grey" @click="signOut">
-        <span>Sign Out</span>
-        <v-icon right>mdi-exit-to-app</v-icon>
-      </v-btn>
     </v-app-bar>
 
     <v-navigation-drawer app v-model="drawer" class="primary">
@@ -46,6 +45,12 @@
             <v-list-item-title class="white--text">{{ link.text }}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
+        <v-list-item v-if="loggedIn === true" v-on:click="signOut">
+          <v-list-item-action>
+            <v-icon class="white--text">mdi-exit-to-app</v-icon>
+          </v-list-item-action>
+          <v-list-item-content class="white--text">Sign Out</v-list-item-content>
+        </v-list-item>
       </v-list>
     </v-navigation-drawer>
 
@@ -64,6 +69,7 @@ export default {
         { icon: 'mdi-view-dashboard', text: 'Dashboard', route: '/'},
         { icon: 'mdi-folder', text: 'Exercises', route: '/exercises'},
         //{ icon: 'mdi-account', text: 'Profile', route: '/profile'},
+
       ],
       linksOffline: [
         { icon: 'mdi-login', text: 'Login', route: '/signin'}
@@ -77,7 +83,7 @@ export default {
     },
     setName(name) {
       this.name = name
-    }
+    },
   },
   computed: {
     status() {
@@ -86,6 +92,12 @@ export default {
         linkStatus = this.links;
       }
       return linkStatus;
+    },
+    loggedIn() {
+      return storageService.getToken() !== null;
+    },
+    profileName() {
+      return storageService.getUser();
     }
   }
 }
