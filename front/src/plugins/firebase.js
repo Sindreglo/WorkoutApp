@@ -5,6 +5,7 @@ import router from "@/router";
 import { getDocs, addDoc, deleteDoc, updateDoc, collection, query, where, orderBy, onSnapshot, doc } from "firebase/firestore";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import NavBar from "@/components/NavBar";
+import storageService from "@/services/storageService";
 
 const configure = {
     apiKey: "AIzaSyBVWZp5xcS9qKqctiY-X8dbVTEimFPq4BQ",
@@ -20,7 +21,8 @@ const firebaseApp = firebase.initializeApp(configure);
 const db = firebaseApp.firestore()
 
 export const getWorkouts = async () => {
-    const db1 = firebaseApp.firestore().collection('users').doc(firebaseApp.auth().currentUser.uid);
+    await getUser();
+    const db1 = firebaseApp.firestore().collection('users').doc(storageService.getToken());
     const colRef = collection(db1, 'Workouts');
     const q = await query(colRef, orderBy("Date", "desc"));
     let workouts = [];
@@ -34,7 +36,7 @@ export const getWorkouts = async () => {
 }
 
 export const addWorkout = async (exercise, reps, weight, date) => {
-    const db1 = firebaseApp.firestore().collection('users').doc(firebaseApp.auth().currentUser.uid);
+    const db1 = firebaseApp.firestore().collection('users').doc(storageService.getToken());
     await addDoc(collection(db1, 'Workouts'), {
         Reps: reps,
         Weight: weight,
@@ -44,7 +46,7 @@ export const addWorkout = async (exercise, reps, weight, date) => {
 }
 
 export const editWorkout= async (workout) => {
-    const db1 = firebaseApp.firestore().collection('users').doc(firebaseApp.auth().currentUser.uid);
+    const db1 = firebaseApp.firestore().collection('users').doc(storageService.getToken());
 
     const exRef = doc(db1, 'Workouts', workout.id)
 
@@ -57,7 +59,7 @@ export const editWorkout= async (workout) => {
 }
 
 export const deleteWorkout = async (id) => {
-    const db1 = firebaseApp.firestore().collection('users').doc(firebaseApp.auth().currentUser.uid);
+    const db1 = firebaseApp.firestore().collection('users').doc(storageService.getToken());
 
     try {
         await deleteDoc(doc(db1, "Workouts", id));
@@ -67,7 +69,8 @@ export const deleteWorkout = async (id) => {
 }
 
 export const getExercises = async () => {
-    const db1 = firebaseApp.firestore().collection('users').doc(firebaseApp.auth().currentUser.uid);
+    await getUser();
+    const db1 = firebaseApp.firestore().collection('users').doc(storageService.getToken());
     let exercises = [];
 
     await getDocs(collection(db1, 'Exercises')).then((snapshot) => {
@@ -80,7 +83,7 @@ export const getExercises = async () => {
 }
 
 export const getAddExercise = async (exercise) => {
-    const db1 = firebaseApp.firestore().collection('users').doc(firebaseApp.auth().currentUser.uid);
+    const db1 = firebaseApp.firestore().collection('users').doc(storageService.getToken());
 
     const colRef = collection(db1, 'Exercises');
 
@@ -101,7 +104,7 @@ export const getAddExercise = async (exercise) => {
 }
 
 export const deleteExercise = async (id) => {
-    const db1 = firebaseApp.firestore().collection('users').doc(firebaseApp.auth().currentUser.uid);
+    const db1 = firebaseApp.firestore().collection('users').doc(storageService.getToken());
     try {
         await deleteDoc(doc(db1, "Exercises", id));
     } catch (err) {
@@ -110,7 +113,7 @@ export const deleteExercise = async (id) => {
 }
 
 export const editExercise = async (exercise) => {
-    const db1 = firebaseApp.firestore().collection('users').doc(firebaseApp.auth().currentUser.uid);
+    const db1 = firebaseApp.firestore().collection('users').doc(storageService.getToken());
     const exRef = doc(db1, 'Exercises', exercise.editId);
 
     await updateDoc(exRef, {
@@ -119,7 +122,8 @@ export const editExercise = async (exercise) => {
 }
 
 export const getWorkoutsFromExercise = async (exercise) => {
-    const db1 = firebaseApp.firestore().collection('users').doc(firebaseApp.auth().currentUser.uid);
+    await getUser();
+    const db1 = firebaseApp.firestore().collection('users').doc(storageService.getToken());
     const colRef = collection(db1, 'Workouts');
 
     const q = await query(colRef, where("Exercise", "==", exercise), orderBy("Date", "asc"));
@@ -146,7 +150,7 @@ export const status = async () => {
 export const signUp = (email, password) => {
     try {
         firebaseApp.auth().createUserWithEmailAndPassword(email, password).then(r => {
-            db.collection('users').doc(firebase.auth().currentUser.uid).set({
+            db.collection('users').doc(storageService.getToken()).set({
                 email: email,
             }).then(e => {
                 console.log(e);
@@ -168,13 +172,14 @@ export const signInGoogle = async () => {
 
     try {
         await signInWithPopup(firebaseApp.auth(), provider).then(r => {
-            db.collection('users').doc(firebase.auth().currentUser.uid).set({
+            db.collection('users').doc(firebaseApp.auth().currentUser.uid).set({
                 email: r.user.email,
                 displayName: r.user.displayName,
             }).then(e => {
                 console.log(e);
-                console.log(firebaseApp.auth().currentUser.uid);
-                console.log(firebaseApp.auth().currentUser.displayName);
+                storageService.setToken(r.user.uid);
+                storageService.setUser(r.user.displayName);
+                console.log(storageService.getToken());
                 NavBar.methods.setName(firebaseApp.auth().currentUser.displayName);
                 router.push("/");
             })
@@ -188,6 +193,10 @@ export const signInGoogle = async () => {
 export const signIn = (email, password) => {
     try {
         firebaseApp.auth().signInWithEmailAndPassword(email, password).then(r => {
+            storageService.setToken(r.user.uid);
+            storageService.setUser(r.user.displayName);
+            console.log(r.user.uid);
+            console.log(r.user.displayName);
             console.log(r);
             router.push("/");
         });
@@ -199,6 +208,8 @@ export const signIn = (email, password) => {
 export const signOut = () => {
     try {
         firebaseApp.auth().signOut().then(r => {
+            storageService.clearToken();
+            storageService.clearUser();
             console.log(r);
             router.push("/signin")
         });
@@ -209,7 +220,8 @@ export const signOut = () => {
 
 export const getUser = () => {
     try {
-        return firebaseApp.auth().currentUser.displayName;
+        console.log(firebaseApp.auth().currentUser);
+        return firebaseApp.auth().currentUser;
     } catch (err) {
         console.log(err);
         return "login"

@@ -16,7 +16,7 @@
           </v-btn>
         </template>
         <v-list>
-          <v-list-item v-for="link in links" :key="link.text" router :to="link.route">
+          <v-list-item v-for="link in status" :key="link.text" router :to="link.route">
             <v-list-item-title>{{ link.text }}</v-list-item-title>
           </v-list-item>
         </v-list>
@@ -38,7 +38,7 @@
         </v-flex>
       </v-layout>
       <v-list>
-        <v-list-item v-for="link in links" :key="link.text" router :to="link.route">
+        <v-list-item v-for="link in status" :key="link.text" router :to="link.route">
           <v-list-item-action>
             <v-icon class="white--text">{{ link.icon }}</v-icon>
           </v-list-item-action>
@@ -54,6 +54,7 @@
 
 <script>
 import { signOut } from "@/plugins/firebase";
+import storageService from "@/services/storageService";
 export default {
   name: "NavBar",
   data() {
@@ -64,6 +65,9 @@ export default {
         { icon: 'mdi-folder', text: 'Exercises', route: '/exercises'},
         //{ icon: 'mdi-account', text: 'Profile', route: '/profile'},
       ],
+      linksOffline: [
+        { icon: 'mdi-login', text: 'Login', route: '/signin'}
+      ],
       name: '',
     }
   },
@@ -72,10 +76,18 @@ export default {
       await signOut();
     },
     setName(name) {
-      console.log(name + "????")
       this.name = name
     }
   },
+  computed: {
+    status() {
+      let linkStatus = this.linksOffline;
+      if (storageService.getToken() !== null) {
+        linkStatus = this.links;
+      }
+      return linkStatus;
+    }
+  }
 }
 </script>
 

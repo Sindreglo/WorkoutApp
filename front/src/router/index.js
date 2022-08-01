@@ -4,9 +4,9 @@ import DashBoard from "@/views/DashBoard";
 import MyProfile from "@/views/MyProfile";
 import SignUp from "@/views/SignUp";
 import SignIn from "@/views/SignIn";
-import { status} from "@/plugins/firebase";
 import Calendar from "@/views/Calendar";
 import ExerciseView from "@/views/ExerciseView";
+import storageService from "@/services/storageService";
 
 Vue.use(VueRouter)
 
@@ -53,12 +53,11 @@ const router = new VueRouter({
 
 router.beforeEach(async (to, from, next) => {
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
-  const isAuthenticated = await status();
-  if (requiresAuth && !isAuthenticated) {
+  if (requiresAuth && storageService.getToken() === null) {
     next("/signin")
   } else {
     next();
   }
-})
+});
 
 export default router

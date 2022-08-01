@@ -204,7 +204,6 @@ import {
     editWorkout,
   getAddExercise,
   getExercises,
-  getUser,
   getWorkouts,
   getWorkoutsFromExercise
 } from "@/plugins/firebase";
@@ -366,7 +365,6 @@ export default {
     }
   },
   async created() {
-    this.email = getUser();
     this.workouts = await getWorkouts();
     this.exerciseList = await getExercises();
 
