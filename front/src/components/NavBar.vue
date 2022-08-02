@@ -22,7 +22,9 @@
           <v-list-item v-for="link in status" :key="link.text" router :to="link.route">
             <v-list-item-title>{{ link.text }}</v-list-item-title>
           </v-list-item>
-          <v-list-item v-if="loggedIn === true">Sign Out</v-list-item>
+          <v-list-item v-if="loggedIn === true" v-on:click="signOut">
+            <v-list-item-title>Sign Out</v-list-item-title>
+          </v-list-item>
         </v-list>
       </v-menu>
     </v-app-bar>

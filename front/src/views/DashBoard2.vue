@@ -22,9 +22,9 @@
                   md="12"
               >
                 <v-card
-                    class="pa-2 rounded-lg"
+                    class="pa-2"
                     tile
-                    elevation="1"
+                    elevation="0"
                 >
                   <v-container>
                     <v-row align="center">
@@ -55,9 +55,9 @@
                   md="6"
               >
                 <v-card
-                    class="pa-2 boxComponent rounded-lg"
+                    class="pa-2 boxComponent"
                     tile
-                    elevation="1"
+                    elevation="0"
                 >
                   test1
                 </v-card>
@@ -68,9 +68,9 @@
                   md="6"
               >
                 <v-card
-                    class="boxComponent rounded-lg"
+                    class="boxComponent"
                     tile
-                    elevation="1"
+                    elevation="0"
                 >
                   test2
                 </v-card>
@@ -83,14 +83,18 @@
               md="4"
           >
             <v-card
-                class="log rounded-lg"
                 tile
-                elevation="1"
+                elevation="0"
             >
               <v-card-title class="primary white--text">
                 <span class="text-h8">User Activity</span>
 
                 <v-spacer></v-spacer>
+                <v-btn
+                    dark
+                    color="primary"
+                    elevation="0"
+                >View All</v-btn>
 
                 <v-btn
                     class="mx-2"
@@ -98,6 +102,7 @@
                     dark
                     small
                     color="orange"
+                    v-on:click="dialog=true"
                 >
                   <v-icon dark>
                     mdi-plus
@@ -106,12 +111,153 @@
 
               </v-card-title>
 
-              <v-card-text>
-                test
-              </v-card-text>
+              <v-card elevation="0" tile class=" pa-1 pl-4" v-for="(workout,index) in workouts.slice(0,8)" :key="index" :style="getColor(workout.Exercise)" v-on:click="editDialog(workout)">
+                <div>
+                  <div>{{ workout.Exercise }}</div>
+                  <v-row>
+                    <v-col>
+                      <div class="caption grey--text ma-0">Weight</div>
+                      <div>{{ workout.Weight }}</div>
+                    </v-col>
+                    <v-col>
+                      <div class="caption grey--text ma-0">Reps</div>
+                      <div>{{ workout.Reps }}</div>
+                    </v-col><v-col>
+                    <div class="caption grey--text ma-0">Date</div>
+                    <div>{{ workout.Date }}</div>
+                  </v-col>
+                  </v-row>
+                </div>
+              </v-card>
             </v-card>
           </v-col>
         </v-row>
+      </v-container>
+
+      <v-container fluid class="my-5">
+        <v-dialog
+            v-model="editDialig"
+            width="500"
+        >
+          <v-card>
+            <v-toolbar
+                dark
+                color="primary"
+            >
+              <v-btn
+                  icon
+                  dark
+                  @click="editDialig = false"
+              >
+                <v-icon>mdi-close</v-icon>
+              </v-btn>
+              <v-spacer></v-spacer>
+              <v-toolbar-items>
+                <v-btn
+                    dark
+                    text
+                    @click="deleteWorkout"
+                >
+                  Delete
+                </v-btn>
+                <v-btn
+                    dark
+                    text
+                    @click="editThisWorkout"
+                >
+                  Save
+                </v-btn>
+              </v-toolbar-items>
+            </v-toolbar>
+            <v-card>
+              <v-card-text>
+                <v-combobox
+                    :items="exercises"
+                    v-model="editWorkout.exercise"
+                    label="Exercise"
+                    outlined
+                ></v-combobox>
+                <v-text-field
+                    label="Weight"
+                    v-model="editWorkout.weight"
+                    type="number"
+                    placeholder="Enter weight"
+                    outlined
+                ></v-text-field>
+                <v-text-field
+                    label="Repetitions"
+                    type="number"
+                    v-model="editWorkout.reps"
+                    placeholder="Enter repetitions"
+                    outlined
+                ></v-text-field>
+                <v-row justify="center">
+                  <v-date-picker v-model="editWorkout.date"></v-date-picker>
+                </v-row>
+              </v-card-text>
+            </v-card>
+          </v-card>
+        </v-dialog>
+      </v-container>
+
+      <v-container>
+        <v-dialog
+            v-model="dialog"
+            width="500"
+        >
+          <v-card>
+            <v-toolbar
+                dark
+                color="primary"
+            >
+              <v-btn
+                  icon
+                  dark
+                  @click="dialog = false"
+              >
+                <v-icon>mdi-close</v-icon>
+              </v-btn>
+              <v-toolbar-title>New Workout</v-toolbar-title>
+              <v-spacer></v-spacer>
+              <v-toolbar-items>
+                <v-btn
+                    dark
+                    text
+                    @click="addNew"
+                >
+                  Save
+                </v-btn>
+              </v-toolbar-items>
+            </v-toolbar>
+            <v-card>
+              <v-card-text>
+                <v-combobox
+                    :items="exercises"
+                    v-model="newWorkout.exercise"
+                    label="Exercise"
+                    outlined
+                ></v-combobox>
+                <v-text-field
+                    label="Weight"
+                    v-model="newWorkout.weight"
+                    type="number"
+                    placeholder="Enter weight"
+                    outlined
+                ></v-text-field>
+                <v-text-field
+                    label="Repetitions"
+                    type="number"
+                    v-model="newWorkout.reps"
+                    placeholder="Enter repetitions"
+                    outlined
+                ></v-text-field>
+                <v-row justify="center">
+                  <v-date-picker v-model="newWorkout.date"></v-date-picker>
+                </v-row>
+              </v-card-text>
+            </v-card>
+          </v-card>
+        </v-dialog>
       </v-container>
     </div>
   </div>
@@ -309,10 +455,6 @@ export default {
 <style scoped>
 
 .boxComponent {
-  min-height: 206px;
-}
-
-.log {
-  min-height: 700px;
+  min-height: 187px;
 }
 </style>
