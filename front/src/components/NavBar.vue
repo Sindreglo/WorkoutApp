@@ -12,9 +12,13 @@
         <template v-slot:activator="{ on }">
           <v-btn text color="grey" v-on="on">
             <v-avatar size="30" color="accent">
-              <v-icon class="white--text">mdi-account</v-icon>
+              <img v-if="profileName.displayName != null"
+                  :src="profileName.photoURL"
+                  alt="John"
+              >
+              <v-icon v-else class="white--text">mdi-account</v-icon>
             </v-avatar>
-            <span class="ma-2">{{ profileName }}</span>
+            <span class="ma-2">{{ profileName.displayName }}</span>
             <v-icon left>mdi-menu-down</v-icon>
           </v-btn>
         </template>
@@ -35,7 +39,6 @@
           <v-avatar size="56" color="accent">
             <v-icon class="white--text">mdi-account</v-icon>
           </v-avatar>
-          <p>{{ name }}</p>
         </v-flex>
       </v-layout>
       <v-list>
@@ -69,7 +72,6 @@ export default {
       drawer: true,
       links: [
         { icon: 'mdi-view-dashboard', text: 'Dashboard', route: '/'},
-        { icon: 'mdi-view-dashboard', text: 'Dashboard2', route: '/dashboard2'},
         { icon: 'mdi-folder', text: 'Exercises', route: '/exercises'},
         //{ icon: 'mdi-account', text: 'Profile', route: '/profile'},
 
@@ -77,15 +79,11 @@ export default {
       linksOffline: [
         { icon: 'mdi-login', text: 'Login', route: '/signin'}
       ],
-      name: '',
     }
   },
   methods: {
     async signOut() {
       await signOut();
-    },
-    setName(name) {
-      this.name = name
     },
   },
   computed: {
@@ -100,6 +98,9 @@ export default {
       return storageService.getToken() !== null;
     },
     profileName() {
+      if (storageService.getUser().displayName == null) {
+        console.log(true);
+      }
       return storageService.getUser();
     }
   }

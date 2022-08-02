@@ -1,12 +1,11 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import DashBoard from "@/views/DashBoard";
 import MyProfile from "@/views/MyProfile";
 import SignUp from "@/views/SignUp";
 import SignIn from "@/views/SignIn";
 import ExerciseView from "@/views/ExerciseView";
 import storageService from "@/services/storageService";
-import DashBoard2 from "@/views/DashBoard2";
+import DashBoard from "@/views/DashBoard";
 import Workouts from "@/views/Workouts";
 
 Vue.use(VueRouter)
@@ -16,12 +15,6 @@ const routes = [
     path: '/',
     name: 'dashboard',
     component: DashBoard,
-    meta: {requiresAuth: true}
-  },
-  {
-    path: '/dashboard2',
-    name: 'dashboard2',
-    component: DashBoard2,
     meta: {requiresAuth: true},
   },
   {

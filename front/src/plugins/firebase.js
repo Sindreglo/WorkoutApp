@@ -4,7 +4,6 @@ import "firebase/compat/firestore"
 import router from "@/router";
 import { getDocs, addDoc, deleteDoc, updateDoc, collection, query, where, orderBy, onSnapshot, doc } from "firebase/firestore";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
-import NavBar from "@/components/NavBar";
 import storageService from "@/services/storageService";
 
 const configure = {
@@ -178,10 +177,8 @@ export const signInGoogle = async () => {
             }).then(e => {
                 console.log(e);
                 storageService.setToken(r.user.uid);
-                storageService.setUser(r.user.displayName);
-                console.log(storageService.getToken());
-                NavBar.methods.setName(firebaseApp.auth().currentUser.displayName);
-                router.push("/");
+                storageService.setUser(r.user);
+                router.push({name: 'dashboard'});
             })
             console.log(r);
         });
@@ -194,11 +191,11 @@ export const signIn = (email, password) => {
     try {
         firebaseApp.auth().signInWithEmailAndPassword(email, password).then(r => {
             storageService.setToken(r.user.uid);
-            storageService.setUser(r.user.displayName);
+            storageService.setUser(r.user);
             console.log(r.user.uid);
             console.log(r.user.displayName);
             console.log(r);
-            router.push("/");
+            router.push({name: 'dashboard'});
         });
     } catch (err) {
         console.log(err);
@@ -220,7 +217,6 @@ export const signOut = () => {
 
 export const getUser = () => {
     try {
-        console.log(firebaseApp.auth().currentUser);
         return firebaseApp.auth().currentUser;
     } catch (err) {
         console.log(err);

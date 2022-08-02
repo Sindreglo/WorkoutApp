@@ -126,7 +126,6 @@ import {getExercises, editExercise, deleteExercise} from "@/plugins/firebase";
     },
     async created() {
       this.exercises = await getExercises();
-      console.log(this.exercises);
 
       this.loading = false;
     }

@@ -8,28 +8,131 @@
         color="primary"
     ></v-progress-linear>
     <div v-else>
-
       <v-container>
-        <v-row align="center">
+        <v-row>
           <v-col
-              class="d-flex"
               cols="12"
-              sm="2"
-              color="primary"
+              sm="12"
+              md="8"
           >
-            <v-select
-                :items="exercises"
-                v-model="selectedExercise"
-                v-on:change="workoutGraph(selectedExercise)"
-                label="No exercises"
-                dense
-                solo
-            ></v-select>
+            <v-row>
+              <v-col
+                  cols="12"
+                  sm="12"
+                  md="12"
+              >
+                <v-card
+                    class="pa-2"
+                    tile
+                    elevation="0"
+                >
+                  <v-container>
+                    <v-row align="center">
+                      <v-col
+                          class="d-flex"
+                          cols="12"
+                          sm="2"
+                          color="primary"
+                      >
+                        <v-select
+                            :items="exercises"
+                            v-model="selectedExercise"
+                            v-on:change="workoutGraph(selectedExercise)"
+                            label="No exercises"
+                            dense
+                            solo
+                        ></v-select>
+                      </v-col>
+                    </v-row>
+                    <VueApexCharts type="area" height="350" :options="chartOptions" :series="series"></VueApexCharts>
+                  </v-container>
+
+                </v-card>
+              </v-col>
+              <v-col
+                  cols="6"
+                  sm="6"
+                  md="6"
+              >
+                <v-card
+                    class="pa-2 boxComponent"
+                    tile
+                    elevation="0"
+                >
+                  test1
+                </v-card>
+              </v-col>
+              <v-col
+                  cols="6"
+                  sm="6"
+                  md="6"
+              >
+                <v-card
+                    class="boxComponent"
+                    tile
+                    elevation="0"
+                >
+                  test2
+                </v-card>
+              </v-col>
+            </v-row>
+          </v-col>
+          <v-col
+              cols="12"
+              sm="12"
+              md="4"
+          >
+            <v-card
+                tile
+                elevation="0"
+            >
+              <v-card-title class="primary white--text">
+                <span class="text-h8">User Activity</span>
+
+                <v-spacer></v-spacer>
+                <v-btn
+                    dark
+                    color="primary"
+                    v-on:click="myWorkouts"
+                    elevation="0">View All</v-btn>
+
+                <v-btn
+                    class="mx-2"
+                    fab
+                    dark
+                    small
+                    color="orange"
+                    v-on:click="dialog=true"
+                >
+                  <v-icon dark>
+                    mdi-plus
+                  </v-icon>
+                </v-btn>
+
+              </v-card-title>
+
+              <v-card elevation="0" tile class=" pa-1 pl-4" v-for="(workout,index) in workouts.slice(0,8)" :key="index" :style="getColor(workout.Exercise)" v-on:click="editDialog(workout)">
+                <div>
+                  <div>{{ workout.Exercise }}</div>
+                  <v-row>
+                    <v-col>
+                      <div class="caption grey--text ma-0">Weight</div>
+                      <div>{{ workout.Weight }}</div>
+                    </v-col>
+                    <v-col>
+                      <div class="caption grey--text ma-0">Reps</div>
+                      <div>{{ workout.Reps }}</div>
+                    </v-col><v-col>
+                    <div class="caption grey--text ma-0">Date</div>
+                    <div>{{ workout.Date }}</div>
+                  </v-col>
+                  </v-row>
+                </div>
+              </v-card>
+            </v-card>
           </v-col>
         </v-row>
-        <VueApexCharts type="area" height="350" :options="chartOptions" :series="series"></VueApexCharts>
       </v-container>
-
 
       <v-container fluid class="my-5">
         <v-dialog
@@ -97,120 +200,83 @@
         </v-dialog>
       </v-container>
 
-      <v-container class="my-5">
-        <v-container>
-          <v-dialog
-              v-model="dialog"
-              width="500"
-          >
-            <template v-slot:activator="{ on, attrs }">
+      <v-container>
+        <v-dialog
+            v-model="dialog"
+            width="500"
+        >
+          <v-card>
+            <v-toolbar
+                dark
+                color="primary"
+            >
               <v-btn
-                  color="primary"
+                  icon
                   dark
-                  v-bind="attrs"
-                  v-on="on"
+                  @click="dialog = false"
               >
-                Add Workout
+                <v-icon>mdi-close</v-icon>
               </v-btn>
-            </template>
-
-            <v-card>
-              <v-toolbar
-                  dark
-                  color="primary"
-              >
+              <v-toolbar-title>New Workout</v-toolbar-title>
+              <v-spacer></v-spacer>
+              <v-toolbar-items>
                 <v-btn
-                    icon
                     dark
-                    @click="dialog = false"
+                    text
+                    @click="addNew"
                 >
-                  <v-icon>mdi-close</v-icon>
+                  Save
                 </v-btn>
-                <v-toolbar-title>New Workout</v-toolbar-title>
-                <v-spacer></v-spacer>
-                <v-toolbar-items>
-                  <v-btn
-                      dark
-                      text
-                      @click="addNew"
-                  >
-                    Save
-                  </v-btn>
-                </v-toolbar-items>
-              </v-toolbar>
-              <v-card>
-                <v-card-text>
-                  <v-combobox
-                      :items="exercises"
-                      v-model="newWorkout.exercise"
-                      label="Exercise"
-                      outlined
-                  ></v-combobox>
-                  <v-text-field
-                      label="Weight"
-                      v-model="newWorkout.weight"
-                      type="number"
-                      placeholder="Enter weight"
-                      outlined
-                  ></v-text-field>
-                  <v-text-field
-                      label="Repetitions"
-                      type="number"
-                      v-model="newWorkout.reps"
-                      placeholder="Enter repetitions"
-                      outlined
-                  ></v-text-field>
-                  <v-row justify="center">
-                    <v-date-picker v-model="newWorkout.date"></v-date-picker>
-                  </v-row>
-                </v-card-text>
-              </v-card>
+              </v-toolbar-items>
+            </v-toolbar>
+            <v-card>
+              <v-card-text>
+                <v-combobox
+                    :items="exercises"
+                    v-model="newWorkout.exercise"
+                    label="Exercise"
+                    outlined
+                ></v-combobox>
+                <v-text-field
+                    label="Weight"
+                    v-model="newWorkout.weight"
+                    type="number"
+                    placeholder="Enter weight"
+                    outlined
+                ></v-text-field>
+                <v-text-field
+                    label="Repetitions"
+                    type="number"
+                    v-model="newWorkout.reps"
+                    placeholder="Enter repetitions"
+                    outlined
+                ></v-text-field>
+                <v-row justify="center">
+                  <v-date-picker v-model="newWorkout.date"></v-date-picker>
+                </v-row>
+              </v-card-text>
             </v-card>
-          </v-dialog>
-        </v-container>
-
-        <v-card flat class="pa-3" v-for="(workout,index) in workouts" :key="index">
-          <v-row class="project" :style="getColor(workout.Exercise)" v-on:click="editDialog(workout)">
-            <v-col cols="12" md="6">
-              <div class="caption grey--text">Exercise</div>
-              <div>{{ workout.Exercise }}</div>
-            </v-col>
-            <v-col xs="2">
-              <div class="caption grey--text">Weight</div>
-              <div>{{ workout.Weight }}</div>
-            </v-col>
-            <v-col xs="2">
-              <div class="caption grey--text">Repetitions</div>
-              <div>{{ workout.Reps }}</div>
-            </v-col>
-            <v-col xs="2">
-              <div class="caption grey--text">Date</div>
-              <div>{{ workout.Date }}</div>
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-divider></v-divider>
-          </v-row>
-        </v-card>
+          </v-card>
+        </v-dialog>
       </v-container>
     </div>
   </div>
 </template>
 
 <script>
+import VueApexCharts from "vue-apexcharts";
 import {
   addWorkout,
   deleteWorkout,
-    editWorkout,
-  getAddExercise,
-  getExercises,
+  editWorkout,
+  getAddExercise, getExercises,
   getWorkouts,
   getWorkoutsFromExercise
 } from "@/plugins/firebase";
-import VueApexCharts from 'vue-apexcharts'
+import router from "@/router";
 
 export default {
-  name: "DashBoard",
+  name: "DashBoard2",
   components: { VueApexCharts },
   data() {
     return {
@@ -263,18 +329,6 @@ export default {
           },
         },
       },
-
-      headers: [
-        {
-          text: 'Exercise',
-          align: 'start',
-          value: 'Exercise',
-        },
-        { text: 'Weight', value: 'Weight' },
-        { text: 'Reps', value: 'Reps' },
-        { text: 'Date', value: 'Date' },
-      ],
-
 
       editWorkout: {
         exercise: null,
@@ -367,6 +421,9 @@ export default {
         }
       }
       return "border-left: 5px solid "+ color;
+    },
+    myWorkouts() {
+      router.push({name: 'workouts'})
     }
   },
   async created() {
@@ -384,9 +441,12 @@ export default {
 
     this.loading = false;
   }
-
 }
 </script>
 
 <style scoped>
+
+.boxComponent {
+  min-height: 187px;
+}
 </style>
