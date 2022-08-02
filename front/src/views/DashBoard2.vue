@@ -93,8 +93,8 @@
                 <v-btn
                     dark
                     color="primary"
-                    elevation="0"
-                >View All</v-btn>
+                    v-on:click="myWorkouts"
+                    elevation="0">View All</v-btn>
 
                 <v-btn
                     class="mx-2"
@@ -273,6 +273,7 @@ import {
   getWorkouts,
   getWorkoutsFromExercise
 } from "@/plugins/firebase";
+import router from "@/router";
 
 export default {
   name: "DashBoard2",
@@ -328,18 +329,6 @@ export default {
           },
         },
       },
-
-      headers: [
-        {
-          text: 'Exercise',
-          align: 'start',
-          value: 'Exercise',
-        },
-        { text: 'Weight', value: 'Weight' },
-        { text: 'Reps', value: 'Reps' },
-        { text: 'Date', value: 'Date' },
-      ],
-
 
       editWorkout: {
         exercise: null,
@@ -432,6 +421,9 @@ export default {
         }
       }
       return "border-left: 5px solid "+ color;
+    },
+    myWorkouts() {
+      router.push({name: 'workouts'})
     }
   },
   async created() {

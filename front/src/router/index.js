@@ -4,10 +4,10 @@ import DashBoard from "@/views/DashBoard";
 import MyProfile from "@/views/MyProfile";
 import SignUp from "@/views/SignUp";
 import SignIn from "@/views/SignIn";
-import Calendar from "@/views/Calendar";
 import ExerciseView from "@/views/ExerciseView";
 import storageService from "@/services/storageService";
 import DashBoard2 from "@/views/DashBoard2";
+import Workouts from "@/views/Workouts";
 
 Vue.use(VueRouter)
 
@@ -31,9 +31,11 @@ const routes = [
     meta: {requiresAuth: true}
   },
   {
-    path: '/calendar',
-    name: 'calendar',
-    component: Calendar,
+    path: '/workouts',
+    name: 'workouts',
+    props: true,
+    component: Workouts,
+    meta: {requiresAuth: true}
   },
   {
     path: '/profile',
