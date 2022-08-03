@@ -5,6 +5,7 @@ import router from "@/router";
 import { getDocs, addDoc, deleteDoc, updateDoc, collection, query, where, orderBy, onSnapshot, doc } from "firebase/firestore";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import storageService from "@/services/storageService";
+import store from "@/store";
 
 const configure = {
     apiKey: "AIzaSyBVWZp5xcS9qKqctiY-X8dbVTEimFPq4BQ",
@@ -146,10 +147,11 @@ export const status = async () => {
     return status;
 }
 
-export const signUp = (email, password) => {
+export const signUp = (username, email, password) => {
     try {
         firebaseApp.auth().createUserWithEmailAndPassword(email, password).then(r => {
-            db.collection('users').doc(storageService.getToken()).set({
+            db.collection('users').doc(firebaseApp.auth().currentUser.uid).set({
+                displayName: username,
                 email: email,
             }).then(e => {
                 console.log(e);
@@ -177,7 +179,6 @@ export const signInGoogle = async () => {
             }).then(e => {
                 console.log(e);
                 storageService.setToken(r.user.uid);
-                storageService.setUser(r.user);
                 router.push({name: 'dashboard'});
             })
             console.log(r);
@@ -191,7 +192,6 @@ export const signIn = (email, password) => {
     try {
         firebaseApp.auth().signInWithEmailAndPassword(email, password).then(r => {
             storageService.setToken(r.user.uid);
-            storageService.setUser(r.user);
             console.log(r.user.uid);
             console.log(r.user.displayName);
             console.log(r);
@@ -206,7 +206,9 @@ export const signOut = () => {
     try {
         firebaseApp.auth().signOut().then(r => {
             storageService.clearToken();
-            storageService.clearUser();
+            store.state.loggedInDisplayName = null;
+            store.state.loggedInImageURL = null;
+            store.state.loggedIn = false;
             console.log(r);
             router.push("/signin")
         });
@@ -217,7 +219,16 @@ export const signOut = () => {
 
 export const getUser = () => {
     try {
-        return firebaseApp.auth().currentUser;
+        let currentUser = firebaseApp.auth().currentUser;
+        if (currentUser.displayName === null) {
+            store.state.loggedInDisplayName = currentUser.email;
+        } else {
+            store.state.loggedInDisplayName = currentUser.displayName;
+        }
+        console.log(currentUser);
+        store.state.loggedIn = true;
+        store.state.loggedInImageURL = currentUser.photoURL;
+        return currentUser;
     } catch (err) {
         console.log(err);
         return "login"

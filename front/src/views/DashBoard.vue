@@ -31,7 +31,7 @@
                       <v-col
                           class="d-flex"
                           cols="12"
-                          sm="2"
+                          sm="4"
                           color="primary"
                       >
                         <v-select
@@ -424,7 +424,7 @@ export default {
     },
     myWorkouts() {
       router.push({name: 'workouts'})
-    }
+    },
   },
   async created() {
     this.workouts = await getWorkouts();

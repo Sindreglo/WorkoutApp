@@ -12,13 +12,13 @@
         <template v-slot:activator="{ on }">
           <v-btn text color="grey" v-on="on">
             <v-avatar size="30" color="accent">
-              <img v-if="profileName.displayName != null"
-                  :src="profileName.photoURL"
+              <img v-if="profilePicture != null"
+                  :src="profilePicture"
                   alt="John"
               >
               <v-icon v-else class="white--text">mdi-account</v-icon>
             </v-avatar>
-            <span class="ma-2">{{ profileName.displayName }}</span>
+            <span class="ma-2">{{ profileName }}</span>
             <v-icon left>mdi-menu-down</v-icon>
           </v-btn>
         </template>
@@ -64,7 +64,7 @@
 
 <script>
 import { signOut } from "@/plugins/firebase";
-import storageService from "@/services/storageService";
+import store from "@/store";
 export default {
   name: "NavBar",
   data() {
@@ -89,20 +89,20 @@ export default {
   computed: {
     status() {
       let linkStatus = this.linksOffline;
-      if (storageService.getToken() !== null) {
+      if (this.loggedIn === true) {
         linkStatus = this.links;
       }
       return linkStatus;
     },
     loggedIn() {
-      return storageService.getToken() !== null;
+      return store.state.loggedIn;
     },
     profileName() {
-      if (storageService.getUser().displayName == null) {
-        console.log(true);
-      }
-      return storageService.getUser();
-    }
+      return store.state.loggedInDisplayName;
+    },
+    profilePicture() {
+      return store.state.loggedInImageURL;
+    },
   }
 }
 </script>

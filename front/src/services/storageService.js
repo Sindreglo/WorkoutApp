@@ -23,17 +23,6 @@ function clearStorage(key) {
 }
 
 export default {
-  setUser(user) {
-    setStorage("user", user, 1000 * 3600);
-  },
-
-  getUser() {
-    return getStorage("user");
-  },
-
-  clearUser() {
-    clearStorage("user");
-  },
 
   setToken(token) {
     setStorage("token", token, 1000 * 3600);
