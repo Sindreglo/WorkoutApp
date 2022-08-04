@@ -179,7 +179,7 @@ export const signInGoogle = async () => {
             }).then(e => {
                 console.log(e);
                 storageService.setToken(r.user.uid);
-                router.push({name: 'dashboard'});
+                router.push({name: 'dashboard', params: {login: 'loggingIn'}});
             })
             console.log(r);
         });

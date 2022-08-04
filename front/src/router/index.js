@@ -14,6 +14,7 @@ const routes = [
   {
     path: '/',
     name: 'dashboard',
+    props: true,
     component: DashBoard,
     meta: {requiresAuth: true},
   },

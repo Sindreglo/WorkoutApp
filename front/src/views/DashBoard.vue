@@ -274,10 +274,12 @@ import {
   getWorkoutsFromExercise
 } from "@/plugins/firebase";
 import router from "@/router";
+import store from "@/store";
 
 export default {
   name: "DashBoard2",
   components: { VueApexCharts },
+  props: ['login'],
   data() {
     return {
       loading: true,
@@ -437,6 +439,12 @@ export default {
 
       this.selectedExercise = this.exercises[0];
       await this.workoutGraph(this.exercises[0]);
+    }
+
+    if (this.login === 'loggingIn') {
+      this.$toast("Successfully logged in as " + store.state.loggedInDisplayName, {
+        timeout: 2000,
+      });
     }
 
     this.loading = false;
