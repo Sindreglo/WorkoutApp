@@ -59,7 +59,7 @@
                     tile
                     elevation="0"
                 >
-                  test1
+
                 </v-card>
               </v-col>
               <v-col
@@ -72,7 +72,7 @@
                     tile
                     elevation="0"
                 >
-                  test2
+
                 </v-card>
               </v-col>
             </v-row>
