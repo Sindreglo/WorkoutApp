@@ -115,6 +115,7 @@ import {getExercises, editExercise, deleteExercise} from "@/plugins/firebase";
         this.editDialig = false;
       },
       async saveExercise() {
+        console.log(this.editItem);
         await editExercise(this.editItem);
         this.exercises = await getExercises();
         this.editDialig = false;

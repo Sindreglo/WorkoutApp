@@ -32,7 +32,6 @@
                           class="d-flex"
                           cols="12"
                           sm="4"
-                          color="primary"
                       >
                         <v-select
                             :items="exercises"
@@ -44,7 +43,7 @@
                         ></v-select>
                       </v-col>
                     </v-row>
-                    <VueApexCharts type="area" height="350" :options="chartOptions" :series="series"></VueApexCharts>
+                    <VueApexCharts type="area" height="300" :options="chartOptions" :series="series"></VueApexCharts>
                   </v-container>
 
                 </v-card>
@@ -59,7 +58,7 @@
                     tile
                     elevation="0"
                 >
-
+                  <VueApexCharts style="max-height: 50px" type="donut" :options="chartOptionsPie" :series="seriesPie"></VueApexCharts>
                 </v-card>
               </v-col>
               <v-col
@@ -110,25 +109,41 @@
                 </v-btn>
 
               </v-card-title>
-
-              <v-card elevation="0" tile class=" pa-1 pl-4" v-for="(workout,index) in workouts.slice(0,8)" :key="index" :style="getColor(workout.Exercise)" v-on:click="editDialog(workout)">
-                <div>
-                  <div>{{ workout.Exercise }}</div>
+              <v-responsive
+                  class="overflow-y-auto"
+                  max-height="608"
+              >
+                <v-card elevation="0" tile class="pa-3" v-for="(workout,index) in workouts" :key="index" :style="getColorBorder(workout.Exercise)" v-on:click="editDialog(workout)">
                   <v-row>
-                    <v-col>
-                      <div class="caption grey--text ma-0">Weight</div>
-                      <div>{{ workout.Weight }}</div>
+                    <v-col cols="5"
+                           sm="5"
+                           md="5">
+                      <v-chip
+                          class="ma-2"
+                          outlined
+                      >
+                        {{ workout.Exercise }}
+                      </v-chip>
                     </v-col>
-                    <v-col>
-                      <div class="caption grey--text ma-0">Reps</div>
-                      <div>{{ workout.Reps }}</div>
-                    </v-col><v-col>
-                    <div class="caption grey--text ma-0">Date</div>
-                    <div>{{ workout.Date }}</div>
-                  </v-col>
+                    <v-col cols="4"
+                           sm="4"
+                           md="4">
+                      <v-container>
+                        <div>22.Okt</div>
+                      </v-container>
+                    </v-col>
+                    <v-col cols="3"
+                           sm="3"
+                           md="3">
+                      <div>{{ workout.Weight }} kg</div>
+                      <div>{{ workout.Reps }} reps</div>
+                    </v-col>
                   </v-row>
-                </div>
-              </v-card>
+                  <v-row>
+                    <v-divider></v-divider>
+                  </v-row>
+                </v-card>
+              </v-responsive>
             </v-card>
           </v-col>
         </v-row>
@@ -199,7 +214,6 @@
           </v-card>
         </v-dialog>
       </v-container>
-
       <v-container>
         <v-dialog
             v-model="dialog"
@@ -309,6 +323,7 @@ export default {
         data: [11, 32, 45, 32, 34, 52, 41]
       }*/],
       chartOptions: {
+        colors: ['#7B1EA2'],
         chart: {
           height: 350,
           type: 'area',
@@ -331,6 +346,33 @@ export default {
           },
         },
       },
+
+      seriesPie: [8,3,12,15,7,9,4],
+      chartOptionsPie: {
+        chart: {
+          type: 'donut',
+        },
+        dataLabels: {
+          enabled: false
+        },
+        responsive: [{
+          breakpoint: 480,
+          options: {
+            chart: {
+              width: 200
+            },
+            legend: {
+              position: 'bottom'
+            }
+          }
+        }],
+        labels: ["Pullups", "Benchpress", "Squats", "Pushups", "Deadlift", "Dips", "Shoulderpress"],
+        colors:['#7B1EA2', '#00579B', '#D32F2F', '#F57E16','#0D47A0','#FE6F00','#43A047'],
+        title: {
+          text: "Sets in each exercise"
+        },
+      },
+
 
       editWorkout: {
         exercise: null,
@@ -379,11 +421,14 @@ export default {
       this.editDialig = false;
     },
     async workoutGraph(exercise) {
+      console.log(this.getColor(exercise));
       const chartWorkouts = await getWorkoutsFromExercise(exercise);
 
+
       this.chartOptions = {
+        colors: ['#7B1EA2'],
         chart: {
-          height: 350,
+          height: 300,
           type: 'area',
           toolbar: {
             show: false,
@@ -414,7 +459,7 @@ export default {
         this.chartOptions.xaxis.categories[i] = chartWorkouts[i].Date;
       }
     },
-    getColor(exercise) {
+    getColorBorder(exercise) {
       let color = null;
 
       for (let i = 0; i < this.exerciseList.length; i++) {
@@ -423,6 +468,17 @@ export default {
         }
       }
       return "border-left: 5px solid "+ color;
+    },
+    getColor(exercise) {
+      let color = null;
+
+      for (let i = 0; i < this.exerciseList.length; i++) {
+        if (exercise === this.exerciseList[i].exercise) {
+          color = this.exerciseList[i].color;
+        }
+      }
+      console.log(color);
+      return color;
     },
     myWorkouts() {
       router.push({name: 'workouts'})
