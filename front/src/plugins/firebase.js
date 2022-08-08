@@ -2,7 +2,7 @@ import firebase from 'firebase/compat/app';
 import "firebase/compat/auth"
 import "firebase/compat/firestore"
 import router from "@/router";
-import { getDocs, addDoc, deleteDoc, updateDoc, collection, query, where, orderBy, onSnapshot, doc, limit, startAfter } from "firebase/firestore";
+import { getDocs, addDoc, deleteDoc, updateDoc, collection, query, where, orderBy, onSnapshot, doc } from "firebase/firestore";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import storageService from "@/services/storageService";
 import store from "@/store";
@@ -35,28 +35,19 @@ export const getWorkouts = async () => {
     return workouts;
 }
 
-export const getWorkoutsBy = async (exercise, order, start) => {
+export const getWorkoutsBy = async (exercise, order) => {
     await getUser();
     const db1 = firebaseApp.firestore().collection('users').doc(storageService.getToken());
     const colRef = collection(db1, 'Workouts');
     let q = null;
-    if (start !== null) {
-        if (exercise === 'All Exercises') {
-            q = await query(colRef,orderBy(order, "desc"),limit(10));
-        } else {
-            q = await query(colRef,where("Exercise", "==", exercise), orderBy(order, "desc"));
-        }
+    if (exercise === 'All Exercises') {
+        q = await query(colRef,orderBy(order, "desc"));
     } else {
-        if (exercise === 'All Exercises') {
-            q = await query(colRef,orderBy(order, "desc"),limit(10), startAfter(start));
-        } else {
-            q = await query(colRef,where("Exercise", "==", exercise), orderBy(order, "desc"));
-        }
+        q = await query(colRef,where("Exercise", "==", exercise), orderBy(order, "desc"));
     }
     let workouts = [];
 
     await onSnapshot(q, snapshot => {
-        store.state.start = snapshot.docs[snapshot.docs.length - 1]
         snapshot.docs.forEach(doc => {
             workouts.push({...doc.data(), id: doc.id, doc: doc});
         })

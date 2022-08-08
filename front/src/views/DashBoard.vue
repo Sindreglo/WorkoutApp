@@ -252,7 +252,6 @@ import {
   deleteWorkout,
   editWorkout,
   getAddExercise, getExercises,
-  getWorkouts,
   getWorkoutsBy,
   getWorkoutsFromExercise
 } from "@/plugins/firebase";
@@ -331,7 +330,6 @@ export default {
   methods: {
     async Workouts() {
       this.workouts = await getWorkoutsBy(this.byExerciseSeleted, this.byOptionsSelected);
-      console.log(this.workouts);
     },
     editDialog(item) {
       this.editWorkout.exercise = item.Exercise;
@@ -357,7 +355,7 @@ export default {
         this.exercises.push(this.newWorkout.exercise);
       }
 
-      this.workouts = await getWorkouts();
+      await this.Workouts();
       this.newWorkout.exercise = null;
       this.newWorkout.weight = null;
       this.newWorkout.reps = null;
@@ -372,13 +370,13 @@ export default {
         this.editWorkout.weight = 0;
       }
       await editWorkout(this.editWorkout);
-      this.workouts = await getWorkouts();
+      await this.Workouts();
       this.editWorkout = [];
       this.editDialig = false;
     },
     async deleteWorkout() {
       await deleteWorkout(this.editWorkout.id);
-      this.workouts = await getWorkouts();
+      await this.Workouts();
       this.editDialig = false;
     },
     async workoutGraph(exercise) {
