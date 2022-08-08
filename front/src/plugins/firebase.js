@@ -2,7 +2,7 @@ import firebase from 'firebase/compat/app';
 import "firebase/compat/auth"
 import "firebase/compat/firestore"
 import router from "@/router";
-import { getDocs, addDoc, deleteDoc, updateDoc, collection, query, where, orderBy, onSnapshot, doc } from "firebase/firestore";
+import { getDocs, addDoc, deleteDoc, updateDoc, collection, query, where, orderBy, onSnapshot, doc, limit, startAfter } from "firebase/firestore";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import storageService from "@/services/storageService";
 import store from "@/store";
@@ -35,26 +35,33 @@ export const getWorkouts = async () => {
     return workouts;
 }
 
-export const getWorkoutsBy = async (exercise, order) => {
+export const getWorkoutsBy = async (exercise, order, start) => {
     await getUser();
     const db1 = firebaseApp.firestore().collection('users').doc(storageService.getToken());
     const colRef = collection(db1, 'Workouts');
     let q = null;
-    if (exercise === 'All Exercises') {
-        console.log("her1")
-        q = await query(colRef,orderBy(order, "desc"));
+    if (start !== null) {
+        if (exercise === 'All Exercises') {
+            q = await query(colRef,orderBy(order, "desc"),limit(10));
+        } else {
+            q = await query(colRef,where("Exercise", "==", exercise), orderBy(order, "desc"));
+        }
     } else {
-        console.log("her2")
-        q = await query(colRef,where("Exercise", "==", exercise), orderBy(order, "desc"));
+        if (exercise === 'All Exercises') {
+            q = await query(colRef,orderBy(order, "desc"),limit(10), startAfter(start));
+        } else {
+            q = await query(colRef,where("Exercise", "==", exercise), orderBy(order, "desc"));
+        }
     }
     let workouts = [];
 
     await onSnapshot(q, snapshot => {
+        store.state.start = snapshot.docs[snapshot.docs.length - 1]
         snapshot.docs.forEach(doc => {
-            workouts.push({...doc.data(), id: doc.id});
+            workouts.push({...doc.data(), id: doc.id, doc: doc});
         })
     })
-    console.log(workouts);
+
     return workouts;
 }
 
@@ -248,7 +255,6 @@ export const getUser = () => {
         } else {
             store.state.loggedInDisplayName = currentUser.displayName;
         }
-        console.log(currentUser);
         store.state.loggedIn = true;
         store.state.loggedInImageURL = currentUser.photoURL;
         return currentUser;

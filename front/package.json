@@ -16,6 +16,7 @@
     "vue-apexcharts": "^1.6.2",
     "vue-chartjs": "^4.1.1",
     "vue-google-login": "^2.0.5",
+    "vue-infinite-loading": "^2.4.5",
     "vue-router": "^3.5.1",
     "vue-toastification": "^1.7.14",
     "vuetify": "^2.6.0",

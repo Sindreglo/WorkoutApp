@@ -20,7 +20,7 @@
             <v-row align="center">
               <v-col
                   class="d-flex"
-                  cols="12"
+                  cols="6"
                   sm="4"
                   color="primary"
               >
@@ -89,6 +89,7 @@
 
           <v-card elevation="0" tile class="pa-3" v-for="(workout,index) in workouts" :key="index">
             <v-row class="project" v-on:click="editDialog(workout)">
+              <div> {{ lel }}</div>
               <v-col cols="4" md="4" xs="4">
                 <div class="caption grey--text">Exercise</div>
                 <div>{{ workout.Exercise }}</div>
@@ -111,7 +112,6 @@
             </v-row>
           </v-card>
         </v-card>
-
       </v-container>
 
       <!-- EditDialog -->
@@ -325,11 +325,13 @@ export default {
         date: null,
         id: null,
       },
+      lel: null,
     }
   },
   methods: {
     async Workouts() {
       this.workouts = await getWorkoutsBy(this.byExerciseSeleted, this.byOptionsSelected);
+      console.log(this.workouts);
     },
     editDialog(item) {
       this.editWorkout.exercise = item.Exercise;
@@ -424,7 +426,6 @@ export default {
   async created() {
     this.exerciseList = await getExercises();
     await this.Workouts();
-    console.log(this.workouts + "???");
 
     if(this.exerciseList.length > 0) {
       for (let i = 0; i < this.exerciseList.length; i++) {
