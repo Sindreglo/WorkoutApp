@@ -9,131 +9,112 @@
     ></v-progress-linear>
     <div v-else>
       <v-container>
-        <v-row>
-          <v-col
-              cols="12"
-              sm="12"
-              md="8"
-          >
-            <v-row>
+        <v-card
+            tile
+            elevation="0"
+            class="mb-5 rounded-lg"
+        >
+
+          <!-- Graph -->
+          <v-container>
+            <v-row align="center">
               <v-col
+                  class="d-flex"
                   cols="12"
-                  sm="12"
-                  md="12"
+                  sm="4"
+                  color="primary"
               >
-                <v-card
-                    class="pa-2"
-                    tile
-                    elevation="0"
-                >
-                  <v-container>
-                    <v-row align="center">
-                      <v-col
-                          class="d-flex"
-                          cols="12"
-                          sm="4"
-                          color="primary"
-                      >
-                        <v-select
-                            :items="exercises"
-                            v-model="selectedExercise"
-                            v-on:change="workoutGraph(selectedExercise)"
-                            label="No exercises"
-                            dense
-                            solo
-                        ></v-select>
-                      </v-col>
-                    </v-row>
-                    <VueApexCharts type="area" height="350" :options="chartOptions" :series="series"></VueApexCharts>
-                  </v-container>
-
-                </v-card>
-              </v-col>
-              <v-col
-                  cols="6"
-                  sm="6"
-                  md="6"
-              >
-                <v-card
-                    class="pa-2 boxComponent"
-                    tile
-                    elevation="0"
-                >
-
-                </v-card>
-              </v-col>
-              <v-col
-                  cols="6"
-                  sm="6"
-                  md="6"
-              >
-                <v-card
-                    class="boxComponent"
-                    tile
-                    elevation="0"
-                >
-
-                </v-card>
+                <v-select
+                    :items="exercises"
+                    v-model="selectedExercise"
+                    v-on:change="workoutGraph(selectedExercise)"
+                    label="No exercises"
+                    dense
+                    solo
+                ></v-select>
               </v-col>
             </v-row>
-          </v-col>
-          <v-col
-              cols="12"
-              sm="12"
-              md="4"
-          >
-            <v-card
-                tile
-                elevation="0"
+            <VueApexCharts type="area" height="350" :options="chartOptions" :series="series"></VueApexCharts>
+          </v-container>
+        </v-card>
+
+        <!-- List -->
+        <v-card
+            tile
+            elevation="0"
+        >
+          <v-card-title>
+            <span class="text-h8">User Activity</span>
+            <v-spacer></v-spacer>
+
+            <v-btn
+                class="mx-2"
+                fab
+                small
+                dark
+                color="primary"
+                v-on:click="dialog=true"
             >
-              <v-card-title class="primary white--text">
-                <span class="text-h8">User Activity</span>
+              <v-icon dark>
+                mdi-plus
+              </v-icon>
+            </v-btn>
 
-                <v-spacer></v-spacer>
-                <v-btn
-                    dark
-                    color="primary"
-                    v-on:click="myWorkouts"
-                    elevation="0">View All</v-btn>
+          </v-card-title>
 
-                <v-btn
-                    class="mx-2"
-                    fab
-                    dark
-                    small
-                    color="orange"
-                    v-on:click="dialog=true"
-                >
-                  <v-icon dark>
-                    mdi-plus
-                  </v-icon>
-                </v-btn>
+          <v-card-actions>
+            <v-row>
+              <v-col cols="8" md="3" xs="6">
+                <v-select
+                    :items="byExercise"
+                    v-model="byExerciseSeleted"
+                    label="Solo field"
+                    @change="Workouts"
+                    solo
+                    dense
+                ></v-select>
+              </v-col>
+              <v-col cols="4" md="3" xs="3">
+                <v-select
+                    :items="byOptions"
+                    v-model="byOptionsSelected"
+                    @change="Workouts"
+                    label="Solo field"
+                    solo
+                    dense
+                ></v-select>
+              </v-col>
+            </v-row>
+          </v-card-actions>
 
-              </v-card-title>
+          <v-card elevation="0" tile class="pa-3" v-for="(workout,index) in workouts" :key="index">
+            <v-row class="project" v-on:click="editDialog(workout)">
+              <v-col cols="4" md="4" xs="4">
+                <div class="caption grey--text">Exercise</div>
+                <div>{{ workout.Exercise }}</div>
+              </v-col>
+              <v-col cols="4" md="4" xs="4">
+                <div class="caption grey--text">Date</div>
+                <div>{{ workout.Date }}</div>
+              </v-col>
+              <v-col cols="2" md="2" xs="2">
+                <div class="caption grey--text">Weight</div>
+                <div>{{ workout.Weight }}</div>
+              </v-col>
+              <v-col cols="2" md="2" xs="2">
+                <div class="caption grey--text">Reps</div>
+                <div>{{ workout.Reps }}</div>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-divider></v-divider>
+            </v-row>
+          </v-card>
+        </v-card>
 
-              <v-card elevation="0" tile class=" pa-1 pl-4" v-for="(workout,index) in workouts.slice(0,8)" :key="index" :style="getColor(workout.Exercise)" v-on:click="editDialog(workout)">
-                <div>
-                  <div>{{ workout.Exercise }}</div>
-                  <v-row>
-                    <v-col>
-                      <div class="caption grey--text ma-0">Weight</div>
-                      <div>{{ workout.Weight }}</div>
-                    </v-col>
-                    <v-col>
-                      <div class="caption grey--text ma-0">Reps</div>
-                      <div>{{ workout.Reps }}</div>
-                    </v-col><v-col>
-                    <div class="caption grey--text ma-0">Date</div>
-                    <div>{{ workout.Date }}</div>
-                  </v-col>
-                  </v-row>
-                </div>
-              </v-card>
-            </v-card>
-          </v-col>
-        </v-row>
       </v-container>
 
+      <!-- EditDialog -->
       <v-container fluid class="my-5">
         <v-dialog
             v-model="editDialig"
@@ -200,6 +181,7 @@
         </v-dialog>
       </v-container>
 
+      <!-- NewDialog -->
       <v-container>
         <v-dialog
             v-model="dialog"
@@ -271,9 +253,9 @@ import {
   editWorkout,
   getAddExercise, getExercises,
   getWorkouts,
+  getWorkoutsBy,
   getWorkoutsFromExercise
 } from "@/plugins/firebase";
-import router from "@/router";
 import store from "@/store";
 
 export default {
@@ -283,6 +265,10 @@ export default {
   data() {
     return {
       loading: true,
+      byExercise: ['All Exercises'],
+      byExerciseSeleted: 'All Exercises',
+      byOptions: ['Date', 'Weight', 'Reps'],
+      byOptionsSelected: 'Date',
 
       email: '',
       workouts: null,
@@ -304,10 +290,10 @@ export default {
       series: [{
         name: 'Weight',
         data: []
-      }, /** {
-        name: 'series2',
-        data: [11, 32, 45, 32, 34, 52, 41]
-      }*/],
+      }, {
+        name: 'Reps',
+        data: []
+      }],
       chartOptions: {
         chart: {
           height: 350,
@@ -342,6 +328,9 @@ export default {
     }
   },
   methods: {
+    async Workouts() {
+      this.workouts = await getWorkoutsBy(this.byExerciseSeleted, this.byOptionsSelected);
+    },
     editDialog(item) {
       this.editWorkout.exercise = item.Exercise;
       this.editWorkout.reps = item.Reps;
@@ -351,6 +340,12 @@ export default {
       this.editDialig = true;
     },
     async addNew() {
+      if (this.newWorkout.reps === null) {
+        this.newWorkout.reps = 0;
+      }
+      if (this.newWorkout.weight === null) {
+        this.newWorkout.weight = 0;
+      }
 
       await addWorkout(this.newWorkout.exercise, this.newWorkout.reps, this.newWorkout.weight, this.newWorkout.date);
       await getAddExercise(this.newWorkout.exercise);
@@ -368,6 +363,12 @@ export default {
       this.dialog = false;
     },
     async editThisWorkout() {
+      if (this.editWorkout.reps === "") {
+        this.editWorkout.reps = 0;
+      }
+      if (this.editWorkout.weight === "") {
+        this.editWorkout.weight = 0;
+      }
       await editWorkout(this.editWorkout);
       this.workouts = await getWorkouts();
       this.editWorkout = [];
@@ -407,34 +408,28 @@ export default {
       }
 
       this.series[0].data = [];
+      this.series[1].data = [];
       this.chartOptions.xaxis.categories = [];
 
       for (let i = 0; i < chartWorkouts.length; i++) {
         this.series[0].data[i] = chartWorkouts[i].Weight;
         this.chartOptions.xaxis.categories[i] = chartWorkouts[i].Date;
       }
-    },
-    getColor(exercise) {
-      let color = null;
-
-      for (let i = 0; i < this.exerciseList.length; i++) {
-        if (exercise === this.exerciseList[i].exercise) {
-          color = this.exerciseList[i].color;
-        }
+      for (let i = 0; i < chartWorkouts.length; i++) {
+        this.series[1].data[i] = chartWorkouts[i].Reps;
+        this.chartOptions.xaxis.categories[i] = chartWorkouts[i].Date;
       }
-      return "border-left: 5px solid "+ color;
-    },
-    myWorkouts() {
-      router.push({name: 'workouts'})
     },
   },
   async created() {
-    this.workouts = await getWorkouts();
     this.exerciseList = await getExercises();
+    await this.Workouts();
+    console.log(this.workouts + "???");
 
     if(this.exerciseList.length > 0) {
       for (let i = 0; i < this.exerciseList.length; i++) {
         this.exercises[i] = this.exerciseList[i].exercise;
+        this.byExercise.push(this.exerciseList[i].exercise);
       }
 
       this.selectedExercise = this.exercises[0];
@@ -453,8 +448,4 @@ export default {
 </script>
 
 <style scoped>
-
-.boxComponent {
-  min-height: 187px;
-}
 </style>

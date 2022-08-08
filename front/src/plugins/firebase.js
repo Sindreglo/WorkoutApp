@@ -35,11 +35,34 @@ export const getWorkouts = async () => {
     return workouts;
 }
 
+export const getWorkoutsBy = async (exercise, order) => {
+    await getUser();
+    const db1 = firebaseApp.firestore().collection('users').doc(storageService.getToken());
+    const colRef = collection(db1, 'Workouts');
+    let q = null;
+    if (exercise === 'All Exercises') {
+        console.log("her1")
+        q = await query(colRef,orderBy(order, "desc"));
+    } else {
+        console.log("her2")
+        q = await query(colRef,where("Exercise", "==", exercise), orderBy(order, "desc"));
+    }
+    let workouts = [];
+
+    await onSnapshot(q, snapshot => {
+        snapshot.docs.forEach(doc => {
+            workouts.push({...doc.data(), id: doc.id});
+        })
+    })
+    console.log(workouts);
+    return workouts;
+}
+
 export const addWorkout = async (exercise, reps, weight, date) => {
     const db1 = firebaseApp.firestore().collection('users').doc(storageService.getToken());
     await addDoc(collection(db1, 'Workouts'), {
-        Reps: reps,
-        Weight: weight,
+        Reps: Number(reps),
+        Weight: Number(weight),
         Exercise: exercise,
         Date: date,
     })
@@ -52,8 +75,8 @@ export const editWorkout= async (workout) => {
 
     await updateDoc(exRef, {
         Exercise: workout.exercise,
-        Weight: workout.weight,
-        Reps: workout.reps,
+        Weight: Number(workout.weight),
+        Reps: Number(workout.reps),
         Date: workout.date,
     })
 }

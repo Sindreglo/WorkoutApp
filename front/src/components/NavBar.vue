@@ -2,10 +2,6 @@
   <nav>
     <v-app-bar flat app>
       <v-app-bar-nav-icon class="grey--text" @click="drawer = !drawer"></v-app-bar-nav-icon>
-      <v-toolbar-title class="text-uppercase grey--text">
-        <span class="font-weight-light">Work</span>
-        <span>Out</span>
-      </v-toolbar-title>
       <v-spacer></v-spacer>
 
       <v-menu v-if="loggedIn === true" offset-y>
@@ -36,9 +32,10 @@
     <v-navigation-drawer app v-model="drawer" class="primary">
       <v-layout column align-center>
         <v-flex class="mt-5">
-          <v-avatar size="56" color="accent">
-            <v-icon class="white--text">mdi-account</v-icon>
-          </v-avatar>
+          <v-toolbar-title class="text-uppercase white--text">
+            <span class="font-weight-light">Work</span>
+            <span>Out</span>
+          </v-toolbar-title>
         </v-flex>
       </v-layout>
       <v-list>

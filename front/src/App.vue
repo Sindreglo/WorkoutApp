@@ -2,7 +2,7 @@
   <v-app class="grey lighten-4">
     <NavBar />
     <v-main class="grey lighten-4">
-      <router-view class="mx-4 mbr-4"/>
+      <router-view class="mx-0 mbr-4"/>
     </v-main>
   </v-app>
 </template>
