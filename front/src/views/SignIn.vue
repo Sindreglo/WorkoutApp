@@ -19,6 +19,18 @@
         <v-card-actions>
           <v-btn width="100%" rounded color="primary" v-on:click="signInWithGoogle">
             Sign in with Google</v-btn>
+
+          <v-btn
+              color="#4284F3"
+              dark
+          >
+            <v-icon
+                right
+                dark
+            >
+              mdi-google
+            </v-icon>
+          </v-btn>
         </v-card-actions>
       </v-card>
     </form>

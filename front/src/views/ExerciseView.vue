@@ -5,6 +5,7 @@
         :active="loading"
         :indeterminate="loading"
         absolute
+        top
         color="primary"
     ></v-progress-linear>
     <div v-else>

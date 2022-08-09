@@ -5,6 +5,7 @@
         :active="loading"
         :indeterminate="loading"
         absolute
+        top
         color="primary"
     ></v-progress-linear>
     <div v-else>
@@ -87,7 +88,19 @@
             </v-row>
           </v-card-actions>
 
-          <v-card elevation="0" tile class="pa-3" v-for="(workout,index) in workouts" :key="index">
+          <v-container v-if="selectLoading">
+            <v-skeleton-loader
+                type="list-item-two-line,divider"
+            ></v-skeleton-loader>
+            <v-skeleton-loader
+                type="list-item-two-line,divider"
+            ></v-skeleton-loader>
+            <v-skeleton-loader
+                type="list-item-two-line,divider"
+            ></v-skeleton-loader>
+          </v-container>
+
+          <v-card v-else elevation="0" tile class="pa-3" v-for="(workout,index) in workouts" :key="index">
             <v-row class="project" v-on:click="editDialog(workout)">
               <div> {{ lel }}</div>
               <v-col cols="4" md="4" xs="4">
@@ -278,6 +291,7 @@ export default {
       exercises: [],
       exerciseList: [],
       selectedExercise: null,
+      selectLoading: false,
 
       newWorkout: {
         exercise: null,
@@ -329,7 +343,9 @@ export default {
   },
   methods: {
     async Workouts() {
+      this.selectLoading = true;
       this.workouts = await getWorkoutsBy(this.byExerciseSeleted, this.byOptionsSelected);
+      this.selectLoading = false;
     },
     editDialog(item) {
       this.editWorkout.exercise = item.Exercise;
