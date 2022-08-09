@@ -1,7 +1,7 @@
 <template>
   <div>
     <form @submit.prevent="signUp">
-      <v-card width="500" class="mx-auto mt-9">
+      <v-card width="500" class="mx-auto mt-9" color="component">
         <v-card-title>Register new user</v-card-title>
         <v-card-text>
           <v-text-field type="text" prepend-icon="mdi-account" label="Username" v-model="username"></v-text-field>

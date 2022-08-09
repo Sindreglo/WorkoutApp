@@ -1,12 +1,9 @@
 <template>
   <nav>
-    <v-app-bar flat app>
+    <v-app-bar flat app class="background">
       <v-app-bar-nav-icon class="grey--text" @click="drawer = !drawer"></v-app-bar-nav-icon>
-      <v-btn
-      text
-      @click="$vuetify.theme.dark !== $vuetify.theme.dark"
-      >
-        <span class="mr-2">Dark Mode</span>
+      <v-btn icon @click="toggle_dark_mode">
+        <v-icon>mdi-brightness-6</v-icon>
       </v-btn>
       <v-spacer></v-spacer>
 
@@ -84,10 +81,33 @@ export default {
       ],
     }
   },
+  mounted() {
+    const theme = localStorage.getItem("dark_theme");
+    if (theme) {
+      if (theme === "true") {
+        this.$vuetify.theme.dark = true;
+      } else {
+        this.$vuetify.theme.dark = false;
+      }
+    } else if (
+        window.matchMedia &&
+        window.matchMedia("(prefers-color-scheme: dark)").matches
+    ) {
+      this.$vuetify.theme.dark = true;
+      localStorage.setItem(
+          "dark_theme",
+          this.$vuetify.theme.dark.toString()
+      );
+    }
+  },
   methods: {
     async signOut() {
       await signOut();
     },
+    toggle_dark_mode() {
+      this.$vuetify.theme.dark = !this.$vuetify.theme.dark;
+      localStorage.setItem("dark_theme", this.$vuetify.theme.dark.toString());
+    }
   },
   computed: {
     status() {

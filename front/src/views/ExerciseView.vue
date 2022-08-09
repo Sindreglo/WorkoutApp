@@ -69,7 +69,7 @@
           </v-dialog>
         </v-container>
 
-        <v-card tile class="pa-3" v-for="(exercise,index) in exercises" :key="index">
+        <v-card color="component" tile class="pa-3" v-for="(exercise,index) in exercises" :key="index">
           <v-row class="project" :style="getColor(exercise)" v-on:click="editDialog(exercise)">
             <v-col cols="12" md="6">
               <div class="caption grey--text">Exercise</div>

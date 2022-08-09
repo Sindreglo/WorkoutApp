@@ -11,6 +11,7 @@
     <div v-else>
       <v-container>
         <v-card
+            color="component"
             tile
             elevation="0"
             class="mb-5 rounded-lg"
@@ -26,6 +27,7 @@
                   color="primary"
               >
                 <v-select
+                    background-color="component"
                     :items="exercises"
                     v-model="selectedExercise"
                     v-on:change="workoutGraph(selectedExercise)"
@@ -43,6 +45,8 @@
         <v-card
             tile
             elevation="0"
+            color="component"
+            class="rounded-lg"
         >
           <v-card-title>
             <span class="text-h8">User Activity</span>
@@ -67,6 +71,7 @@
             <v-row>
               <v-col cols="8" md="3" xs="6">
                 <v-select
+                    background-color="component"
                     :items="byExercise"
                     v-model="byExerciseSeleted"
                     label="Solo field"
@@ -77,6 +82,7 @@
               </v-col>
               <v-col cols="4" md="3" xs="3">
                 <v-select
+                    background-color="component"
                     :items="byOptions"
                     v-model="byOptionsSelected"
                     @change="Workouts"
@@ -100,7 +106,7 @@
             ></v-skeleton-loader>
           </v-container>
 
-          <v-card v-else elevation="0" tile class="pa-3" v-for="(workout,index) in workouts" :key="index">
+          <v-card color="component" v-else elevation="0" tile class="pa-3" v-for="(workout,index) in workouts" :key="index">
             <v-row class="project" v-on:click="editDialog(workout)">
               <v-col cols="4" md="4" xs="4">
                 <div class="caption grey--text">Exercise</div>
@@ -312,10 +318,20 @@ export default {
           type: 'area',
           toolbar: {
             show: false,
-          }
+          },
+        },
+        theme: {
+          mode: 'component',
+          palette: 'palette1',
+          monochrome: {
+            enabled: false,
+            color: '#255aee',
+            shadeTo: 'light',
+            shadeIntensity: 0.65
+          },
         },
         dataLabels: {
-          enabled: false
+          enabled: false,
         },
         stroke: {
         },
@@ -324,6 +340,7 @@ export default {
           categories: []
         },
         tooltip: {
+          theme: 'component',
           x: {
             format: 'dd/MM/yy'
           },
@@ -404,6 +421,16 @@ export default {
             show: false,
           }
         },
+        theme: {
+          mode: 'component',
+          palette: 'palette1',
+          monochrome: {
+            enabled: false,
+            color: '#255aee',
+            shadeTo: 'light',
+            shadeIntensity: 0.65
+          },
+        },
         dataLabels: {
           enabled: false
         },
@@ -415,6 +442,7 @@ export default {
           categories: []
         },
         tooltip: {
+          theme: 'background',
           x: {
             format: 'dd/MM/yy'
           },
