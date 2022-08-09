@@ -2,6 +2,12 @@
   <nav>
     <v-app-bar flat app>
       <v-app-bar-nav-icon class="grey--text" @click="drawer = !drawer"></v-app-bar-nav-icon>
+      <v-btn
+      text
+      @click="$vuetify.theme.dark !== $vuetify.theme.dark"
+      >
+        <span class="mr-2">Dark Mode</span>
+      </v-btn>
       <v-spacer></v-spacer>
 
       <v-menu v-if="loggedIn === true" offset-y>

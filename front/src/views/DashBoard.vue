@@ -102,7 +102,6 @@
 
           <v-card v-else elevation="0" tile class="pa-3" v-for="(workout,index) in workouts" :key="index">
             <v-row class="project" v-on:click="editDialog(workout)">
-              <div> {{ lel }}</div>
               <v-col cols="4" md="4" xs="4">
                 <div class="caption grey--text">Exercise</div>
                 <div>{{ workout.Exercise }}</div>
@@ -338,7 +337,6 @@ export default {
         date: null,
         id: null,
       },
-      lel: null,
     }
   },
   methods: {
