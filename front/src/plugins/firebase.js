@@ -3,7 +3,7 @@ import "firebase/compat/auth"
 import "firebase/compat/firestore"
 import router from "@/router";
 import { getDocs, addDoc, deleteDoc, updateDoc, collection, query, where, orderBy, onSnapshot, doc } from "firebase/firestore";
-import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { GoogleAuthProvider, FacebookAuthProvider, signInWithPopup,getAuth } from "firebase/auth";
 import storageService from "@/services/storageService";
 import store from "@/store";
 
@@ -207,6 +207,27 @@ export const signInGoogle = async () => {
     } catch (err) {
         console.log(err)
     }
+}
+
+export const signInFacebook = async () => {
+    const provider = new FacebookAuthProvider();
+    const auth = getAuth();
+    signInWithPopup(auth, provider)
+        .then((result) => {
+            // The signed-in user info.
+            const user = result.user;
+            console.log(user);
+
+            // This gives you a Facebook Access Token. You can use it to access the Facebook API.
+            const credential = FacebookAuthProvider.credentialFromResult(result);
+            const accessToken = credential.accessToken;
+            console.log(accessToken);
+
+            // ...
+        })
+        .catch((error) => {
+            console.log(error.message);
+        });
 }
 
 export const signIn = (email, password) => {

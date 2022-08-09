@@ -17,18 +17,27 @@
         </v-card-actions>
         <v-divider></v-divider>
         <v-card-actions>
-          <v-btn width="100%" rounded color="primary" v-on:click="signInWithGoogle">
-            Sign in with Google</v-btn>
-
           <v-btn
-              color="#4284F3"
+              color="#E04931"
+              width="49%"
               dark
+              v-on:click="signInWithGoogle"
           >
             <v-icon
-                right
-                dark
             >
               mdi-google
+            </v-icon>
+          </v-btn>
+          <v-spacer></v-spacer>
+          <v-btn
+              width="49%"
+              color="#0C92F3"
+              dark
+              v-on:click="signInWithFacebook"
+          >
+            <v-icon
+            >
+              mdi-facebook
             </v-icon>
           </v-btn>
         </v-card-actions>
@@ -38,7 +47,7 @@
 </template>
 
 <script>
-import {signIn, signInGoogle} from "@/plugins/firebase";
+import {signIn, signInGoogle, signInFacebook} from "@/plugins/firebase";
 import router from "@/router";
 
 export default {
@@ -59,6 +68,9 @@ export default {
     },
     signInWithGoogle() {
       signInGoogle();
+    },
+    signInWithFacebook() {
+      signInFacebook();
     },
   }
 }
