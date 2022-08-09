@@ -4,6 +4,14 @@
       <v-card width="500" class="mx-auto mt-9" color="component">
         <v-card-title>Login</v-card-title>
         <v-card-text>
+          <div class=" text-subtitle-1">
+            Login with test user or create your own.
+          </div>
+
+          <div>Email: user@gmail.com</div>
+          <div>Password: password</div>
+        </v-card-text>
+        <v-card-text>
           <v-text-field type="email" prepend-icon="mdi-account" label="Email" v-model="email"></v-text-field>
           <v-text-field :type="showPassword ? 'text' : 'password'"
                         prepend-icon="mdi-lock"
