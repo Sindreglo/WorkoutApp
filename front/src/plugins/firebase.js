@@ -3,7 +3,7 @@ import "firebase/compat/auth"
 import "firebase/compat/firestore"
 import router from "@/router";
 import { getDocs, addDoc, deleteDoc, updateDoc, collection, query, where, orderBy, onSnapshot, doc } from "firebase/firestore";
-import { GoogleAuthProvider, FacebookAuthProvider, signInWithPopup,getAuth } from "firebase/auth";
+import { GoogleAuthProvider, FacebookAuthProvider, signInWithPopup } from "firebase/auth";
 import storageService from "@/services/storageService";
 import store from "@/store";
 
@@ -132,19 +132,17 @@ export const signInGoogle = async () => {
 
 export const signInFacebook = async () => {
     const provider = new FacebookAuthProvider();
-    const auth = getAuth();
-    signInWithPopup(auth, provider)
-        .then((result) => {
-            // The signed-in user info.
-            const user = result.user;
-            console.log(user);
-
-            // This gives you a Facebook Access Token. You can use it to access the Facebook API.
-            const credential = FacebookAuthProvider.credentialFromResult(result);
-            const accessToken = credential.accessToken;
-            console.log(accessToken);
-
-            // ...
+    signInWithPopup(firebaseApp.auth(), provider)
+        .then(r => {
+            db.collection('users').doc(firebaseApp.auth().currentUser.uid).set({
+                email: r.user.email,
+                displayName: r.user.displayName,
+            }).then(e => {
+                console.log(e);
+                storageService.setToken(r.user.uid);
+                router.push({name: 'dashboard', params: {login: 'loggingIn'}});
+            })
+            console.log(r);
         })
         .catch((error) => {
             console.log(error.message);
@@ -183,6 +181,7 @@ export const signOut = () => {
 export const getUser = () => {
     try {
         let currentUser = firebaseApp.auth().currentUser;
+        console.log(currentUser = firebaseApp.auth().currentUser);
         if (currentUser.displayName === null) {
             store.state.loggedInDisplayName = currentUser.email;
         } else {
