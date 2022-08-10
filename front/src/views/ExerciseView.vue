@@ -93,7 +93,6 @@ import {getExercises, editExercise, deleteExercise} from "@/plugins/firebase";
     data() {
       return {
         loading: true,
-        exercises: [],
 
         editDialig: false,
         editItem: {

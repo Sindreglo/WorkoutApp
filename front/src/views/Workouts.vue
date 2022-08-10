@@ -176,11 +176,9 @@
 
 <script>
 import {
-  addWorkout,
   deleteWorkout,
   editWorkout,
   getAddExercise, getExercises,
-  getWorkouts,
   getWorkoutsFromExercise
 } from "@/plugins/firebase";
 
@@ -235,7 +233,7 @@ export default {
         this.exercises.push(this.newWorkout.exercise);
       }
 
-      this.workouts = await getWorkouts();
+      this.workouts = this.getWorkouts();
       this.newWorkout.exercise = null;
       this.newWorkout.weight = null;
       this.newWorkout.reps = null;
@@ -244,13 +242,13 @@ export default {
     },
     async editThisWorkout() {
       await editWorkout(this.editWorkout);
-      this.workouts = await getWorkouts();
+      this.workouts = this.getWorkouts();
       this.editWorkout = [];
       this.editDialig = false;
     },
     async deleteWorkout() {
       await deleteWorkout(this.editWorkout.id);
-      this.workouts = await getWorkouts();
+      this.workouts = this.getWorkouts();
       this.editDialig = false;
     },
     async workoutGraph(exercise) {
@@ -301,7 +299,7 @@ export default {
     }
   },
   async created() {
-    this.workouts = await getWorkouts();
+    this.workouts = this.getWorkouts();
     this.exerciseList = await getExercises();
     if(this.exerciseList.length > 0) {
       for (let i = 0; i < this.exerciseList.length; i++) {

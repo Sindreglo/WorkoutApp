@@ -28,13 +28,14 @@
               >
                 <v-select
                     background-color="component"
-                    :items="exercises"
+                    :items="exerciseList"
                     v-model="selectedExercise"
                     v-on:change="workoutGraph(selectedExercise)"
+                    item-text="exercise"
                     label="No exercises"
                     dense
                     solo
-                ></v-select>
+                />
               </v-col>
             </v-row>
             <VueApexCharts type="area" height="350" :options="chartOptions" :series="series"></VueApexCharts>
@@ -74,8 +75,9 @@
                     background-color="component"
                     :items="byExercise"
                     v-model="byExerciseSeleted"
+                    item-text="exercise"
                     label="Solo field"
-                    @change="Workouts"
+                    @change="getWorkouts"
                     solo
                     dense
                 ></v-select>
@@ -85,7 +87,7 @@
                     background-color="component"
                     :items="byOptions"
                     v-model="byOptionsSelected"
-                    @change="Workouts"
+                    @change="getWorkouts"
                     label="Solo field"
                     solo
                     dense
@@ -171,9 +173,10 @@
             <v-card>
               <v-card-text>
                 <v-combobox
-                    :items="exercises"
+                    :items="exerciseList"
                     v-model="editWorkout.exercise"
                     label="Exercise"
+                    item-text="exercise"
                     outlined
                 ></v-combobox>
                 <v-text-field
@@ -223,7 +226,7 @@
                 <v-btn
                     dark
                     text
-                    @click="addNew"
+                    @click="addWorkout"
                 >
                   Save
                 </v-btn>
@@ -232,11 +235,13 @@
             <v-card>
               <v-card-text>
                 <v-combobox
-                    :items="exercises"
+                    :items="exerciseList"
                     v-model="newWorkout.exercise"
                     label="Exercise"
+                    item-text="exercise"
                     outlined
                 ></v-combobox>
+
                 <v-text-field
                     label="Weight"
                     v-model="newWorkout.weight"
@@ -266,14 +271,10 @@
 <script>
 import VueApexCharts from "vue-apexcharts";
 import {
-  addWorkout,
-  deleteWorkout,
-  editWorkout,
-  getAddExercise, getExercises,
-  getWorkoutsBy,
-  getWorkoutsFromExercise
+  db, getUser, getWorkoutsFromExercise,
 } from "@/plugins/firebase";
 import store from "@/store";
+import storageService from "@/services/storageService";
 
 export default {
   name: "DashBoard2",
@@ -282,18 +283,15 @@ export default {
   data() {
     return {
       loading: true,
-      byExercise: ['All Exercises'],
       byExerciseSeleted: 'All Exercises',
       byOptions: ['Date', 'Weight', 'Reps'],
       byOptionsSelected: 'Date',
 
-      email: '',
-      workouts: null,
+      workouts: [],
 
       dialog: false,
       editDialig: false,
 
-      exercises: [],
       exerciseList: [],
       selectedExercise: null,
       selectLoading: false,
@@ -356,11 +354,80 @@ export default {
       },
     }
   },
+  computed: {
+    byExercise() {
+      return [{exercise: 'All Exercises'}].concat(this.exerciseList)
+    },
+  },
   methods: {
-    async Workouts() {
-      this.selectLoading = true;
-      this.workouts = await getWorkoutsBy(this.byExerciseSeleted, this.byOptionsSelected);
-      this.selectLoading = false;
+    async getExercises() {
+      db.collection('users').doc(storageService.getToken()).collection('Exercises')
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.exerciseList.push({
+                ...doc.data(),
+              })
+            });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
+          });
+    },
+    async addExercise() {
+      let exercises = [];
+      db.collection('users').doc(storageService.getToken()).collection('Exercises').where('exercise', '==', this.newWorkout.exercise)
+          .get().then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          exercises.push({
+            ...doc.data()
+          })
+        });
+      })
+      if (exercises.length === 0) {
+        const ex = {
+          exercise: this.newWorkout.exercise,
+          color: '#00000000',
+        }
+        await db.collection('users').doc(storageService.getToken()).collection('Exercises').add(ex)
+      }
+    },
+    async getWorkouts() {
+      if (this.byExerciseSeleted === 'All Exercises') {
+        db.collection('users').doc(storageService.getToken()).collection('Workouts').orderBy(this.byOptionsSelected, "desc")
+            .get()
+            .then((querySnapshot) => {
+              getUser();
+              this.loading = false;
+              this.workouts = [];
+              querySnapshot.forEach((doc) => {
+                this.workouts.push({
+                  ...doc.data(),
+                  id: doc.id,
+                })
+              });
+            })
+            .catch((error) => {
+              console.log("Error getting documents: ", error);
+            });
+      } else {
+        db.collection('users').doc(storageService.getToken()).collection('Workouts').orderBy(this.byOptionsSelected, "desc").where("Exercise", "==", this.byExerciseSeleted)
+            .get()
+            .then((querySnapshot) => {
+              getUser();
+              this.loading = false;
+              this.workouts = [];
+              querySnapshot.forEach((doc) => {
+                this.workouts.push({
+                  ...doc.data(),
+                  id: doc.id,
+                })
+              });
+            })
+            .catch((error) => {
+              console.log("Error getting documents: ", error);
+            });
+      }
     },
     editDialog(item) {
       this.editWorkout.exercise = item.Exercise;
@@ -370,23 +437,24 @@ export default {
       this.editWorkout.id = item.id;
       this.editDialig = true;
     },
-    async addNew() {
+    async addWorkout() {
       if (this.newWorkout.reps === null) {
         this.newWorkout.reps = 0;
       }
       if (this.newWorkout.weight === null) {
         this.newWorkout.weight = 0;
       }
-
-      await addWorkout(this.newWorkout.exercise, this.newWorkout.reps, this.newWorkout.weight, this.newWorkout.date);
-      await getAddExercise(this.newWorkout.exercise);
-
-
-      if (!this.exercises.includes(this.newWorkout.exercise)) {
-        this.exercises.push(this.newWorkout.exercise);
+      const wo = {
+        Reps: Number(this.newWorkout.reps),
+        Weight: Number(this.newWorkout.weight),
+        Exercise: this.newWorkout.exercise,
+        Date: this.newWorkout.date,
       }
 
-      await this.Workouts();
+      await db.collection('users').doc(storageService.getToken()).collection('Workouts').add(wo)
+      await this.addExercise();
+      await this.getWorkouts();
+      await this.getExercises();
       this.newWorkout.exercise = null;
       this.newWorkout.weight = null;
       this.newWorkout.reps = null;
@@ -400,19 +468,29 @@ export default {
       if (this.editWorkout.weight === "") {
         this.editWorkout.weight = 0;
       }
-      await editWorkout(this.editWorkout);
-      await this.Workouts();
+      const wo = {
+        Reps: Number(this.editWorkout.reps),
+        Weight: Number(this.editWorkout.weight),
+        Exercise: this.editWorkout.exercise,
+        Date: this.editWorkout.date,
+      }
+
+      await db.collection('users').doc(storageService.getToken()).collection('Workouts').doc(this.editWorkout.id).update(wo)
+      await this.getWorkouts();
       this.editWorkout = [];
       this.editDialig = false;
     },
     async deleteWorkout() {
-      await deleteWorkout(this.editWorkout.id);
-      await this.Workouts();
+      try {
+        await db.collection('users').doc(storageService.getToken()).collection('Workouts').doc(this.editWorkout.id).delete();
+      } catch (err) {
+        console.log(err);
+      }
+      await this.getWorkouts();
       this.editDialig = false;
     },
     async workoutGraph(exercise) {
       const chartWorkouts = await getWorkoutsFromExercise(exercise);
-
       this.chartOptions = {
         chart: {
           height: 350,
@@ -448,11 +526,9 @@ export default {
           },
         },
       }
-
       this.series[0].data = [];
       this.series[1].data = [];
       this.chartOptions.xaxis.categories = [];
-
       for (let i = 0; i < chartWorkouts.length; i++) {
         this.series[0].data[i] = chartWorkouts[i].Weight;
         this.chartOptions.xaxis.categories[i] = chartWorkouts[i].Date;
@@ -464,26 +540,14 @@ export default {
     },
   },
   async created() {
-    this.exerciseList = await getExercises();
-    await this.Workouts();
-
-    if(this.exerciseList.length > 0) {
-      for (let i = 0; i < this.exerciseList.length; i++) {
-        this.exercises[i] = this.exerciseList[i].exercise;
-        this.byExercise.push(this.exerciseList[i].exercise);
-      }
-
-      this.selectedExercise = this.exercises[0];
-      await this.workoutGraph(this.exercises[0]);
-    }
-
+    await this.getExercises();
+    await this.getWorkouts();
+    await getUser();
     if (this.login === 'loggingIn') {
       this.$toast("Successfully logged in as " + store.state.loggedInDisplayName, {
         timeout: 2000,
       });
     }
-
-    this.loading = false;
   }
 }
 </script>

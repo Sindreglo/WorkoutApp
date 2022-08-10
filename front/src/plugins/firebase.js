@@ -18,76 +18,7 @@ const configure = {
 }
 
 const firebaseApp = firebase.initializeApp(configure);
-const db = firebaseApp.firestore()
-
-export const getWorkouts = async () => {
-    await getUser();
-    const db1 = firebaseApp.firestore().collection('users').doc(storageService.getToken());
-    const colRef = collection(db1, 'Workouts');
-    const q = await query(colRef, orderBy("Date", "desc"));
-    let workouts = [];
-
-    await onSnapshot(q, snapshot => {
-        snapshot.docs.forEach(doc => {
-            workouts.push({...doc.data(), id: doc.id});
-        })
-    })
-    return workouts;
-}
-
-export const getWorkoutsBy = async (exercise, order) => {
-    await getUser();
-    const db1 = firebaseApp.firestore().collection('users').doc(storageService.getToken());
-    const colRef = collection(db1, 'Workouts');
-    let q = null;
-    if (exercise === 'All Exercises') {
-        q = await query(colRef,orderBy(order, "desc"));
-    } else {
-        q = await query(colRef,where("Exercise", "==", exercise), orderBy(order, "desc"));
-    }
-    let workouts = [];
-
-    await onSnapshot(q, snapshot => {
-        snapshot.docs.forEach(doc => {
-            workouts.push({...doc.data(), id: doc.id, doc: doc});
-        })
-    })
-
-    return workouts;
-}
-
-export const addWorkout = async (exercise, reps, weight, date) => {
-    const db1 = firebaseApp.firestore().collection('users').doc(storageService.getToken());
-    await addDoc(collection(db1, 'Workouts'), {
-        Reps: Number(reps),
-        Weight: Number(weight),
-        Exercise: exercise,
-        Date: date,
-    })
-}
-
-export const editWorkout= async (workout) => {
-    const db1 = firebaseApp.firestore().collection('users').doc(storageService.getToken());
-
-    const exRef = doc(db1, 'Workouts', workout.id)
-
-    await updateDoc(exRef, {
-        Exercise: workout.exercise,
-        Weight: Number(workout.weight),
-        Reps: Number(workout.reps),
-        Date: workout.date,
-    })
-}
-
-export const deleteWorkout = async (id) => {
-    const db1 = firebaseApp.firestore().collection('users').doc(storageService.getToken());
-
-    try {
-        await deleteDoc(doc(db1, "Workouts", id));
-    } catch (err) {
-        console.log(err);
-    }
-}
+export const db = firebaseApp.firestore()
 
 export const getExercises = async () => {
     await getUser();
@@ -143,7 +74,6 @@ export const editExercise = async (exercise) => {
 }
 
 export const getWorkoutsFromExercise = async (exercise) => {
-    await getUser();
     const db1 = firebaseApp.firestore().collection('users').doc(storageService.getToken());
     const colRef = collection(db1, 'Workouts');
 
@@ -157,15 +87,6 @@ export const getWorkoutsFromExercise = async (exercise) => {
         })
     })
     return workouts;
-}
-
-export const status = async () => {
-    let status;
-
-    await firebaseApp.auth().onAuthStateChanged(user => {
-        status = !!user;
-    })
-    return status;
 }
 
 export const signUp = (username, email, password) => {
