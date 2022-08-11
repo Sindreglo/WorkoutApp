@@ -86,7 +86,7 @@
 </template>
 
 <script>
-import {getExercises, editExercise, deleteExercise} from "@/plugins/firebase";
+import {getExercises, editExercise, deleteExercise, getUser} from "@/plugins/firebase";
 
   export default {
   name: "ExerciseView",
@@ -126,7 +126,7 @@ import {getExercises, editExercise, deleteExercise} from "@/plugins/firebase";
     },
     async created() {
       this.exercises = await getExercises();
-
+      await getUser();
       this.loading = false;
     }
 }

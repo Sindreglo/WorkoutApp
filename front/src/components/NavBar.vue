@@ -1,5 +1,6 @@
 <template>
   <nav>
+
     <v-app-bar flat app class="background">
       <v-app-bar-nav-icon class="grey--text" @click="drawer = !drawer"></v-app-bar-nav-icon>
       <v-btn icon @click="toggle_dark_mode">
@@ -79,6 +80,7 @@ export default {
       linksOffline: [
         { icon: 'mdi-login', text: 'Login', route: '/signin'}
       ],
+      add: true,
     }
   },
   mounted() {

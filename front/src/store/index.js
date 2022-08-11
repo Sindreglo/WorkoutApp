@@ -8,5 +8,6 @@ export default new Vuex.Store({
     loggedIn: false,
     loggedInDisplayName: "",
     loggedInImageURL: "",
+    ui: null,
   },
 })

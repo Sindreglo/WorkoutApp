@@ -1,86 +1,93 @@
 <template>
-  <div>
-    <form @submit.prevent="signIn">
-      <v-card width="500" class="mx-auto mt-9" color="component">
-        <v-card-title>Login</v-card-title>
-        <v-card-text>
-          <div class=" text-subtitle-1">
-            Login with test user or create your own.
-          </div>
-
-          <div>Email: user@gmail.com</div>
-          <div>Password: password</div>
-        </v-card-text>
-        <v-card-text>
-          <v-text-field type="email" prepend-icon="mdi-account" label="Email" v-model="email"></v-text-field>
-          <v-text-field :type="showPassword ? 'text' : 'password'"
-                        prepend-icon="mdi-lock"
-                        :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
-                        @click:append="showPassword =! showPassword"
-                        label="Password" v-model="password"></v-text-field>
-        </v-card-text>
-        <v-card-actions>
-          <v-btn color="primary" rounded type="submit">Login</v-btn>
-          <v-btn color="transparent" elevation="0" v-on:click="signUp">Register new</v-btn>
-        </v-card-actions>
-        <v-divider></v-divider>
-        <v-card-actions>
-          <v-btn
-              color="#E04931"
-              width="49%"
-              dark
-              v-on:click="signInWithGoogle"
-          >
-            <v-icon
-            >
-              mdi-google
-            </v-icon>
-          </v-btn>
-          <v-spacer></v-spacer>
-          <v-btn
-              width="49%"
-              color="#0C92F3"
-              dark
-              v-on:click="signInWithFacebook"
-          >
-            <v-icon
-            >
-              mdi-facebook
-            </v-icon>
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </form>
-  </div>
+  <v-container>
+    <h2 class="text-center">Welcome to
+      <v-toolbar-title class="text-uppercase white--text">
+        <span class="font-weight-light">Work</span>
+        <span>Out</span>
+      </v-toolbar-title></h2>
+    <div class="mr-5 mb-10" id="firebaseui-auth-container"></div>
+    <h2 class="text-center">About</h2>
+    <p class="text-center">
+      Track the best sets of your favorite exercises
+      <br>
+      and see your progress over time.
+    </p>
+    <v-card
+        class="mx-auto mt-9"
+        max-width="600"
+        elevation="0">
+      <v-carousel
+          cycle
+          height="350"
+          hide-delimiter-background
+          show-arrows-on-hover
+      >
+        <v-carousel-item
+            reverse-transition="fade-transition"
+            transition="fade-transition"
+        >
+          <v-img
+          src='@/assets/graph.png'
+          ></v-img>
+        </v-carousel-item>
+        <v-carousel-item
+            reverse-transition="fade-transition"
+            transition="fade-transition"
+        >
+          <v-img
+              src='@/assets/exercises.png'
+          ></v-img>
+        </v-carousel-item>
+      </v-carousel>
+    </v-card>
+  </v-container>
 </template>
 
 <script>
-import {signIn, signInGoogle, signInFacebook} from "@/plugins/firebase";
+import {db, firebaseApp} from "@/plugins/firebase";
+import firebase from 'firebase/compat/app';
 import router from "@/router";
+import * as firebaseui from 'firebaseui'
+import 'firebaseui/dist/firebaseui.css'
+import storageService from "@/services/storageService";
 
 export default {
   name: "SignIn",
-  data() {
-    return {
-      email: '',
-      password: '',
-      showPassword: false,
+  mounted() {
+    let ui = firebaseui.auth.AuthUI.getInstance();
+    if (!ui) {
+      ui = new firebaseui.auth.AuthUI(firebase.auth());
     }
+    const uiConfig = {
+      signInFlow: 'popup',
+      signInOptions: [
+        {
+          provider: firebase.auth.EmailAuthProvider.PROVIDER_ID,
+          requireDisplayName: false
+        },
+        firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+        firebase.auth.FacebookAuthProvider.PROVIDER_ID,
+      ],
+      callbacks: {
+        signInSuccessWithAuthResult(authResult) {
+          console.log(authResult);
+          db.collection('users').doc(firebaseApp.auth().currentUser.uid).set({
+            email: authResult.user.email,
+            displayName: authResult.user.displayName,
+          }).then(e => {
+            console.log(e);
+            storageService.setToken(authResult.user.uid);
+            router.push({name: 'dashboard', params: {login: 'loggingIn'}});
+          })
+
+          return false;
+        }
+      }
+
+    }
+
+    ui.start('#firebaseui-auth-container', uiConfig);
   },
-  methods: {
-    async signIn() {
-      await signIn(this.email, this.password);
-    },
-    signUp() {
-      router.push("/signup");
-    },
-    signInWithGoogle() {
-      signInGoogle();
-    },
-    signInWithFacebook() {
-      signInFacebook();
-    },
-  }
 }
 </script>
 

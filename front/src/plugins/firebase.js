@@ -17,7 +17,7 @@ const configure = {
     measurementId: "G-QLMK0ZRZC1"
 }
 
-const firebaseApp = firebase.initializeApp(configure);
+export const firebaseApp = firebase.initializeApp(configure);
 export const db = firebaseApp.firestore()
 
 export const getExercises = async () => {
