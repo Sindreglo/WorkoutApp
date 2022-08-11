@@ -6,13 +6,48 @@
         color="primary"
         timeout="3000"
     >
-      Workout has been added.
+      New workout has been registered.
 
       <template v-slot:action="{ attrs }">
         <v-btn
             text
             v-bind="attrs"
             @click="add = false"
+        >
+          Close
+        </v-btn>
+      </template>
+    </v-snackbar>
+    <v-snackbar
+        v-model="update"
+        top
+        color="primary"
+        timeout="3000"
+    >
+      Workout has been updated.
+
+      <template v-slot:action="{ attrs }">
+        <v-btn
+            text
+            v-bind="attrs"
+            @click="update = false"
+        >
+          Close
+        </v-btn>
+      </template>
+    </v-snackbar>
+    <v-snackbar
+        v-model="remove"
+        top
+        color="primary"
+        timeout="3000"
+    >
+      Workout has been removed.
+      <template v-slot:action="{ attrs }">
+        <v-btn
+            text
+            v-bind="attrs"
+            @click="remove = false"
         >
           Close
         </v-btn>
@@ -176,6 +211,7 @@
                 <v-btn
                     dark
                     text
+                    :loading="buttons.deleteBtn"
                     @click="deleteWorkout"
                 >
                   Delete
@@ -183,6 +219,7 @@
                 <v-btn
                     dark
                     text
+                    :loading="buttons.updateBtn"
                     @click="editThisWorkout"
                 >
                   Save
@@ -244,6 +281,7 @@
                 <v-btn
                     dark
                     text
+                    :loading="buttons.addBtn"
                     @click="addWorkout"
                 >
                   Save
@@ -297,7 +335,16 @@ export default {
   props: ['login'],
   data() {
     return {
+      // snackbars
       add: false,
+      update: false,
+      remove: false,
+
+      buttons: {
+        deleteBtn: false,
+        updateBtn: false,
+        addBtn: false,
+      },
 
 
       loading: true,
@@ -459,6 +506,7 @@ export default {
       this.editDialig = true;
     },
     async addWorkout() {
+      this.buttons.addBtn = true;
       if (this.newWorkout.reps === null) {
         this.newWorkout.reps = 0;
       }
@@ -482,8 +530,10 @@ export default {
       this.newWorkout.reps = null;
       this.newWorkout.date = (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10);
       this.dialog = false;
+      this.buttons.addBtn = false;
     },
     async editThisWorkout() {
+      this.buttons.updateBtn = true;
       if (this.editWorkout.reps === "") {
         this.editWorkout.reps = 0;
       }
@@ -497,19 +547,22 @@ export default {
         Date: this.editWorkout.date,
       }
 
-      await db.collection('users').doc(storageService.getToken()).collection('Workouts').doc(this.editWorkout.id).update(wo)
+      await db.collection('users').doc(storageService.getToken()).collection('Workouts').doc(this.editWorkout.id).update(wo).then(this.update=true);
       await this.getWorkouts();
       this.editWorkout = [];
       this.editDialig = false;
+      this.buttons.updateBtn = false;
     },
     async deleteWorkout() {
+      this.buttons.deleteBtn = true;
       try {
-        await db.collection('users').doc(storageService.getToken()).collection('Workouts').doc(this.editWorkout.id).delete();
+        await db.collection('users').doc(storageService.getToken()).collection('Workouts').doc(this.editWorkout.id).delete().then(this.remove=true);
       } catch (err) {
         console.log(err);
       }
       await this.getWorkouts();
       this.editDialig = false;
+      this.buttons.deleteBtn = false;
     },
     async workoutGraph(exercise) {
       const chartWorkouts = await getWorkoutsFromExercise(exercise);
