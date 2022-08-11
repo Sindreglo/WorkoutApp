@@ -3,7 +3,6 @@ import "firebase/compat/auth"
 import "firebase/compat/firestore"
 import router from "@/router";
 import { getDocs, addDoc, deleteDoc, updateDoc, collection, query, where, orderBy, onSnapshot, doc } from "firebase/firestore";
-import { GoogleAuthProvider, FacebookAuthProvider, signInWithPopup } from "firebase/auth";
 import storageService from "@/services/storageService";
 import store from "@/store";
 
@@ -89,88 +88,13 @@ export const getWorkoutsFromExercise = async (exercise) => {
     return workouts;
 }
 
-export const signUp = (username, email, password) => {
-    try {
-        firebaseApp.auth().createUserWithEmailAndPassword(email, password).then(r => {
-            db.collection('users').doc(firebaseApp.auth().currentUser.uid).set({
-                displayName: username,
-                email: email,
-            }).then(e => {
-                console.log(e);
-                router.push("/");
-            })
-            console.log(r);
-        }).catch(error => {
-            console.log('Something went wrong with added user to firestore: ', error);
-        })
-    } catch (err) {
-        console.log(err)
-    }
-}
-
-export const signInGoogle = async () => {
-    const provider = new GoogleAuthProvider();
-    provider.addScope('profile');
-    provider.addScope('email');
-
-    try {
-        await signInWithPopup(firebaseApp.auth(), provider).then(r => {
-            db.collection('users').doc(firebaseApp.auth().currentUser.uid).set({
-                email: r.user.email,
-                displayName: r.user.displayName,
-            }).then(e => {
-                console.log(e);
-                storageService.setToken(r.user.uid);
-                router.push({name: 'dashboard', params: {login: 'loggingIn'}});
-            })
-            console.log(r);
-        });
-    } catch (err) {
-        console.log(err)
-    }
-}
-
-export const signInFacebook = async () => {
-    const provider = new FacebookAuthProvider();
-    signInWithPopup(firebaseApp.auth(), provider)
-        .then(r => {
-            db.collection('users').doc(firebaseApp.auth().currentUser.uid).set({
-                email: r.user.email,
-                displayName: r.user.displayName,
-            }).then(e => {
-                console.log(e);
-                storageService.setToken(r.user.uid);
-                router.push({name: 'dashboard', params: {login: 'loggingIn'}});
-            })
-            console.log(r);
-        })
-        .catch((error) => {
-            console.log(error.message);
-        });
-}
-
-export const signIn = (email, password) => {
-    try {
-        firebaseApp.auth().signInWithEmailAndPassword(email, password).then(r => {
-            storageService.setToken(r.user.uid);
-            console.log(r.user.uid);
-            console.log(r.user.displayName);
-            console.log(r);
-            router.push({name: 'dashboard'});
-        });
-    } catch (err) {
-        console.log(err);
-    }
-}
-
 export const signOut = () => {
     try {
-        firebaseApp.auth().signOut().then(r => {
+        firebaseApp.auth().signOut().then(() => {
             storageService.clearToken();
             store.state.loggedInDisplayName = null;
             store.state.loggedInImageURL = null;
             store.state.loggedIn = false;
-            console.log(r);
             router.push("/signin")
         });
     } catch (err) {
@@ -181,7 +105,6 @@ export const signOut = () => {
 export const getUser = () => {
     try {
         let currentUser = firebaseApp.auth().currentUser;
-        console.log(currentUser = firebaseApp.auth().currentUser);
         if (currentUser.displayName === null) {
             store.state.loggedInDisplayName = currentUser.email;
         } else {

@@ -559,6 +559,7 @@ export default {
         await db.collection('users').doc(storageService.getToken()).collection('Workouts').doc(this.editWorkout.id).delete().then(this.remove=true);
       } catch (err) {
         console.log(err);
+        console.log("ERROR")
       }
       await this.getWorkouts();
       this.editDialig = false;

@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import MyProfile from "@/views/MyProfile";
-import SignUp from "@/views/SignUp";
 import SignIn from "@/views/SignIn";
 import ExerciseView from "@/views/ExerciseView";
 import storageService from "@/services/storageService";
@@ -35,11 +34,6 @@ const routes = [
     path: '/profile',
     name: 'profile',
     component: MyProfile
-  },
-  {
-    path: '/signup',
-    name: 'signup',
-    component: SignUp
   },
   {
     path: '/signin',

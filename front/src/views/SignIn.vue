@@ -1,11 +1,11 @@
 <template>
   <v-container>
     <h2 class="text-center">Welcome to
-      <v-toolbar-title class="text-uppercase white--text">
+      <v-toolbar-title class="text-uppercase">
         <span class="font-weight-light">Work</span>
         <span>Out</span>
       </v-toolbar-title></h2>
-    <div class="mr-5 mb-10" id="firebaseui-auth-container"></div>
+    <div class="mr-5 mb-5" id="firebaseui-auth-container"></div>
     <h2 class="text-center">About</h2>
     <p class="text-center">
       Track the best sets of your favorite exercises
@@ -70,12 +70,10 @@ export default {
       ],
       callbacks: {
         signInSuccessWithAuthResult(authResult) {
-          console.log(authResult);
           db.collection('users').doc(firebaseApp.auth().currentUser.uid).set({
             email: authResult.user.email,
             displayName: authResult.user.displayName,
-          }).then(e => {
-            console.log(e);
+          }).then(() => {
             storageService.setToken(authResult.user.uid);
             router.push({name: 'dashboard', params: {login: 'loggingIn'}});
           })
