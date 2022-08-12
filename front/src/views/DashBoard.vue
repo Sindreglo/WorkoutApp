@@ -162,6 +162,7 @@
             ></v-skeleton-loader>
           </v-container>
 
+
           <v-card color="component" v-else elevation="0" tile class="pa-3" v-for="(workout,index) in workouts" :key="index">
             <v-row class="project" v-on:click="editDialog(workout)">
               <v-col cols="4" md="4" xs="4">
@@ -170,7 +171,7 @@
               </v-col>
               <v-col cols="4" md="4" xs="4">
                 <div class="caption grey--text">Date</div>
-                <div>{{ workout.Date }}</div>
+                <div>{{ formattedDate(workout.Date) }}</div>
               </v-col>
               <v-col cols="2" md="2" xs="2">
                 <div class="caption grey--text">Weight</div>
@@ -328,6 +329,9 @@ import {
   db, getUser, getWorkoutsFromExercise,
 } from "@/plugins/firebase";
 import storageService from "@/services/storageService";
+import format from 'date-fns/format'
+import parseISO from 'date-fns/parseISO'
+
 
 export default {
   name: "DashBoard2",
@@ -613,6 +617,9 @@ export default {
         this.series[1].data[i] = chartWorkouts[i].Reps;
         this.chartOptions.xaxis.categories[i] = chartWorkouts[i].Date;
       }
+    },
+    formattedDate(date){
+      return date ? format(parseISO(date), 'do MMM yy') : ''
     },
   },
   async created() {

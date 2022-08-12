@@ -5,7 +5,6 @@ import SignIn from "@/views/SignIn";
 import ExerciseView from "@/views/ExerciseView";
 import storageService from "@/services/storageService";
 import DashBoard from "@/views/DashBoard";
-import Workouts from "@/views/Workouts";
 
 Vue.use(VueRouter)
 
@@ -21,13 +20,6 @@ const routes = [
     path: '/exercises',
     name: 'exercises',
     component: ExerciseView,
-    meta: {requiresAuth: true}
-  },
-  {
-    path: '/workouts',
-    name: 'workouts',
-    props: true,
-    component: Workouts,
     meta: {requiresAuth: true}
   },
   {
