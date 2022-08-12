@@ -131,7 +131,7 @@
                     :items="byExercise"
                     v-model="byExerciseSeleted"
                     label="Solo field"
-                    @change="getWorkouts"
+                    @change="getWorkoutsBy"
                     solo
                     dense
                 ></v-select>
@@ -141,7 +141,7 @@
                     background-color="component"
                     :items="byOptions"
                     v-model="byOptionsSelected"
-                    @change="getWorkouts"
+                    @change="getWorkoutsBy"
                     label="Solo field"
                     solo
                     dense
@@ -357,6 +357,8 @@ export default {
       byOptionsSelected: 'Date',
 
       workouts: [],
+      lastDoc: 'null',
+      lastUpdate: Date.now(),
 
       dialog: false,
       editDialig: false,
@@ -466,40 +468,53 @@ export default {
         await db.collection('users').doc(storageService.getToken()).collection('Exercises').add(ex);
       }
     },
+    async getWorkoutsBy() {
+      this.lastDoc = 'null';
+      this.workouts = [];
+      await this.getWorkouts();
+    },
     async getWorkouts() {
-      if (this.byExerciseSeleted === 'All Exercises') {
-        await db.collection('users').doc(storageService.getToken()).collection('Workouts').orderBy(this.byOptionsSelected, "desc")
-            .get()
-            .then((querySnapshot) => {
-              this.loading = false;
-              this.workouts = [];
-              querySnapshot.forEach((doc) => {
-                this.workouts.push({
-                  ...doc.data(),
-                  id: doc.id,
-                })
-              });
-            })
-            .catch((error) => {
-              console.log("Error getting documents: ", error);
-            });
-      } else {
-        await db.collection('users').doc(storageService.getToken()).collection('Workouts').orderBy(this.byOptionsSelected, "desc").where("Exercise", "==", this.byExerciseSeleted)
-            .get()
-            .then((querySnapshot) => {
-              this.loading = false;
-              this.workouts = [];
-              querySnapshot.forEach((doc) => {
-                this.workouts.push({
-                  ...doc.data(),
-                  id: doc.id,
-                })
-              });
-            })
-            .catch((error) => {
-              console.log("Error getting documents: ", error);
-            });
+      let woRef = null;
+      woRef = await db.collection('users').doc(storageService.getToken()).collection('Workouts')
+          .orderBy(this.byOptionsSelected, "desc");
+
+      if (this.byExerciseSeleted !== 'All Exercises') {
+        woRef = await db.collection('users').doc(storageService.getToken()).collection('Workouts')
+            .orderBy(this.byOptionsSelected, "desc").where("Exercise", "==", this.byExerciseSeleted);
       }
+
+
+        if (this.lastDoc === 'null') {
+          await woRef.limit(5).get()
+              .then((querySnapshot) => {
+                this.loading = false;
+                querySnapshot.forEach((doc) => {
+                  this.workouts.push({
+                    ...doc.data(),
+                    id: doc.id,
+                  });
+                });
+                this.lastDoc = querySnapshot.docs[querySnapshot.docs.length -1];
+              })
+              .catch((error) => {
+                console.log("Error getting documents: ", error);
+              });
+        } else {
+          await woRef.limit(5).startAfter(this.lastDoc).get()
+              .then((querySnapshot) => {
+                this.loading = false;
+                querySnapshot.forEach((doc) => {
+                  this.workouts.push({
+                    ...doc.data(),
+                    id: doc.id,
+                  });
+                });
+                this.lastDoc = querySnapshot.docs[querySnapshot.docs.length -1];
+              })
+              .catch((error) => {
+                console.log("Error getting documents: ", error);
+              });
+        }
     },
     editDialog(item) {
       this.editWorkout.exercise = item.Exercise;
@@ -621,6 +636,19 @@ export default {
     formattedDate(date){
       return date ? format(parseISO(date), 'do MMM yy') : ''
     },
+    async handleScroll() {
+      let bottom =
+          document.documentElement.scrollTop + window.innerHeight >=
+          document.documentElement.offsetHeight;
+      if (bottom && Date.now() - this.lastUpdate > 500) {
+        console.log("HER");
+        await this.getWorkouts();
+        this.lastUpdate = Date.now();
+      }
+    },
+  },
+  mounted() {
+    window.addEventListener("scroll", this.handleScroll);
   },
   async created() {
     await getUser();
