@@ -86,7 +86,8 @@
 </template>
 
 <script>
-import {getExercises, editExercise, deleteExercise, getUser} from "@/plugins/firebase";
+import {getUser, db} from "@/plugins/firebase";
+import storageService from "@/services/storageService";
 
   export default {
   name: "ExerciseView",
@@ -94,6 +95,7 @@ import {getExercises, editExercise, deleteExercise, getUser} from "@/plugins/fir
       return {
         loading: true,
 
+        exercises: [],
         editDialig: false,
         editItem: {
           editName: null,
@@ -109,14 +111,40 @@ import {getExercises, editExercise, deleteExercise, getUser} from "@/plugins/fir
         this.editItem.editColor = item.color;
         this.editDialig = true;
       },
+      async getExercises() {
+        this.exercises = [];
+        await db.collection('users').doc(storageService.getToken()).collection('Exercises')
+            .get()
+            .then((querySnapshot) => {
+              querySnapshot.forEach((doc) => {
+                this.exercises.push({
+                  ...doc.data(),
+                  id: doc.id,
+                })
+              });
+            })
+            .catch((error) => {
+              console.log("Error getting documents: ", error);
+            });
+        this.loading = false;
+      },
       async deleteExercise() {
-        await deleteExercise(this.editItem.editId);
-        this.exercises = await getExercises();
+        try {
+          await db.collection('users').doc(storageService.getToken()).collection('Exercises').doc(this.editItem.editId).delete().then(this.remove=true);
+        } catch (err) {
+          console.log(err);
+          console.log("ERROR")
+        }
+        await this.getExercises();
         this.editDialig = false;
       },
       async saveExercise() {
-        await editExercise(this.editItem);
-        this.exercises = await getExercises();
+        const ex = {
+          color: this.editItem.editColor,
+        }
+        await db.collection('users').doc(storageService.getToken()).collection('Exercises').doc(this.editItem.editId)
+            .update(ex).then(this.update=true);
+        await this.getExercises();
         this.editDialig = false;
 
       },
@@ -125,9 +153,9 @@ import {getExercises, editExercise, deleteExercise, getUser} from "@/plugins/fir
       }
     },
     async created() {
-      this.exercises = await getExercises();
       await getUser();
-      this.loading = false;
+      await this.getExercises();
+      await getUser();
     }
 }
 </script>

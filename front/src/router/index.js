@@ -25,7 +25,8 @@ const routes = [
   {
     path: '/profile',
     name: 'profile',
-    component: MyProfile
+    component: MyProfile,
+    meta: {requiresAuth: true}
   },
   {
     path: '/signin',

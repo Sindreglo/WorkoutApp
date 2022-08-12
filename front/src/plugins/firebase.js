@@ -2,7 +2,7 @@ import firebase from 'firebase/compat/app';
 import "firebase/compat/auth"
 import "firebase/compat/firestore"
 import router from "@/router";
-import { getDocs, addDoc, deleteDoc, updateDoc, collection, query, where, orderBy, onSnapshot, doc } from "firebase/firestore";
+import { getDocs, collection, query, where, orderBy } from "firebase/firestore";
 import storageService from "@/services/storageService";
 import store from "@/store";
 
@@ -18,59 +18,6 @@ const configure = {
 
 export const firebaseApp = firebase.initializeApp(configure);
 export const db = firebaseApp.firestore()
-
-export const getExercises = async () => {
-    await getUser();
-    const db1 = firebaseApp.firestore().collection('users').doc(storageService.getToken());
-    let exercises = [];
-
-    await getDocs(collection(db1, 'Exercises')).then((snapshot) => {
-        snapshot.docs.forEach((doc) => {
-            exercises.push({...doc.data(), id: doc.id})
-        })
-    })
-
-    return exercises;
-}
-
-export const getAddExercise = async (exercise) => {
-    const db1 = firebaseApp.firestore().collection('users').doc(storageService.getToken());
-
-    const colRef = collection(db1, 'Exercises');
-
-    const q = await query(colRef, where("exercise", "==", exercise))
-    let exercises = [];
-
-    await onSnapshot(q, snapshot => {
-        snapshot.docs.forEach(doc => {
-            exercises.push({...doc.data()});
-        })
-        if (exercises.length === 0) {
-            addDoc(collection(db1, 'Exercises'), {
-                exercise: exercise,
-                color: '#00000000',
-            })
-        }
-    })
-}
-
-export const deleteExercise = async (id) => {
-    const db1 = firebaseApp.firestore().collection('users').doc(storageService.getToken());
-    try {
-        await deleteDoc(doc(db1, "Exercises", id));
-    } catch (err) {
-        console.log(err);
-    }
-}
-
-export const editExercise = async (exercise) => {
-    const db1 = firebaseApp.firestore().collection('users').doc(storageService.getToken());
-    const exRef = doc(db1, 'Exercises', exercise.editId);
-
-    await updateDoc(exRef, {
-        color: exercise.editColor,
-    })
-}
 
 export const getWorkoutsFromExercise = async (exercise) => {
     const db1 = firebaseApp.firestore().collection('users').doc(storageService.getToken());
