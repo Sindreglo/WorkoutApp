@@ -433,6 +433,7 @@ export default {
             querySnapshot.forEach((doc) => {
               this.exerciseList.push({
                 ...doc.data(),
+                id: doc.id,
               })
             });
           })
@@ -462,6 +463,7 @@ export default {
         const ex = {
           exercise: this.newWorkout.exercise,
           color: '#00000000',
+          maxWeight: Number(this.newWorkout.weight),
         }
         await db.collection('users').doc(storageService.getToken()).collection('Exercises').add(ex);
       }
@@ -529,6 +531,19 @@ export default {
       await this.addExercise();
       await this.getWorkouts();
       await this.getExercises();
+
+      for (const exercise of this.exerciseList) {
+        if (exercise.exercise === this.newWorkout.exercise) {
+          if (exercise.maxWeight < this.newWorkout.weight) {
+            const ex = {
+              maxWeight: Number(this.newWorkout.weight),
+            }
+            await db.collection('users').doc(storageService.getToken()).collection('Exercises').doc(exercise.id)
+                .update(ex);
+          }
+        }
+      }
+
       this.newWorkout.exercise = null;
       this.newWorkout.weight = null;
       this.newWorkout.reps = null;
@@ -553,6 +568,19 @@ export default {
 
       await db.collection('users').doc(storageService.getToken()).collection('Workouts').doc(this.editWorkout.id).update(wo).then(this.update=true);
       await this.getWorkouts();
+
+      for (const exercise of this.exerciseList) {
+        if (exercise.exercise === this.editWorkout.exercise) {
+          if (exercise.maxWeight < this.editWorkout.weight) {
+            const ex = {
+              maxWeight: Number(this.editWorkout.weight),
+            }
+            await db.collection('users').doc(storageService.getToken()).collection('Exercises').doc(exercise.id)
+                .update(ex);
+          }
+        }
+      }
+
       this.editWorkout = [];
       this.editDialig = false;
       this.buttons.updateBtn = false;

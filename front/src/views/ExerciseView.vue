@@ -71,9 +71,13 @@
 
         <v-card color="component" tile class="pa-3" v-for="(exercise,index) in exercises" :key="index">
           <v-row class="project" :style="getColor(exercise)" v-on:click="editDialog(exercise)">
-            <v-col cols="12" md="6">
+            <v-col cols="6" md="6">
               <div class="caption grey--text">Exercise</div>
               <div>{{ exercise.exercise }}</div>
+            </v-col>
+            <v-col cols="6" md="6">
+              <div class="caption grey--text">Max Weight</div>
+              <div>{{ exercise.maxWeight }}</div>
             </v-col>
           </v-row>
           <v-row>
@@ -113,7 +117,7 @@ import storageService from "@/services/storageService";
       },
       async getExercises() {
         this.exercises = [];
-        await db.collection('users').doc(storageService.getToken()).collection('Exercises')
+        await db.collection('users').doc(storageService.getToken()).collection('Exercises').orderBy("maxWeight", "desc")
             .get()
             .then((querySnapshot) => {
               querySnapshot.forEach((doc) => {
