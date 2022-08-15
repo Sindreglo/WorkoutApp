@@ -23,8 +23,8 @@ const routes = [
     meta: {requiresAuth: true}
   },
   {
-    path: '/profile',
-    name: 'profile',
+    path: '/calendar',
+    name: 'calendar',
     component: MyProfile,
     meta: {requiresAuth: true}
   },

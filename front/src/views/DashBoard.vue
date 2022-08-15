@@ -440,6 +440,7 @@ export default {
           .catch((error) => {
             console.log("Error getting documents: ", error);
           });
+      this.exercises = [];
       if(this.exerciseList.length > 0) {
         for (let i = 0; i < this.exerciseList.length; i++) {
           this.exercises[i] = this.exerciseList[i].exercise;
@@ -467,6 +468,7 @@ export default {
         }
         await db.collection('users').doc(storageService.getToken()).collection('Exercises').add(ex);
       }
+      await this.getExercises();
     },
     async getWorkouts() {
       if (this.byExerciseSeleted === 'All Exercises') {
@@ -530,7 +532,6 @@ export default {
       await db.collection('users').doc(storageService.getToken()).collection('Workouts').add(wo).then(this.add=true);
       await this.addExercise();
       await this.getWorkouts();
-      await this.getExercises();
 
       for (const exercise of this.exerciseList) {
         if (exercise.exercise === this.newWorkout.exercise) {
