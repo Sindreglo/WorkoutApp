@@ -66,36 +66,56 @@
     ></v-progress-linear>
     <div v-else>
       <v-container>
-        <v-card
-            color="component"
-            tile
-            elevation="0"
-            class="mb-5 rounded-lg"
-        >
+        <v-row>
+          <v-col cols="12" md="3" order-lg="last" order-md="last">
+              <div class="status-container">
+                <div class="stats-1 rounded-lg primary white--text">
+                  <div class="text-subtitle-1">Sets</div>
+                  <h2>{{ setSum }}</h2>
+                </div>
+                <div class="stats-2 rounded-lg secondary white--text">
+                  <div class="text-subtitle-1">Weights</div>
+                  <h2>{{ weightSum }}</h2>
+                </div>
+                <div class="stats-3 rounded-lg third white--text">
+                  <div class="text-subtitle-1">Reps</div>
+                  <h2>{{ repSum }}</h2>
+                </div>
+              </div>
+          </v-col>
+          <v-col cols="12" md="9" order-lg="first" order-md="first">
+            <v-card
+                color="component"
+                tile
+                elevation="0"
+                class="mb-5 rounded-lg"
+            >
 
-          <!-- Graph -->
-          <v-container>
-            <v-row align="center">
-              <v-col
-                  class="d-flex"
-                  cols="6"
-                  sm="4"
-                  color="primary"
-              >
-                <v-select
-                    background-color="component"
-                    :items="exercises"
-                    v-model="selectedExercise"
-                    v-on:change="workoutGraph(selectedExercise)"
-                    label="No exercises"
-                    dense
-                    solo
-                ></v-select>
-              </v-col>
-            </v-row>
-            <VueApexCharts type="area" height="350" :options="chartOptions" :series="series"></VueApexCharts>
-          </v-container>
-        </v-card>
+              <!-- Graph -->
+              <v-container>
+                <v-row align="center">
+                  <v-col
+                      class="d-flex"
+                      cols="6"
+                      sm="4"
+                      color="primary"
+                  >
+                    <v-select
+                        background-color="component"
+                        :items="exercises"
+                        v-model="selectedExercise"
+                        v-on:change="workoutGraph(selectedExercise)"
+                        label="No exercises"
+                        dense
+                        solo
+                    ></v-select>
+                  </v-col>
+                </v-row>
+                <VueApexCharts type="area" height="350" :options="chartOptions" :series="series"></VueApexCharts>
+              </v-container>
+            </v-card>
+          </v-col>
+        </v-row>
 
         <!-- List -->
         <v-card
@@ -149,21 +169,7 @@
               </v-col>
             </v-row>
           </v-card-actions>
-
-          <v-container v-if="selectLoading">
-            <v-skeleton-loader
-                type="list-item-two-line,divider"
-            ></v-skeleton-loader>
-            <v-skeleton-loader
-                type="list-item-two-line,divider"
-            ></v-skeleton-loader>
-            <v-skeleton-loader
-                type="list-item-two-line,divider"
-            ></v-skeleton-loader>
-          </v-container>
-
-
-          <v-card color="component" v-else elevation="0" tile class="pa-3" v-for="(workout,index) in workouts" :key="index">
+          <v-card color="component" elevation="0" tile class="pa-3" v-for="(workout,index) in workouts" :key="index">
             <v-row class="project" v-on:click="editDialog(workout)">
               <v-col cols="4" md="4" xs="4">
                 <div class="caption grey--text">Exercise</div>
@@ -344,6 +350,7 @@ export default {
       update: false,
       remove: false,
 
+      // Buttons
       buttons: {
         deleteBtn: false,
         updateBtn: false,
@@ -351,29 +358,22 @@ export default {
       },
 
 
-      loading: true,
+      loading: true, // Loading bar
       byExerciseSeleted: 'All Exercises',
       byOptions: ['Date', 'Weight', 'Reps'],
       byOptionsSelected: 'Date',
 
-      workouts: [],
+      workouts: [], // List of Workouts
 
-      dialog: false,
-      editDialig: false,
+      dialog: false, //New Workout Dialog
+      editDialig: false, // Edit Workout Dialog
 
       exercises: [],
       exerciseList: [],
       byExercise: ['All Exercises'],
       selectedExercise: null,
-      selectLoading: false,
 
-      newWorkout: {
-        exercise: null,
-        weight: null,
-        reps: null,
-        date: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
-      },
-
+      // Chart options
       series: [{
         name: 'Weight',
         data: []
@@ -416,6 +416,14 @@ export default {
         },
       },
 
+      // New Workout
+      newWorkout: {
+        exercise: null,
+        weight: null,
+        reps: null,
+        date: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
+      },
+      // Edit Workout
       editWorkout: {
         exercise: null,
         weight: null,
@@ -423,6 +431,10 @@ export default {
         date: null,
         id: null,
       },
+
+      setSum: 0,
+      weightSum: 0,
+      repSum: 0,
     }
   },
   methods: {
@@ -504,6 +516,7 @@ export default {
               console.log("Error getting documents: ", error);
             });
       }
+      this.workoutInfo();
     },
     editDialog(item) {
       this.editWorkout.exercise = item.Exercise;
@@ -529,7 +542,7 @@ export default {
         Date: this.newWorkout.date,
       }
 
-      await db.collection('users').doc(storageService.getToken()).collection('Workouts').add(wo).then(this.add=true);
+      await db.collection('users').doc(storageService.getToken()).collection('Workouts').add(wo);
       await this.addExercise();
       await this.getWorkouts();
 
@@ -551,6 +564,7 @@ export default {
       this.newWorkout.date = (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10);
       this.dialog = false;
       this.buttons.addBtn = false;
+      this.add=true
     },
     async editThisWorkout() {
       this.buttons.updateBtn = true;
@@ -567,7 +581,7 @@ export default {
         Date: this.editWorkout.date,
       }
 
-      await db.collection('users').doc(storageService.getToken()).collection('Workouts').doc(this.editWorkout.id).update(wo).then(this.update=true);
+      await db.collection('users').doc(storageService.getToken()).collection('Workouts').doc(this.editWorkout.id).update(wo);
       await this.getWorkouts();
 
       for (const exercise of this.exerciseList) {
@@ -585,11 +599,12 @@ export default {
       this.editWorkout = [];
       this.editDialig = false;
       this.buttons.updateBtn = false;
+      this.update=true
     },
     async deleteWorkout() {
       this.buttons.deleteBtn = true;
       try {
-        await db.collection('users').doc(storageService.getToken()).collection('Workouts').doc(this.editWorkout.id).delete().then(this.remove=true);
+        await db.collection('users').doc(storageService.getToken()).collection('Workouts').doc(this.editWorkout.id).delete().then;
       } catch (err) {
         console.log(err);
         console.log("ERROR")
@@ -597,6 +612,7 @@ export default {
       await this.getWorkouts();
       this.editDialig = false;
       this.buttons.deleteBtn = false;
+      this.remove=true;
     },
     async workoutGraph(exercise) {
       const chartWorkouts = await getWorkoutsFromExercise(exercise);
@@ -647,6 +663,21 @@ export default {
         this.chartOptions.xaxis.categories[i] = chartWorkouts[i].Date;
       }
     },
+    workoutInfo() {
+
+      this.setSum = 0;
+      this.weightSum = 0;
+      this.repSum = 0;
+
+      for (let i = 0; i < this.workouts.length; i++) {
+        this.setSum += 1;
+        this.weightSum += this.workouts[i].Weight * this.workouts[i].Reps;
+        this.repSum += this.workouts[i].Reps;
+      }
+      console.log(this.setSum);
+      console.log(this.weightSum);
+      console.log(this.repSum);
+    },
     formattedDate(date){
       return date ? format(parseISO(date), 'do MMM yy') : ''
     },
@@ -661,4 +692,38 @@ export default {
 </script>
 
 <style scoped>
+.status-container {
+  height: 70px;
+  display: grid;
+  gap: .8rem;
+  grid-template-areas:
+  'one two three';
+  grid-auto-columns: minmax(0, 1fr);
+}
+.stats-1 {
+  padding: 10px;
+  grid-area: one;
+  font-size: 15px;
+}
+.stats-2 {
+  padding: 10px;
+  grid-area: two;
+  font-size: 15px;
+}
+.stats-3 {
+  padding: 10px;
+  grid-area: three;
+  font-size: 15px;
+}
+
+@media (min-width: 60em) {
+  .status-container {
+    height: 454px;
+    grid-template-areas:
+  'one'
+  'two'
+  'three';
+  }
+}
+
 </style>
